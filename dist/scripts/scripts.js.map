@@ -1,0 +1,1 @@
+{"mappings":"AEAA,QAAQ,GAAG,CAAC","sources":["<anon>","assets/scripts/scripts.js","assets/scripts/js/general.js"],"sourcesContent":["(() => {\nconsole.log(\"helo\");\n\n\n\n})();\n//# sourceMappingURL=scripts.js.map\n","import './js/general.js';\n","console.log('helo')"],"names":["console","log"],"version":3,"file":"scripts.js.map"}

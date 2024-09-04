@@ -1,3 +1,159 @@
-.here {
-  font-size: 10px;
+// /* General Reset and Box Sizing */
+// * {
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+// }
+
+// .row {
+//   display: flex;
+//   gap: 20px; /* Adjust gap between columns as needed */
+// }
+
+// .col-lg-4 {
+//   flex: 1 1 100%; /* By default, each column takes full width */
+// }
+
+// .col-lg-8 {
+//   flex: 1 1 100%; /* By default, this column also takes full width */
+// }
+
+// .content {
+//   background-color: #f9f9f9; /* Adjust background color */
+//   padding: 20px;
+//   border-radius: 8px;
+// }
+
+// .icon-boxes {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 20px; /* Space between rows in the grid */
+// }
+
+// .icon-box {
+//   background-color: #ffffff; /* Adjust background color */
+//   padding: 20px;
+//   border-radius: 8px;
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for better visual separation */
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   text-align: center;
+// }
+
+// .icon-box i {
+//   font-size: 2rem; /* Adjust icon size */
+//   color: #007bff; /* Adjust icon color */
+//   margin-bottom: 10px; /* Space between icon and heading */
+// }
+
+// .icon-box h4 {
+//   margin-bottom: 10px; /* Space between heading and paragraph */
+// }
+
+// .icon-box p {
+//   font-size: 0.875rem; /* Adjust font size for the paragraph */
+// }
+
+// /* Responsive Design */
+// @media (min-width: 992px) {
+//   /* Large devices (desktops) */
+//   .col-lg-4 {
+//     flex: 0 0 33.333%; /* 4 columns layout (33.333% width) */
+//   }
+
+//   .col-lg-8 {
+//     flex: 0 0 66.666%; /* This column takes 2/3 of the width */
+//   }
+
+//   .icon-boxes {
+//     flex-direction: row; /* Row direction for large screens */
+//     flex-wrap: wrap;
+//     gap: 20px;
+//   }
+
+//   .icon-box {
+//     flex: 1 1 calc(25% - 20px); /* 4 columns layout for icon boxes */
+//   }
+// }
+
+// @media (max-width: 991px) {
+//   /* Medium devices (tablets) */
+//   .icon-box {
+//     flex: 1 1 calc(50% - 20px); /* 2 columns layout for icon boxes */
+//   }
+// }
+
+// @media (max-width: 575px) {
+//   /* Small devices (phones) */
+//   .col-lg-4,
+//   .col-lg-8 {
+//     flex: 0 0 100%; /* Single column layout for small screens */
+//   }
+
+//   .icon-box {
+//     flex: 1 1 100%; /* Full width for icon boxes on small screens */
+//   }
+// }
+
+// /* Ensure the icon-box has consistent styling */
+// .icon-box {
+//   background-color: #ffffff; /* Adjust background color */
+//   padding: 20px;
+//   border-radius: 8px;
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for better visual separation */
+//   text-align: center;
+// }
+
+// .icon-box i {
+//   font-size: 2rem; /* Adjust icon size */
+//   margin-bottom: 10px; /* Space between icon and heading */
+// }
+
+// .icon-box h3 {
+//   margin-bottom: 10px; /* Space between heading and link */
+// }
+
+// .icon-box a {
+//   color: inherit; /* Inherit color from parent */
+//   text-decoration: none; /* Remove underline from links */
+//   font-weight: bold; /* Make the text bold */
+// }
+
+// .icon-box a:hover {
+//   color: #007bff; /* Color change on hover */
+//   text-decoration: underline; /* Add underline on hover */
+// }
+
+// /* Responsive Design */
+// @media (min-width: 992px) {
+//   /* Large devices (desktops) */
+//   .row {
+//     margin-right: -15px; /* Adjust for Bootstrap gutter */
+//     margin-left: -15px; /* Adjust for Bootstrap gutter */
+//   }
+
+//   .col-md-4 {
+//     padding-right: 15px; /* Adjust for Bootstrap gutter */
+//     padding-left: 15px; /* Adjust for Bootstrap gutter */
+//   }
+// }
+
+// @media (max-width: 991px) {
+//   /* Medium devices (tablets) */
+//   .col-md-4 {
+//     margin-bottom: 20px; /* Space between rows on smaller screens */
+//   }
+// }
+
+.why-choose-us-container {
+  > div {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for better visual separation */
+  }
+  > div:first-child() {
+    background-color: red;
+    color: white;
+  }
 }

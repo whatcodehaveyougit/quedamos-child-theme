@@ -1,5 +1,27 @@
 @import './variables.scss';
 
+.zoom-element {
+  transform: scale(0); /* Start with a small scale (invisible) */
+  transition: transform 1s ease-in-out; /* Smooth transition to normal size */
+}
+
+.zoom-in {
+  transform: scale(1); /* Normal size (1x) */
+}
+
+.slide-up {
+  transform: translateY(100px); /* Start 20px below the final position */
+  opacity: 0; /* Optional: Start invisible */
+  transition:
+    transform 1s ease-out,
+    opacity 1s ease-out; /* Smooth transition */
+}
+
+.slide-up-active {
+  transform: translateY(0); /* Move to the final position */
+  opacity: 1; /* Optional: Make visible */
+}
+
 .big-numbers-container {
   background-color: $background-grey;
   .wp-block-cover__inner-container .wp-block-group {

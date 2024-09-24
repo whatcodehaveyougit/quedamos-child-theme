@@ -28,6 +28,7 @@
       margin-block-start: 0px;
     }
     .course-item {
+      text-decoration: none !important;
       border-radius: 5px;
       border: 1px solid #eef0ef;
       padding-bottom: 20px;
@@ -35,7 +36,6 @@
       .course-content {
         padding: 0px 15px;
       }
-      text-decoration: none !important;
       img {
         height: 250px;
         width: auto;

@@ -1,0 +1,55 @@
+@import './variables.scss';
+
+.faq-page {
+  min-height: 100vh;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .title {
+    font-size: 3rem;
+    margin: 2rem 0;
+  }
+
+  svg {
+    width: 60px;
+  }
+  .faq {
+    width: 100%;
+    margin-top: 2rem;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: $primary;
+    border-radius: 10px;
+  }
+
+  .question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .question h3 {
+    font-size: 1.8rem;
+    color: white;
+  }
+
+  .answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 1s ease-in-out;
+    color: white;
+  }
+
+  .answer p {
+    padding-top: 1rem;
+    line-height: 1.6;
+    font-size: 1.4rem;
+  }
+
+  .faq.active .answer {
+    max-height: 300px;
+  }
+}

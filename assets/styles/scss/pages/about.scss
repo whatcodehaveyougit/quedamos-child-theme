@@ -1,3 +1,10 @@
-.to {
-  font-size: 10px;
+@import '../variables.scss';
+
+.about-page {
+  h2 {
+    span {
+      background-color: $accent-yellow;
+      padding: 5px;
+    }
+  }
 }

@@ -1,0 +1,104 @@
+@import './variables.scss';
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .site-headings > p {
+    display: none;
+  }
+
+  .site-headings::after {
+    content: 'SW'; /* The text to display on mobile */
+    display: block; /* Ensures it behaves like a block element */
+    font-size: 2rem; /* Adjust the font size as needed */
+    font-family: 'Junge';
+    text-align: center; /* Center the text */
+    color: #000; /* Change the text color as needed */
+    font-weight: bold; /* Make the text bold */
+  }
+}
+
+/* Hamburger Mobile Navigation */
+.wp-block-navigation {
+  .wp-block-navigation__responsive-container.is-menu-open {
+    background-color: $primary-color;
+
+    &.has-modal-open {
+      max-width: 85%;
+    }
+
+    .wp-block-navigation__responsive-container-content {
+      align-items: center;
+
+      .wp-block-navigation__container {
+        align-items: center;
+      }
+
+      .wp-block-navigation-item {
+        align-items: center;
+        color: white !important;
+        padding-bottom: 0.4rem;
+        .wp-block-navigation-item__label {
+          color: white !important;
+        }
+      }
+    }
+
+    .wp-block-button__link {
+      // width: 200px;
+      // height: 60px;
+      padding: 10px 40px;
+      font-size: 26px;
+    }
+
+    ul.wp-block-navigation__container {
+      > li > a.wp-block-navigation-item__content {
+        font-size: 32px !important;
+      }
+
+      > li.wp-block-navigation-item > a > span.wp-block-navigation-item__label {
+        font-size: 32px;
+      }
+    }
+  }
+
+  &:not(.has-background) {
+    .wp-block-navigation__responsive-container.is-menu-open {
+      background-color: $primary-color;
+    }
+  }
+
+  .wp-block-navigation__responsive-container-close {
+    color: white;
+    &:focus {
+      outline: 0 !important;
+      outline: none !important;
+    }
+  }
+}
+
+ul.wp-block-navigation__submenu-container {
+  li.wp-block-navigation-item {
+    .wp-block-navigation-item__label {
+      text-transform: uppercase;
+      font-family: 'Inter';
+    }
+  }
+}
+
+.wp-block-woocommerce-mini-cart {
+  visibility: visible !important;
+}
+
+@media screen and (min-width: 781px) {
+  ul {
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .navigation-row-container nav {
+    max-width: 65%;
+  }
+}

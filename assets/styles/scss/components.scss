@@ -1,25 +1,35 @@
 @import './variables.scss';
 
-.zoom-element {
-  transform: scale(0); /* Start with a small scale (invisible) */
-  transition: transform 1s ease-in-out; /* Smooth transition to normal size */
+// .zoom-element {
+//   transform: scale(0); /* Start with a small scale (invisible) */
+//   transition: transform 1s ease-in-out; /* Smooth transition to normal size */
+// }
+
+// .zoom-in {
+//   transform: scale(1); /* Normal size (1x) */
+// }
+
+// .slide-up {
+//   transform: translateY(100px); /* Start 20px below the final position */
+//   opacity: 0; /* Optional: Start invisible */
+//   transition:
+//     transform 1s ease-out,
+//     opacity 1s ease-out; /* Smooth transition */
+// }
+
+// .slide-up-active {
+//   transform: translateY(0); /* Move to the final position */
+//   opacity: 1; /* Optional: Make visible */
+// }
+
+h1,
+h2,
+h3 {
+  margin: 10px 0;
 }
 
-.zoom-in {
-  transform: scale(1); /* Normal size (1x) */
-}
-
-.slide-up {
-  transform: translateY(100px); /* Start 20px below the final position */
-  opacity: 0; /* Optional: Start invisible */
-  transition:
-    transform 1s ease-out,
-    opacity 1s ease-out; /* Smooth transition */
-}
-
-.slide-up-active {
-  transform: translateY(0); /* Move to the final position */
-  opacity: 1; /* Optional: Make visible */
+img {
+  border-radius: 10px;
 }
 
 .big-numbers-container {
@@ -73,10 +83,117 @@
   }
 }
 
-.page-header {
-  height: 150px;
+.page-header-container {
+  min-height: auto;
+  padding: 32px;
+  margin-block-start: 0px;
+  // margin-bottom: 2rem;
   h2 {
-    font-size: 40px;
     font-weight: 500;
+  }
+  p {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    p {
+      display: block;
+    }
+  }
+}
+
+.q-card {
+  box-shadow:
+    0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 10px;
+  padding: 2rem !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.contact-us-container {
+  padding: 2rem;
+  .wp-block-columns {
+    gap: 0px;
+    .wp-block-column:nth-child(1) {
+      background-color: $background-grey;
+      padding: 32px;
+      .wpforms-field {
+        padding: 10px 0;
+      }
+    }
+    .wp-block-column {
+      height: 380px;
+      img {
+        height: 444px;
+      }
+    }
+    .wp-block-column:nth-child(2) {
+      display: none;
+    }
+    button {
+      width: 100%;
+    }
+    @media (min-width: 1024px) {
+      .wp-block-column:nth-child(2) {
+        display: block;
+      }
+    }
+  }
+  .wpforms-container .wpforms-field {
+    padding: 10px;
+  }
+}
+
+.special-offer-container {
+  margin: 1rem 0;
+}
+
+.my-mission-container {
+}
+
+.my-mission-container-2 {
+  figure {
+    display: block;
+    margin: auto;
+    img {
+      width: 60%;
+    }
+  }
+  .wp-block-column:nth-child(2) {
+    text-align: center;
+    // height: 400px;
+    padding: 2rem;
+    background-image: url('https://www.test-yoursite.com/wp-content/uploads/2024/10/Vector-1.png');
+    background-repeat: no-repeat;
+    background-position: 95% 15%;
+    background-size: 80px;
+    border-radius: 10px;
+
+    > * {
+      width: 100%;
+      display: block;
+    }
+    @media (min-width: 992px) {
+      padding: 2rem 5rem 2rem 10rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+  }
+  @media (min-width: 992px) {
+    figure {
+      position: relative;
+      left: 170px;
+      z-index: 999;
+      img {
+        width: 100%;
+      }
+    }
+    position: relative;
+    right: 170px;
   }
 }

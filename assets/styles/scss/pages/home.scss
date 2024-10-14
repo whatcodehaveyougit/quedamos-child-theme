@@ -12,7 +12,7 @@
 
   // Content Section
   .content {
-    background-color: #be2c2c;
+    background-color: $primary;
     padding: 30px;
     color: white;
     border-radius: 8px;
@@ -97,7 +97,7 @@
       padding: 20px;
       transition: 0.3s;
       border: 1px solid #eef0ef;
-      background-color: #ffffff;
+      background-color: white;
 
       h3 {
         font-weight: 700;

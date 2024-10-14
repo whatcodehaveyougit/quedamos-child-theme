@@ -8,8 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -r assets/dist/",
-    "watch": "parcel watch assets/scripts/scripts.js assets/styles/style.scss",
-    "build": "parcel build assets/scripts/scripts.js assets/styles/style.scss"
+    "watch": "rm -rf dist && rm -rf .parcel-cache && parcel watch assets/scripts/scripts.js assets/styles/style.scss",
+    "build": "rm -rf dist && rm -rf .parcel-cache && parcel build assets/scripts/scripts.js assets/styles/style.scss"
   },
   "author": "",
   "license": "ISC",

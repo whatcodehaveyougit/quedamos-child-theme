@@ -15,7 +15,6 @@ function twentytwentyfour_child_scripts() {
 
 function custom_header_code() {
 	?>
-<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
 <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">	<?php
 
@@ -78,7 +77,7 @@ function course_query_shortcode($atts) {
 											echo '</section>';
 									}
 									?>
-									<br /><p><?php echo esc_html($course_description); ?></p>
+									<p><?php echo esc_html($course_description); ?></p>
 							</div>
 					</a>
 					<?php

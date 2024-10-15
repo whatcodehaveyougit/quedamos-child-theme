@@ -1,6 +1,5 @@
 <?php
 
-
 add_action( 'wp_enqueue_scripts', 'twentytwentyfour_child_scripts' );
 function twentytwentyfour_child_scripts() {
 	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
@@ -11,8 +10,6 @@ function twentytwentyfour_child_scripts() {
 	wp_enqueue_script( 'parcel-js', get_stylesheet_directory_uri() . '/dist/scripts/scripts.js', array(), '1.0', true );
 }
 
-
-
 function custom_header_code() {
 	?>
 <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
@@ -20,8 +17,6 @@ function custom_header_code() {
 
 }
 add_action( 'wp_head', 'custom_header_code' );
-
-
 
 function course_query_shortcode($atts) {
 	// Shortcode attributes

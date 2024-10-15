@@ -10,6 +10,24 @@ img {
   border-radius: 10px;
 }
 
+.q-info-cards-container {
+  .wp-block-columns {
+    margin-bottom: 32px;
+  }
+  @media (max-width: 768px) {
+    .wp-block-columns:nth-child(2) {
+      display: flex;
+      flex-direction: column;
+      div:nth-child(1) {
+        order: 2;
+      }
+      div:nth-child(1) {
+        order: 1;
+      }
+    }
+  }
+}
+
 .big-numbers-container {
   background-color: $background-grey;
   .wp-block-cover__inner-container .wp-block-group {

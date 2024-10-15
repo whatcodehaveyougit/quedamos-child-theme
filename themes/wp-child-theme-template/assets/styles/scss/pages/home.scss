@@ -1,5 +1,21 @@
 @import '../variables.scss';
 
+body div.home-page-container {
+  > * {
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+
+  @media screen and (min-width: 781px) {
+    > * {
+      margin-top: 64px;
+      margin-bottom: 64px;
+    }
+  }
+  div:nth-child(1) {
+    margin-top: 0px;
+  }
+}
 .why-choose-us-container {
   display: grid;
   grid-template-columns: 1fr;
@@ -94,6 +110,7 @@
     .icon-box {
       display: flex;
       align-items: center;
+      justify-content: center;
       padding: 20px;
       transition: 0.3s;
       border: 1px solid #eef0ef;

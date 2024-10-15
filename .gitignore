@@ -1,6 +1,7 @@
 /themes/wp-child-theme-template/node_modules
 /themes/wp-child-theme-template/.parcel-cache
 /themes/wp-child-theme-template/dist
+/ai1wm-backups/
 /upgrade
 /upgrade-temp-backup
 /uploads

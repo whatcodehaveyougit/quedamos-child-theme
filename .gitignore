@@ -1,3 +1,9 @@
-/node_modules
-.parcel-cache
-/dist
+/themes/wp-child-theme-template/node_modules
+/themes/wp-child-theme-template/.parcel-cache
+/themes/wp-child-theme-template/dist
+/upgrade
+/upgrade-temp-backup
+/uploads
+/uploads-webpc
+/plugins/*
+!/plugins/theme-customizations/

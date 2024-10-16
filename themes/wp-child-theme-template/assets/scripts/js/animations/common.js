@@ -1,15 +1,14 @@
-// Custom throttle function
-let lastTime = Date.now();
 
-const throttle = (fn, delay) => {
+export const throttle = (fn, delay) => {
+    // Set up the throttlerconst throttle = (fn, delay) => {
+    let time = Date.now();
     return () => {
-        const now = Date.now();
-        if (now - lastTime >= delay) {
+        if ((time + delay - Date.now()) <= 0) {
             fn();
-            lastTime = now;
+            time = Date.now();
         }
     };
-};
+}
 
 export function isInViewport(element, offset = 0) {
     const rect = element.getBoundingClientRect();
@@ -19,32 +18,14 @@ export function isInViewport(element, offset = 0) {
     );
 }
 
-export function animateOnScrollWithThrottle(elements, animationFn, delay = 300) {
-    let isChecking = false;
-    const animationState = new Map(elements.map(element => [element, false]));
-
-    function checkAndAnimate() {
-        elements.forEach((element) => {
-            if (isInViewport(element) && !animationState.get(element)) {
-                animationFn(element);
-                animationState.set(element, true);
-            }
-        });
-    }
-
-    function onScroll() {
-        if (!isChecking) {
-            isChecking = true;
-            requestAnimationFrame(() => {
-                checkAndAnimate();
-                isChecking = false;
-            });
+// Modified runOnScroll to accept an element selector as a parameter
+export function runOnScroll(selector, animationFn) {
+    const element = document.querySelector(selector);
+    if (element ) {
+        if(isInViewport(element)){
+            animationFn(element)
         }
+    } else {
+        console.log('Element not found for selector:', selector);
     }
-
-    // Initial check on page load to handle elements already in the viewport
-    checkAndAnimate();
-
-    // Throttled scroll event listener
-    window.addEventListener('scroll', throttle(onScroll, 1000));
 }

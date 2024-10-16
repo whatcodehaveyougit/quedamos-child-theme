@@ -6,8 +6,8 @@ h3 {
   margin: 10px 0;
 }
 
-img {
-  border-radius: 10px;
+.padding-2 {
+  padding: 2rem;
 }
 
 .q-info-cards-container {
@@ -158,7 +158,7 @@ img {
     background-repeat: no-repeat;
     background-position: 95% 15%;
     background-size: 80px;
-    border-radius: 10px;
+    border-radius: $BR;
 
     > * {
       width: 100%;

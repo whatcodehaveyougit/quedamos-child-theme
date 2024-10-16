@@ -7,10 +7,11 @@ header {
   }
 
   .mobile-menu-top-bar {
-    width: 100%;
+    width: 95%;
     display: flex;
     justify-content: space-between;
     height: 65px;
+    padding: 20px;
   }
 
   .wp-block-navigation__responsive-container.is-menu-open
@@ -80,7 +81,8 @@ header {
     background-color: $primary;
 
     &.has-modal-open {
-      max-width: 100%;
+      width: 100vw;
+      // padding: 20px 10px 20px 10px;
     }
 
     .wp-block-navigation__responsive-container-content {
@@ -121,13 +123,6 @@ header {
       > li.wp-block-navigation-item > a > span.wp-block-navigation-item__label {
         font-size: 32px;
       }
-    }
-  }
-
-  &:not(.has-background) {
-    .wp-block-navigation__responsive-container.is-menu-open {
-      // background-color: $primary;
-      @include qCard;
     }
   }
 

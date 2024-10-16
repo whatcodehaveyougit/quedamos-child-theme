@@ -1,4 +1,4 @@
-import {  runOnScroll, throttle } from './common.js';
+import { runOnScroll, throttle } from './common.js';
 
 function doCountAnimation(element, targetNumber, duration = 1000) {
     if (!element) {

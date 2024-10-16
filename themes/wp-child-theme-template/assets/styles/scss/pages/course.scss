@@ -1,3 +1,5 @@
+@import '../variables.scss';
+
 .course-page {
   > * > .wp-block-column,
   > * > .wp-block-group,
@@ -25,24 +27,45 @@
 
   .course-hero {
     column-gap: 50px;
+    grid-template-columns: 1fr;
+
     .wp-block-column:nth-child(2) {
       display: flex;
       align-content: center;
     }
-    .testimonial {
-      display: flex;
+    .wp-block-group:first-child {
+      @include qCard;
+    }
+    > .wp-block-group {
+      display: flex; /* Allows flexibility for content inside */
+      flex-direction: column; /* Arrange content vertically */
+      justify-content: stretch; /* Allow items to stretch to fill their grid cell */
+      height: 100%; /* Sets a base height */
       align-items: center;
-      background-color: #e0f0ff; /* Light blue color similar to the example */
-      padding: 60px;
-      border-radius: 15px; /* Rounded corners */
-      position: relative;
-      width: 100%; /* Set a max width for the container */
+      width: 100%;
+    }
+
+    .testimonial {
       margin: 0 auto; /* Center it horizontally */
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Soft shadow */
       background-image: url('https://www.test-yoursite.com/wp-content/uploads/2024/10/Vector-1.png');
       background-repeat: no-repeat;
       background-position: 95% 25%;
       background-size: 80px;
+      height: 100%;
+      border-radius: $BR;
+      display: flex;
+      align-items: center !important;
+    }
+  }
+
+  @media (min-width: 782px) {
+    .course-hero {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      grid-auto-rows: minmax(100px, auto); /* Rows can grow based on content */
+      align-items: stretch; /* Ensures children fill their respective grid cells */
+      width: 100%; /* Full width of the parent */
     }
   }
 
@@ -70,34 +93,30 @@
     }
   }
   .three-steps-container {
-    padding: 3rem 2rem;
+    @include containerPadding;
     > .wp-block-group {
       margin-top: 1rem;
       display: grid;
       grid-template-columns: 1fr;
-      @media (min-width: 768px) {
+      @media (min-width: 576px) {
         grid-template-columns: 1fr 1fr 1fr;
       }
     }
   }
   .course-key-info-container {
     > div {
-      padding: 3rem 2rem;
+      @include containerPadding();
     }
-    /* Style the list */
     ul {
       list-style: none; /* Remove default bullets */
       padding-left: 0;
       margin-left: 0;
     }
-
-    /* Style for each list item */
     ul li {
       position: relative;
       padding-left: 30px; /* Leave space for the checkmark */
       margin-bottom: 10px;
     }
-
     /* Add the checkmark before each list item */
     ul li::before {
       content: '✔'; /* Unicode for checkmark */
@@ -109,28 +128,26 @@
       line-height: 1.2rem; /* Align it with text */
     }
   }
-
-  .q-card {
-    position: relative; /* To allow positioning the image inside */
-    overflow: hidden;
-  }
-
-  /* Top-right image inside the card */
-  .q-card .corner-img {
-    position: absolute;
-    top: -30px; /* Move it slightly upwards to overlap the card */
-    right: -25px;
-    object-fit: cover; /* Ensures the image scales properly */
-    img {
-      border-radius: 50%; /* Make the image circular */
-      height: 110px;
-      width: auto;
+  .wp-block-esab-accordion {
+    .q-card {
+      position: relative;
+      overflow: hidden;
     }
-  }
-
-  .esab__body.esab__active {
-    @media (max-width: 768px) {
-      padding: 5px !important;
+    .q-card .corner-img {
+      position: absolute;
+      top: -30px; /* Move it slightly upwards to overlap the card */
+      right: -25px;
+      object-fit: cover; /* Ensures the image scales properly */
+      img {
+        border-radius: 50%; /* Make the image circular */
+        height: 110px;
+        width: auto;
+      }
+    }
+    .esab__body.esab__active {
+      @media (max-width: 768px) {
+        padding: 5px !important;
+      }
     }
   }
 }

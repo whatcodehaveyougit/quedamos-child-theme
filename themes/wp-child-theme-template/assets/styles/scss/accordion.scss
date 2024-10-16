@@ -1,5 +1,7 @@
+@import './variables.scss';
+
 .esab__container > .wp-block-esab-accordion-child {
-  border-radius: 10px;
+  border-radius: $BR;
 }
 
 .esab__body.esab__active {

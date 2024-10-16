@@ -2,6 +2,7 @@ $background-grey: #f6f7f6;
 $primary: #be2c2d;
 $hover-grey: rgba(35, 90, 108, 0.12);
 $accent-yellow: #fffb01;
+$BR: 10px;
 
 @mixin qCard() {
   box-shadow:
@@ -13,4 +14,8 @@ $accent-yellow: #fffb01;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+@mixin containerPadding() {
+  padding: 3rem 2rem;
 }

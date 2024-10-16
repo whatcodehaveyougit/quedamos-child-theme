@@ -1,0 +1,53 @@
+/* Initial state for elements before zoom-in */
+.zoom-element {
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    transform 1s ease,
+    opacity 1s ease;
+}
+
+/* Class to trigger the zoom-in effect */
+.zoom-in {
+  opacity: 1;
+  transform: scale(1); /* Zoom back to normal size */
+}
+
+/* Optional: Add some animation smoothness */
+@keyframes zoomInAnimation {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Initial state for elements before the slide-up */
+.slide-up {
+  opacity: 0;
+  transform: translateY(100px); /* Start 100px below their original position */
+  transition:
+    transform 1s ease,
+    opacity 1s ease;
+}
+
+/* Class to trigger the slide-up effect */
+.slide-up-active {
+  opacity: 1;
+  transform: translateY(0); /* Slide up to the original position */
+}
+
+/* Optional: Add some animation smoothness */
+@keyframes slideUpAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

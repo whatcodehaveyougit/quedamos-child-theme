@@ -31,7 +31,7 @@ body div.home-page-container {
     background-color: $primary;
     padding: 30px;
     color: white;
-    border-radius: 8px;
+    border-radius: $BR;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
     h3 {
@@ -72,18 +72,22 @@ body div.home-page-container {
 
     .icon-box {
       background-color: white;
-      border-radius: 8px;
+      border-radius: $BR;
       padding: 20px;
       text-align: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       i {
         font-size: 32px;
-        color: $primary;
         background: #ecf9f0;
-        padding: 15px;
+        height: 80px;
+        width: 80px;
         border-radius: 50px;
-        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       h4 {
@@ -98,6 +102,24 @@ body div.home-page-container {
 }
 
 .features {
+  .icon-boxes .icon-box:nth-child(1) {
+    color: orange;
+  }
+  .icon-boxes .icon-box:nth-child(2) {
+    color: blue;
+  }
+  .icon-boxes .icon-box:nth-child(3) {
+    color: red;
+  }
+  .icon-boxes .icon-box:nth-child(4) {
+    color: pink;
+  }
+  .icon-boxes .icon-box:nth-child(5) {
+    color: lightblue;
+  }
+  .icon-boxes .icon-box:nth-child(6) {
+    color: orange;
+  }
   .icon-boxes {
     display: grid;
     grid-template-columns: 1fr;
@@ -115,6 +137,10 @@ body div.home-page-container {
       transition: 0.3s;
       border: 1px solid #eef0ef;
       background-color: white;
+      svg {
+        height: 40px;
+        width: 40px;
+      }
 
       h3 {
         font-weight: 700;
@@ -132,7 +158,8 @@ body div.home-page-container {
         font-size: 32px;
         padding-right: 10px;
         line-height: 1;
-
+        display: flex;
+        align-content: center;
         &::before {
           color: inherit; /* inherit from nth-child */
         }

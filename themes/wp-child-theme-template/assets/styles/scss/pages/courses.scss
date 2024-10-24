@@ -30,7 +30,7 @@
 
     .course-item {
       text-decoration: none !important;
-      border-radius: 10px;
+      border-radius: $BR;
       border: 1px solid #eef0ef;
       padding: 0px !important;
       padding-bottom: 10px;
@@ -47,7 +47,7 @@
         height: auto;
         width: 100%;
         // max-width: 100%;
-        border-radius: 10px 10px 0 0;
+        border-radius: $BR $BR 0 0;
         margin: 0px;
         display: flex;
       }

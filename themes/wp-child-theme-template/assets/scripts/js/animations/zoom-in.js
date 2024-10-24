@@ -1,16 +1,13 @@
 import { animateOnScrollWithThrottle } from './common.js';
 
-console.log('jkasfdjkdsfjkldfslkj')
 function addZoomInAnimation(elementSelector) {
     const elements = document.querySelectorAll(elementSelector);
     if (elements.length === 0) {
-        console.error(`No elements found with selector '${elementSelector}'`);
         return;
     }
 
     // Function to apply the zoom-in class
     function applyZoomIn(element) {
-        console.log('sigurd')
         element.classList.add('zoom-in');
     }
 

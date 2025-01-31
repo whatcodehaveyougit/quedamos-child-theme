@@ -6,14 +6,14 @@ $accent-yellow: #fffb01;
 $BR: 10px;
 $domain-url: 'https://quedamoslanguages.com';
 
-$h1-font-size: 'var(--wp--preset--font-size--heading-one-size)';
-$h2-font-size: 'var(--wp--preset--font-size--heading-two-size)';
-$h3-font-size: 'var(--wp--preset--font-size--heading-three-size)';
-$h4-font-size: 'var(--wp--preset--font-size--heading-four-size)';
-$h5-font-size: 'var(--wp--preset--font-size--heading-five-size)';
-$h6-font-size: 'var(--wp--preset--font-size--heading-six-size)';
-$medium-text-font-size: 'var(--wp--preset--font-size--medium)';
-$small-text-font-size: 'var(--wp--preset--font-size--small)';
+$h1-font-size: var(--wp--preset--font-size--heading-one-size);
+$h2-font-size: var(--wp--preset--font-size--heading-two-size);
+$h3-font-size: var(--wp--preset--font-size--heading-three-size);
+$h4-font-size: var(--wp--preset--font-size--heading-four-size);
+$h5-font-size: var(--wp--preset--font-size--heading-five-size);
+$h6-font-size: var(--wp--preset--font-size--heading-six-size);
+$medium-font-size: var(--wp--preset--font-size--medium);
+$small-font-size: var(--wp--preset--font-size--small);
 
 @mixin qCard() {
   box-shadow:

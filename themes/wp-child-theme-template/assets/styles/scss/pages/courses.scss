@@ -2,7 +2,7 @@
 
 .courses-container {
   p.courses-title {
-    font-size: $small-text-font-size;
+    font-size: $small-font-size;
     font-weight: 500;
     padding: 0;
     line-height: 1px;
@@ -54,7 +54,7 @@
       }
       .custom-post-tags {
         .tag-item {
-          font-size: $small-text-font-size;
+          font-size: $small-font-size;
           background: $primary;
           font-family: 'Open Sans', sans-serif;
           padding: $space-2 $space-3;

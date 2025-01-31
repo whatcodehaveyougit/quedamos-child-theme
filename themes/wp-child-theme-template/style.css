@@ -1,22 +1,14 @@
 /**
  * Theme Name: Child Theme Example
  * Template:   twentytwentyfour
+ * Version: 1.1
  */
- 
+
  .wp-block-cover__inner-container {
      width: 100% !important;
  }
- 
-.contact-us-container .wp-block-image img {
-     width: 100%;
- }
- 
- .contact-us-container button {
-     background-color: #BE2C2D !important;
-     width: 150px;
-     padding: 10px 10x;
- }
- 
+
+
 .mission-statement-container img {
     max-height: 400px;
     width: auto;

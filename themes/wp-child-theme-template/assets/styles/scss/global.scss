@@ -1,0 +1,8 @@
+@import './variables.scss';
+
+.entry-content {
+  > .wp-block-group:nth-child(2) {
+    margin-top: $space-4;
+    margin-bottom: $space-4;
+  }
+}

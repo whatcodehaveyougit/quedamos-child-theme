@@ -1,8 +1,19 @@
-$background-grey: #f6f7f6;
-$primary: #be2c2d;
+$background-grey: var(--wp--preset--color--base);
+$primary: var(--wp--preset--color--custom-primary);
+$secondary: var(--wp--preset--color--custom-secondary);
 $hover-grey: rgba(35, 90, 108, 0.12);
 $accent-yellow: #fffb01;
 $BR: 10px;
+$domain-url: 'https://quedamoslanguages.com';
+
+$h1-font-size: 'var(--wp--preset--font-size--heading-one-size)';
+$h2-font-size: 'var(--wp--preset--font-size--heading-two-size)';
+$h3-font-size: 'var(--wp--preset--font-size--heading-three-size)';
+$h4-font-size: 'var(--wp--preset--font-size--heading-four-size)';
+$h5-font-size: 'var(--wp--preset--font-size--heading-five-size)';
+$h6-font-size: 'var(--wp--preset--font-size--heading-six-size)';
+$medium-text-font-size: 'var(--wp--preset--font-size--medium)';
+$small-text-font-size: 'var(--wp--preset--font-size--small)';
 
 @mixin qCard() {
   box-shadow:
@@ -19,3 +30,46 @@ $BR: 10px;
 @mixin containerPadding() {
   padding: 3rem 2rem;
 }
+
+// Style System
+
+$space-inset-default: 16px 16px 16px 16px;
+
+$space-inset-1: 4px 4px 4px 4px;
+$space-inset-2: 8px 8px 8px 8px;
+$space-inset-3: 16px 16px 16px 16px;
+$space-inset-4: 32px 32px 32px 32px;
+$space-inset-5: 64px 64px 64px 64px;
+
+$space-squish-inset-1: 8px 4px 4px 8px;
+$space-squish-inset-2: 16px 8px 8px 16px;
+$space-squish-inset-3: 32px 16px 16px 32px;
+$space-squish-inset-4: 64px 32px 32px 64px;
+$space-squish-inset-5: 128px 64px 64px 128px;
+
+$space-stretch-inset-1: 12px 8px 8px 12px;
+$space-stretch-inset-2: 4px 16px 16px 24px;
+$space-stretch-inset-3: 48px 32px 32px 48px;
+$space-stretch-inset-4: 96px 64px 64px 96px;
+$space-stretch-inset-5: 192px 128px 128px 192px;
+
+$space-stack-default: 0 0 16px 0;
+$space-stack-1: 0 0 4px 0;
+$space-stack-2: 0 0 8px 0;
+$space-stack-3: 0 0 16px 0;
+$space-stack-4: 0 0 32px 0;
+$space-stack-5: 0 0 64px 0;
+
+$vertical-space-default: 16px 0 16px 0;
+$vertical-space-1: 4px 0 4px 0;
+$vertical-space-2: 8px 0 8px 0;
+$vertical-space-3: 16px 0 16px 0;
+$vertical-space-4: 32px 0 32px 0;
+$vertical-space-5: 64px 0 64px 0;
+
+$space-default: 16px;
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 16px;
+$space-4: 32px;
+$space-5: 64px;

@@ -11,7 +11,7 @@ header {
     display: flex;
     justify-content: space-between;
     height: 65px;
-    padding: 20px;
+    padding: $space-3;
   }
 
   .wp-block-navigation__responsive-container.is-menu-open
@@ -48,12 +48,12 @@ header {
   .header-row-container {
     display: flex;
     flex-wrap: nowrap;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: $space-3;
+    padding-bottom: $space-3;
   }
 
   .wp-block-navigation__container {
-    gap: 5px;
+    gap: $space-1;
   }
 
   .wp-block-navigation__responsive-container .wp-block-navigation__responsive-container-content {
@@ -61,13 +61,13 @@ header {
   }
 
   .wp-block-navigation .wp-block-navigation-item__label {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: $space-2;
+    padding-right: $space-2;
   }
 
   .wp-block-navigation .wp-block-navigation-item__label {
     font-family: 'Open Sans';
-    font-size: 20px;
+    font-size: $medium-text-font-size;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -111,17 +111,17 @@ header {
     .wp-block-button__link {
       // width: 200px;
       // height: 60px;
-      padding: 10px 40px;
-      font-size: 26px;
+      padding: $space-2 $space-4;
+      font-size: $h4-font-size;
     }
 
     ul.wp-block-navigation__container {
       > li > a.wp-block-navigation-item__content {
-        font-size: 32px !important;
+        font-size: $h4-font-size !important;
       }
 
       > li.wp-block-navigation-item > a > span.wp-block-navigation-item__label {
-        font-size: 32px;
+        font-size: $h4-font-size;
       }
     }
   }

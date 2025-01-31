@@ -1,18 +1,22 @@
 @import './variables.scss';
 
-h1,
-h2,
-h3 {
-  margin: 10px 0;
-}
+// h1,
+// h2,
+// h3 {
+//   margin: 10px 0;
+// }
 
+.text-info-component {
+  padding-top: $space-4;
+  padding-bottom: $space-4;
+}
 .padding-2 {
   padding: 2rem;
 }
 
 .q-info-cards-container {
   .wp-block-columns {
-    margin-bottom: 32px;
+    margin-bottom: $space-4;
   }
   @media (max-width: 768px) {
     .wp-block-columns:nth-child(2) {
@@ -44,13 +48,13 @@ h3 {
   }
   .wp-block-cover__inner-container .wp-block-group .wp-block-group p:nth-child(2) {
     height: 60px;
-    margin-top: 20px;
+    margin-top: $space-3;
     color: black;
     letter-spacing: 1px;
     font-family: 'Raleway';
   }
   .wp-block-cover__inner-container .wp-block-group .wp-block-group {
-    padding-right: 20px;
+    padding-right: $space-3;
     text-align: center;
     width: 100%;
     display: flex;
@@ -70,7 +74,7 @@ h3 {
     div.wp-block-group {
       box-sizing: border-box; /* Include padding and border in width */
       padding: 0px;
-      margin: 20px 0 20px 0;
+      margin: $space-3 0 $space-3 0;
       text-align: center !important;
     }
     .wp-block-group:nth-child(even) {
@@ -79,9 +83,10 @@ h3 {
   }
 }
 
+// Bad naming !!
 .page-header-container {
   min-height: auto;
-  padding: 32px;
+  padding: $space-3;
   margin-block-start: 0px;
   // margin-bottom: 2rem;
   h2 {
@@ -97,46 +102,16 @@ h3 {
   }
 }
 
+.ti-widget {
+  @include containerPadding();
+}
+
 .q-card {
   @include qCard;
 }
 
-.contact-us-container {
-  padding: 2rem;
-  .wp-block-columns {
-    gap: 0px;
-    .wp-block-column:nth-child(1) {
-      background-color: $background-grey;
-      padding: 32px;
-      .wpforms-field {
-        padding: 10px 0;
-      }
-    }
-    .wp-block-column {
-      height: 380px;
-      img {
-        height: 444px;
-      }
-    }
-    .wp-block-column:nth-child(2) {
-      display: none;
-    }
-    button {
-      width: 100%;
-    }
-    @media (min-width: 1024px) {
-      .wp-block-column:nth-child(2) {
-        display: block;
-      }
-    }
-  }
-  .wpforms-container .wpforms-field {
-    padding: 10px;
-  }
-}
-
 .special-offer-container {
-  margin: 1rem 0;
+  margin: $space-3 0px 0px 0px;
 }
 
 .my-mission-container {
@@ -153,8 +128,8 @@ h3 {
   .wp-block-column:nth-child(2) {
     text-align: center;
     // height: 400px;
-    padding: 2rem;
-    background-image: url('https://www.test-yoursite.com/wp-content/uploads/2024/10/Vector-1.png');
+    padding: $space-4;
+    background-image: url('#{$domain-url}/wp-content/uploads/2024/10/Vector-1.png');
     background-repeat: no-repeat;
     background-position: 95% 15%;
     background-size: 80px;
@@ -165,7 +140,7 @@ h3 {
       display: block;
     }
     @media (min-width: 992px) {
-      padding: 2rem 5rem 2rem 10rem;
+      padding: $space-4 $space-5 $space-4 $space-5;
       display: flex;
       flex-direction: column;
       justify-content: center;

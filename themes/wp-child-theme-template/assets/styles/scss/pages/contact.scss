@@ -1,0 +1,77 @@
+@import '../variables.scss';
+
+.contact-us-container {
+  @media (min-width: 992px) {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    gap: $space-3;
+    > .wp-block-group {
+      padding: $space-5 $space-4;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  > .wp-block-group {
+    padding: $space-4 $space-3;
+    width: 100%;
+    height: 100%;
+    margin-bottom: $space-3;
+  }
+  div.wpforms-container-full {
+    margin: 0px;
+    div.wpforms-field {
+      padding-left: 0px;
+    }
+    input {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+  .contact-methods {
+    > .wp-block-group {
+      margin: $space-3 0 $space-3 0;
+      width: 100%;
+      a {
+        word-break: break-all;
+      }
+    }
+    width: 100%;
+  }
+
+  > .wp-block-group:nth-child(1) {
+    background-color: $background-grey;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .wp-block-group {
+      img {
+        width: $space-4;
+        min-width: $space-4;
+        margin-right: $space-3;
+      }
+    }
+    .wp-block-site-logo {
+      padding: $space-3;
+      img {
+        width: 180px;
+        height: auto;
+      }
+    }
+  }
+
+  > .wp-block-group:nth-child(2) {
+    background-color: $background-grey;
+    width: 100%;
+    height: 100%;
+    button {
+      background-color: $primary !important;
+      width: 100%;
+      padding: $space-2;
+    }
+  }
+
+  .wp-block-image img {
+    width: 100%;
+  }
+}

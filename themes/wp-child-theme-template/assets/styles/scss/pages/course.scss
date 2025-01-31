@@ -1,33 +1,35 @@
 @import '../variables.scss';
 
 .course-page {
-  > * > .wp-block-column,
-  > * > .wp-block-group,
-  > .wp-block-esab-accordion,
-  > .wp-block-group {
-    margin-top: 32px;
-    margin-bottom: 32px;
-  }
-  @media screen and (min-width: 780px) {
-    > * > .wp-block-column,
-    > * > .wp-block-group,
-    > .wp-block-esab-accordion,
-    > .wp-block-group {
-      margin-top: 32px;
-      margin-bottom: 32px;
-    }
-  }
+  // > * > .wp-block-column,
+  // > * > .wp-block-group,
+  // > .wp-block-esab-accordion,
+  // > .wp-block-group {
+  //   margin-top: 0px;
+  //   margin-bottom: 0px;
+  // }
+  // @media screen and (min-width: 780px) {
+  //   > * > .wp-block-column,
+  //   > * > .wp-block-group,
+  //   > .wp-block-esab-accordion,
+  //   > .wp-block-group {
+  //     margin-top: 0px;
+  //     margin-bottom: 0px;
+  //   }
+  // }
+  // @media (min-width: 781px) {
+  //   > * > .wp-block-column,
+  //   > * > .wp-block-group {
+  //     margin: 0.5rem 0px;
+  //   }
+  // }
 
-  @media (min-width: 781px) {
-    > * > .wp-block-column,
-    > * > .wp-block-group {
-      margin: 0.5rem 0px;
-    }
-  }
-
+  // Info and Quote Pattern
   .course-hero {
-    column-gap: 50px;
+    display: grid;
     grid-template-columns: 1fr;
+    margin-top: $space-4;
+    margin-bottom: $space-4;
 
     .wp-block-column:nth-child(2) {
       display: flex;
@@ -47,8 +49,8 @@
 
     .testimonial {
       margin: 0 auto; /* Center it horizontally */
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Soft shadow */
-      background-image: url('https://www.test-yoursite.com/wp-content/uploads/2024/10/Vector-1.png');
+      box-shadow: 0 $space-2 $space-3 rgba(0, 0, 0, 0.1); /* Soft shadow */
+      background-image: url('#{$domain-url}/wp-content/uploads/2024/10/Vector-1.png');
       background-repeat: no-repeat;
       background-position: 95% 25%;
       background-size: 80px;
@@ -62,10 +64,9 @@
   @media (min-width: 782px) {
     .course-hero {
       display: grid;
-      grid-template-columns: 60% 40%;
-      grid-auto-rows: minmax(100px, auto); /* Rows can grow based on content */
-      align-items: stretch; /* Ensures children fill their respective grid cells */
-      width: 100%; /* Full width of the parent */
+      grid-template-columns: calc(60% - 25px) calc(40% - 25px);
+      grid-column-gap: 50px;
+      align-items: stretch;
     }
   }
 
@@ -74,6 +75,12 @@
     justify-content: center;
   }
   .speak-first-lesson-container {
+    margin-top: $space-4;
+    margin-bottom: $space-4;
+    .margin-y-0 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
     text-align: center;
     > figure {
       display: flex;
@@ -89,13 +96,13 @@
       text-align: left;
       display: grid;
       grid-template-columns: 1fr 4fr 2fr;
-      grid-gap: 20px;
+      grid-gap: $space-3;
     }
   }
   .three-steps-container {
     @include containerPadding;
     > .wp-block-group {
-      margin-top: 1rem;
+      margin-top: $space-3;
       display: grid;
       grid-template-columns: 1fr;
       @media (min-width: 576px) {
@@ -114,8 +121,8 @@
     }
     ul li {
       position: relative;
-      padding-left: 30px; /* Leave space for the checkmark */
-      margin-bottom: 10px;
+      padding-left: $space-4; /* Leave space for the checkmark */
+      margin-bottom: $space-2;
     }
     /* Add the checkmark before each list item */
     ul li::before {
@@ -124,7 +131,7 @@
       font-size: 1.5rem; /* Adjust checkmark size */
       position: absolute;
       left: 0;
-      top: 5px;
+      top: $space-1;
       line-height: 1.2rem; /* Align it with text */
     }
   }
@@ -146,7 +153,7 @@
     }
     .esab__body.esab__active {
       @media (max-width: 768px) {
-        padding: 5px !important;
+        padding: $space-1 !important;
       }
     }
   }

@@ -36,28 +36,26 @@ function course_query_shortcode($atts) {
 					$featured_image = get_the_post_thumbnail($post_id, 'full', array('class' => 'card-featured-image'));
 					$course_description = get_field('course_description', $post_id);
 					?>
-					<a href="<?php echo esc_url($permalink); ?>" class="course-item">
-							<?php echo $featured_image; ?>
-							<div class="course-content">
-									<h2><?php the_title(); ?></h2>
-									<?php
+<a href="<?php echo esc_url($permalink); ?>" class="course-item">
+  <?php echo $featured_image; ?>
+  <div class="course-content">
+    <h3><?php the_title(); ?></h3>
+    <?php
 									// Get the tags associated with the post
 									$tags = get_the_terms($post_id, 'post_tag'); // Adjust taxonomy if needed
 
 									if (!empty($tags) && !is_wp_error($tags)) {
-											echo '<section class="custom-post-tags">';
-
+											echo '<div class="custom-post-tags">';
 											foreach ($tags as $tag) {
 													echo '<div class="tag-item">' . esc_html($tag->name) . '</div>';
 											}
-
-											echo '</section>';
+											echo '</div>';
 									}
 									?>
-									<p><?php echo esc_html($course_description); ?></p>
-							</div>
-					</a>
-					<?php
+    <p><?php echo esc_html($course_description); ?></p>
+  </div>
+</a>
+<?php
 			}
 			wp_reset_postdata();
 	} else {
@@ -68,5 +66,4 @@ function course_query_shortcode($atts) {
 	return ob_get_clean();
 }
 
-// Register the shortcode
 add_shortcode('course_query', 'course_query_shortcode');

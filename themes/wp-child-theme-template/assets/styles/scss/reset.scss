@@ -1,0 +1,18 @@
+*:focus {
+  outline: none;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+// :where(.wp-site-blocks) > * {
+//   margin-block-start: 0;
+//   margin-block-end: 0;
+// }
+
+*:focus {
+  outline: none;
+}

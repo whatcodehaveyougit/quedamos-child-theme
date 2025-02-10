@@ -1,0 +1,28 @@
+{
+  "name": "sigurd-child",
+  "version": "1.0.0",
+  "description": "Gulp This child theme uses gulp, to build the assets run this command in the root directory of the child theme",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -r assets/dist/",
+   "watch": "rm -rf .parcel-cache && rm -rf dist && parcel watch assets/scripts/scripts.js assets/styles/style.scss",
+    "build": "rm -rf .parcel-cache && parcel build assets/scripts/scripts.js assets/styles/style.scss"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "7.25.2",
+    "cssnano": "^7.0.5",
+    "parcel": "2.12.0",
+    "postcss": "^8.4.45",
+    "@babel/preset-env": "7.25.4",
+    "sass": "1.77.8"
+  },
+  "dependencies": {
+    "@parcel/transformer-sass": "2.12.0"
+
+  }
+}

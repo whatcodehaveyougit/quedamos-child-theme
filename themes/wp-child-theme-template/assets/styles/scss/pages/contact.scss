@@ -1,6 +1,9 @@
 @import '../variables.scss';
 
 .contact-us-container {
+  h4 {
+    font-size: $h5-font-size;
+  }
   @media (min-width: 992px) {
     display: grid;
     grid-template-columns: 45% 55%;
@@ -16,6 +19,7 @@
     width: 100%;
     height: 100%;
     margin-bottom: $space-3;
+    margin-block-start: 0px;
   }
   div.wpforms-container-full {
     margin: 0px;

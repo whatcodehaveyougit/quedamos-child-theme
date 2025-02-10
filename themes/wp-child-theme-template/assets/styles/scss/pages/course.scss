@@ -1,29 +1,6 @@
 @import '../variables.scss';
 
 .course-page {
-  // > * > .wp-block-column,
-  // > * > .wp-block-group,
-  // > .wp-block-esab-accordion,
-  // > .wp-block-group {
-  //   margin-top: 0px;
-  //   margin-bottom: 0px;
-  // }
-  // @media screen and (min-width: 780px) {
-  //   > * > .wp-block-column,
-  //   > * > .wp-block-group,
-  //   > .wp-block-esab-accordion,
-  //   > .wp-block-group {
-  //     margin-top: 0px;
-  //     margin-bottom: 0px;
-  //   }
-  // }
-  // @media (min-width: 781px) {
-  //   > * > .wp-block-column,
-  //   > * > .wp-block-group {
-  //     margin: 0.5rem 0px;
-  //   }
-  // }
-
   // Info and Quote Pattern
   .course-hero {
     display: grid;
@@ -37,6 +14,9 @@
     }
     .wp-block-group:first-child {
       @include qCard;
+    }
+    > .wp-block-group {
+      margin-block-start: 0px;
     }
     > .wp-block-group {
       display: flex; /* Allows flexibility for content inside */
@@ -89,9 +69,6 @@
     p {
       margin-top: 0px;
     }
-    .primary-button a {
-      padding: 11px;
-    }
     @media (min-width: 992px) {
       text-align: left;
       display: grid;
@@ -111,6 +88,7 @@
     }
   }
   .course-key-info-container {
+    margin-block-start: 0px;
     > div {
       @include containerPadding();
     }
@@ -137,8 +115,15 @@
   }
   .wp-block-esab-accordion {
     .q-card {
+      text-align: left;
       position: relative;
       overflow: hidden;
+      border-radius: 0px;
+      flex-direction: column;
+      justify-content: space-between;
+      display: flex;
+      border: 1px solid $hover-grey;
+      box-shadow: none;
     }
     .q-card .corner-img {
       position: absolute;
@@ -154,6 +139,9 @@
     .esab__body.esab__active {
       @media (max-width: 768px) {
         padding: $space-1 !important;
+      }
+      > .wp-block-group {
+        padding: $space-3 !important;
       }
     }
   }

@@ -1,6 +1,9 @@
 @import '../variables.scss';
 
 .about-page {
+  h2 {
+    font-size: $h3-font-size;
+  }
   img {
     border-radius: $BR;
   }

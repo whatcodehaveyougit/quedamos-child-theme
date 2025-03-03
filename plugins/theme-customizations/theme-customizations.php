@@ -8,5 +8,5 @@
  * License: GPL2
  */
 
-require_once plugin_dir_path( __FILE__ ) . '/mobile-menu.php';
-require_once plugin_dir_path( __FILE__ ) . '/courses.php';
+// require_once plugin_dir_path( __FILE__ ) . '/mobile-menu.php';
+// require_once plugin_dir_path( __FILE__ ) . '/courses.php';

@@ -1,5 +1,9 @@
 <?php
 
+require_once get_stylesheet_directory() . '/templates/mobile-menu.php';
+require_once get_stylesheet_directory() . '/templates/courses.php';
+require_once get_stylesheet_directory() . '/templates/schema.php';
+
 add_action( 'wp_enqueue_scripts', 'twentytwentyfour_child_scripts' );
 function twentytwentyfour_child_scripts() {
     // Get the file modification time for cache busting

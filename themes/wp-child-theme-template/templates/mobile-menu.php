@@ -14,15 +14,15 @@ function modify_navigation_block_output($block_content, $block) {
        // Your custom HTML
        $custom_html = '<div class="mobile-menu-top-bar">
         <div class="wp-block-site-logo">
-            <a href="http://localhost:10009/" class="custom-logo-link" rel="home" aria-current="page">
+            <a href="https://quedamoslanguages.com/" class="custom-logo-link" rel="home" aria-current="page">
                 <img
                     width="60"
                     height="20"
-                    src="http://localhost:10009/wp-content/uploads/2024/09/logo.webp"
+                    src="https://quedamoslanguages.com/wp-content/uploads/2024/09/logo.webp"
                     class="custom-logo"
                     alt="spanish lessons edinburgh logo"
                     decoding="async"
-                    srcset="http://localhost:10009/wp-content/uploads/2024/09/logo.webp 469w, http://localhost:10009/wp-content/uploads/2024/09/logo-300x102.webp 300w"
+                    srcset="https://quedamoslanguages.com/wp-content/uploads/2024/09/logo.webp 469w, https://quedamoslanguages.com/wp-content/uploads/2024/09/logo-300x102.webp 300w"
                     sizes="(max-width: 60px) 100vw, 60px">
             </a>
         </div>
@@ -32,7 +32,7 @@ function modify_navigation_block_output($block_content, $block) {
                 class="close-btn"
                 data-wp-on--click="actions.closeMenuOnClick"
                 style="display: block;">
-                <img src="http://localhost:10009/wp-content/uploads/2024/10/cross.png" />
+                <img src="https://quedamoslanguages.com/wp-content/uploads/2024/10/cross.png" />
             </button>
         </div>
 </div>

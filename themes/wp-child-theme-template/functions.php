@@ -34,6 +34,8 @@ function booking_summary_shortcode($atts) {
     $course_price = isset($_GET['qd_price']) ? floatval($_GET['qd_price']) : 0;
     $start_date = isset($_GET['qd_start_date']) ? htmlspecialchars($_GET['qd_start_date']) : '01-01-2025';
     $participants = 1;
+    $location = isset($_GET['qd_location']) ? htmlspecialchars($_GET['qd_location']) : '';
+
     // Calculate subtotal
     $subtotal = $course_price * $participants;
 

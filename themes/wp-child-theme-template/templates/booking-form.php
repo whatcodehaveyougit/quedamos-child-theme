@@ -1,14 +1,38 @@
 <?php
 // Template for booking summary card
 // Variables are provided by the shortcode function
+
+// Format the start date
+$formatted_start_date = $start_date;
+if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $start_date)) {
+    $timestamp = strtotime($start_date);
+    $day = date('j', $timestamp);
+    $day_suffix = date('S', $timestamp);
+    $month = date('F', $timestamp);
+    $year = date('Y', $timestamp);
+    $formatted_start_date = $day . $day_suffix . ' ' . $month . ' ' . $year;
+}
 ?>
 
 <div class="booking-summary-card">
   <div class="booking-details">
     <h2>Booking Details</h2>
     <div class="course-title"><span>Course:</span> <?php echo $course; ?></div>
-    <div class="start-date"><span>Starts:</span> <?php echo $start_date; ?></div>
+    <div class="start-date"><span>Starts:</span> <?php echo $formatted_start_date; ?></div>
     <div class="sessions"><span>Block of 5 Classes</span></div>
+    <div class="location">
+      <span>Location:</span>
+      <?php
+        if (strtolower($location) === 'online') {
+          echo 'Online';
+        } elseif (strtolower($location) === 'inperson') {
+          echo 'MacDonald Road Library';
+        } elseif (!empty($location)) {
+          echo htmlspecialchars($location);
+        }
+      ?>
+    </div>
+
   </div>
   <hr>
   <div class="payment-details">
@@ -28,6 +52,27 @@
 </div>
 
 <style>
+button.wpforms-submit {
+  width: 100% !important;
+  padding: 8px !important;
+  background-color: var(--wp--preset--color--custom-primary) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.5px !important;
+}
+
+.booking-form-container .wp-block-columns {
+  @media (max-width: 782px) {
+    .wp-block-column:nth-child(1) {
+      order: 2;
+    }
+
+    .wp-block-column:nth-child(2) {
+      order: 1;
+    }
+  }
+}
+
 .booking-summary-card {
   background: #fff;
   border-radius: 12px;

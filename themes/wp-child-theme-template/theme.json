@@ -123,43 +123,43 @@
 				{
 					"fluid": false,
 					"name": "Small",
-					"size": "1rem",
+					"size": "0.8rem",
 					"slug": "small"
 				},
 				{
-					"fluid": false,
+					"size": "clamp(1rem, 2.5vw, 1.1rem)",
+  				"fluid": true,
 					"name": "Body",
-					"size": "1.3rem",
 					"slug": "medium"
 				},
 				{
 					"name": "H1 Size",
 					"slug": "heading-one-size",
-					"size": "clamp(3rem, 5vw, 5rem)",
+					"size": "clamp(2.5rem, 5vw, 4rem)",
 					"fluid": true
 				},
 				{
 					"name": "H2 Size",
 					"slug": "heading-two-size",
-					"size": "clamp(2.5rem, 4vw, 4rem)",
+					"size": "clamp(2.0rem, 4vw, 4rem)",
 					"fluid": true
 				},
 				{
 					"name": "H3 Size",
 					"slug": "heading-three-size",
-					"size": "clamp(2.25rem, 3vw, 3rem)",
+					"size": "clamp(1.8rem, 3vw, 3rem)",
 					"fluid": true
 				},
 				{
 					"name": "H4 Size",
 					"slug": "heading-four-size",
-					"size": "2rem",
+					"size": "1.6rem",
 					"fluid": false
 				},
 				{
 					"name": "H5 Size",
 					"slug": "heading-five-size",
-					"size": "1.5rem",
+					"size": "1.2rem",
 					"fluid": false
 				},
 				{

@@ -25,3 +25,23 @@ function add_google_site_verification_meta() {
     echo '<meta name="google-site-verification" content="M0ai-YlNd-1QADH-_SSVnMMBmiSgPCzEz8ZjAUqgZho" />' . "\n";
 }
 add_action( 'wp_head', 'add_google_site_verification_meta' );
+
+// Shortcode for booking summary card
+
+function booking_summary_shortcode($atts) {
+    // Get parameters from URL
+    $course = isset($_GET['qd_course']) ? htmlspecialchars($_GET['qd_course']) : 'Course Name';
+    $course_price = isset($_GET['qd_price']) ? floatval($_GET['qd_price']) : 0;
+    $start_date = isset($_GET['qd_start_date']) ? htmlspecialchars($_GET['qd_start_date']) : '01-01-2025';
+    $participants = 1;
+    $location = isset($_GET['qd_location']) ? htmlspecialchars($_GET['qd_location']) : '';
+
+    // Calculate subtotal
+    $subtotal = $course_price * $participants;
+
+    // Make variables available to template
+    ob_start();
+    include get_stylesheet_directory() . '/templates/booking-form.php';
+    return ob_get_clean();
+}
+add_shortcode('booking_summary', 'booking_summary_shortcode');

@@ -41,15 +41,18 @@ Additional CSS class(es) on each **number** paragraph, not the label:
 
 Note: these figures are carried over from 2024 — check `7 YEARS EXPERIENCE` is still right before publishing.
 
-### 2. Article author bar — the author's name and photo
+### 2. Article author bar — the author's display name
 
-The single-post template now opens with an author bar reading "Written by *&lt;display name&gt;*", with the
-author's avatar beside it. Both come from the WordPress user record, which lives in the database and does
-**not** travel with the repo — on live the bar will say whatever `display_name` says today, most likely
-just "Sara", next to a grey placeholder silhouette.
+The single-post template now opens with an author bar reading "Written by *&lt;display name&gt;*". That name
+comes from the WordPress user record, which lives in the database and does **not** travel with the repo —
+on live the bar will say whatever `display_name` says today, most likely just "Sara".
 
-The role line ("Spanish Language Educator") is hardcoded in `inc/blog/article-author.php` and needs
-nothing on live.
+The name is also the **key to the author's photo**: `quedamos_author_photos()` in
+`inc/blog/article-author.php` maps `sara carrillo` to `images/sara-carrillo.jpg`, which ships with the
+theme. Until the display name matches, the bar falls back to the site icon — so this step decides whether
+live shows Sara's face or the school's mark.
+
+The role line ("Spanish Language Educator") is hardcoded in the same file and needs nothing on live.
 
 Run on live, or set it in Users → Profile:
 
@@ -57,10 +60,9 @@ Run on live, or set it in Users → Profile:
 wp user update <id> --display_name="Sara Carrillo" --first_name="Sara" --last_name="Carrillo"
 ```
 
-- [ ] Display name set to `Sara Carrillo`
-- [ ] Avatar showing — the bar uses Gravatar, so the photo has to be attached to the author's email
-      address at gravatar.com. Until then the silhouette shows on live *and* locally.
-- [ ] Load a live post and confirm the bar reads "Written by Sara Carrillo · Spanish Language Educator"
+- [ ] Display name set to `Sara Carrillo` (exactly — the photo lookup is on this string, case-insensitive)
+- [ ] Load a live post and confirm the bar reads "Written by Sara Carrillo · Spanish Language Educator",
+      with Sara's photo beside it rather than the site icon
 
 ### 3. Header template part — point it at the `quedamos/mobile-menu` block · **BLOCKING**
 

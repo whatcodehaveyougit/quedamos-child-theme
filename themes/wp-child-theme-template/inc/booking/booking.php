@@ -50,7 +50,7 @@ function quedamos_booking_location_label( $location ) {
 		case 'online':
 			return __( 'Online', 'quedamos' );
 		case 'inperson':
-			return __( 'MacDonald Road Library', 'quedamos' );
+			return __( 'McDonald Road Library', 'quedamos' );
 		default:
 			return $location;
 	}

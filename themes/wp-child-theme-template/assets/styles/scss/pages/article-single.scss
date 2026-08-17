@@ -1,0 +1,184 @@
+@import '../variables.scss';
+
+// Tier 1 — the single-article page (templates/single.html).
+// Header band (featured image + scrim) → white article card overlapping it →
+// CTA band → related posts grid.
+.single-post-page {
+  // The header falls back to the brand colour, so a post with no featured image
+  // gets a solid band rather than an empty one. The image layer sits on top.
+  .article-header-section {
+    position: relative;
+    isolation: isolate;
+    padding: $space-5 $space-3 ($space-5 + $space-4);
+    background-color: $secondary;
+    text-align: center;
+  }
+
+  .article-header__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-position: center;
+    background-size: cover;
+
+    // Scrim: the header text is white over an arbitrary photo, so the overlay
+    // is what guarantees the contrast rather than the image itself.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  .article-title {
+    max-width: 20ch;
+    margin: 0 auto;
+    color: white;
+  }
+
+  .article-byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2 $space-3;
+    margin-top: $space-3;
+    color: white;
+    font-size: $small-font-size;
+
+    &__category {
+      padding: $space-1 $space-3;
+      border-radius: $BR;
+      background-color: $accent-yellow;
+      color: $secondary;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    &__category:hover,
+    &__category:focus-visible {
+      text-decoration: underline;
+    }
+
+    &__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $space-3;
+    }
+
+    &__item {
+      display: inline-flex;
+      align-items: center;
+      gap: $space-1;
+    }
+
+    &__item .inline-svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  // The card lifts over the header band, which is what ties the two together.
+  .article-body-section {
+    margin-top: -$space-4;
+  }
+
+  .article-card {
+    @include qCardSurface();
+
+    padding: $space-4 $space-3;
+    background-color: white;
+  }
+
+  .article-prose {
+    > * + * {
+      margin-top: $space-3;
+    }
+
+    h2,
+    h3 {
+      margin-top: $space-4;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: $BR;
+    }
+  }
+
+  .article-tags {
+    margin-top: $space-4;
+    padding-top: $space-3;
+    border-top: 1px solid $hover-grey;
+    font-size: $small-font-size;
+
+    a {
+      display: inline-block;
+      margin: 0 $space-1 $space-1 0;
+      padding: $space-1 $space-2;
+      border-radius: $BR;
+      background-color: $background-grey;
+      color: $secondary;
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      background-color: $hover-grey;
+    }
+  }
+
+  .article-cta-section {
+    @include containerPadding();
+
+    margin-top: $space-5;
+    background-color: $background-grey;
+    text-align: center;
+  }
+
+  .article-cta__sub {
+    max-width: 55ch;
+    margin: $space-2 auto 0;
+  }
+
+  .article-cta__actions {
+    margin-top: $space-4;
+  }
+
+  .article-related-section {
+    @include containerPadding();
+  }
+
+  .article-related__title {
+    margin-bottom: $space-4;
+    text-align: center;
+  }
+
+  .article-related-grid {
+    display: grid;
+    gap: $space-3;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .article-header-section {
+      padding-inline: $space-4;
+    }
+
+    .article-card {
+      padding: $space-5 $space-4;
+    }
+
+    .article-related-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 992px) {
+    .article-body-section {
+      margin-top: -$space-5;
+    }
+  }
+}

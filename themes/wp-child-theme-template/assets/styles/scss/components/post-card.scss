@@ -1,0 +1,51 @@
+@import '../variables.scss';
+
+// Tier 3 — the article card used by the related-posts grid on a single post,
+// and available to any future listing that needs the same summary card.
+// A page may position this card; it must never repaint its internals.
+.post-card {
+  @include qCardSurface();
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: white;
+  transition: transform 0.2s ease;
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
+  }
+
+  &__image {
+    margin: 0;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__title {
+    margin: $space-3 $space-3 0;
+    font-size: $h5-font-size;
+
+    a {
+      color: $secondary;
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  &__excerpt {
+    margin: $space-2 $space-3 $space-3;
+    font-size: $small-font-size;
+  }
+}

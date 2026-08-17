@@ -127,7 +127,7 @@
     border-bottom: 1px solid $hover-grey;
     font-size: $medium-font-size;
 
-    // The photo ships with the theme (images/ — see quedamos_author_photos()),
+    // The photo ships with the theme (images/ — see QUEDAMOS_AUTHOR_PHOTO),
     // so it is whatever aspect ratio was committed; object-fit stops a
     // non-square file being squashed into the circle. Save the source cropped
     // square around the face — cover crops to the centre, and centre on an

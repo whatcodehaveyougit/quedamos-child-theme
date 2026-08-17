@@ -156,9 +156,9 @@ specific block named — for the homepage numbers band, `count-up` on each **num
 **A user's display name** (Users → All Users → the user). The gotcha is that it takes two saves: WordPress only
 offers display-name options built from fields it already has, so set **First name** and **Last name**, click
 **Update Profile**, then reload and pick the full name from **Display name publicly as** and update again.
-Names matter beyond the byline — `quedamos_author_photos()` in
-[inc/blog/article-author.php](themes/wp-child-theme-template/inc/blog/article-author.php) keys the author photo
-off the display name, so a near-miss falls back to the site icon.
+The display name is byline text only: the author photo comes from the `QUEDAMOS_AUTHOR_PHOTO` constant in
+[inc/blog/article-author.php](themes/wp-child-theme-template/inc/blog/article-author.php) and does not key off
+it. It used to, and a near-miss silently fell back to the site icon — don't reintroduce that coupling.
 
 ## 7. Verify on the front end
 

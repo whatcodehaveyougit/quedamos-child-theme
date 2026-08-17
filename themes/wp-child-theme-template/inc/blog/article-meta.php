@@ -212,17 +212,19 @@ function quedamos_post_card_byline( $post_id ) {
 		return '';
 	}
 
-	$author_id   = (int) get_post_field( 'post_author', $post_id );
 	$author_name = quedamos_author_name( $post_id );
 
 	if ( ! $author_name ) {
 		return '';
 	}
 
-	// 80px for a 40px slot, so the image is sharp on a 2x display. Gravatar
-	// serves its own placeholder when the author has no account, which is the
-	// grey silhouette rather than a broken image.
-	$avatar = $author_id ? get_avatar( $author_id, 80, '', $author_name, array( 'class' => 'post-card__byline-avatar' ) ) : '';
+	// The same shipped photo the article author bar uses, so one author does not
+	// appear twice on a page with two different faces. get_avatar() is not used
+	// here: it goes to gravatar.com, and with no Gravatar registered against the
+	// author's email that renders the grey silhouette placeholder.
+	//
+	// 80px for a 40px slot, so the image is sharp on a 2x display.
+	$avatar = quedamos_author_avatar( 80, 'post-card__byline-avatar' );
 
 	$meta = quedamos_article_meta_item( 'calendar.svg', esc_html( quedamos_card_date_label( $post_id ) ), 'post-card__meta-item' )
 		. quedamos_article_meta_item( 'clock.svg', esc_html( quedamos_read_time_label( $post_id ) ), 'post-card__meta-item' );

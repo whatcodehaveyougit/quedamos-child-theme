@@ -26,6 +26,32 @@ function add_google_site_verification_meta() {
 }
 add_action( 'wp_head', 'add_google_site_verification_meta' );
 
+// True only on the live domain, so analytics never fire from local or staging copies
+function quedamos_is_live_site() {
+    $host = wp_parse_url( home_url(), PHP_URL_HOST );
+
+    return in_array( $host, array( 'quedamoslanguages.com', 'www.quedamoslanguages.com' ), true );
+}
+
+// Add Google Analytics
+function add_google_gtag_to_head() {
+    if ( ! quedamos_is_live_site() ) {
+        return;
+    }
+    ?>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-84EL3ML0D2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-84EL3ML0D2');
+    </script>
+    <?php
+}
+add_action( 'wp_head', 'add_google_gtag_to_head' );
+
 // Shortcode for booking summary card
 
 function booking_summary_shortcode($atts) {

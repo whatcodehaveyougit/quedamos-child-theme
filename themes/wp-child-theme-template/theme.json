@@ -182,7 +182,7 @@
 									"fontFamily": "\"Open Sans\"",
 									"fontStyle": "normal",
 									"fontWeight": "400",
-									"src": "https://quedamoslanguages.com/wp-content/uploads/fonts/OpenSans-VariableFont_wdthwght.woff"
+									"src": "file:./assets/fonts/OpenSans-VariableFont_wdthwght.woff"
 								}
 							]
 						},
@@ -195,7 +195,7 @@
 									"fontFamily": "Poppins",
 									"fontStyle": "normal",
 									"fontWeight": "500",
-									"src": "https://quedamoslanguages.com/wp-content/uploads/fonts/Poppins-Medium.woff"
+									"src": "file:./assets/fonts/Poppins-Medium.woff"
 								}
 							]
 						},
@@ -208,7 +208,7 @@
 									"fontFamily": "Raleway",
 									"fontStyle": "normal",
 									"fontWeight": "600",
-									"src": "https://quedamoslanguages.com/wp-content/uploads/fonts/Raleway-SemiBold.woff"
+									"src": "file:./assets/fonts/Raleway-SemiBold.woff"
 								}
 							]
 						}

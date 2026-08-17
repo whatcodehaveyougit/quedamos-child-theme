@@ -19,6 +19,7 @@ including the **About and FAQs links that 404 on live's desktop nav today**. Kee
 | 1 | Take the backups | wp-admin | No — steps 3 and 4 destroy DB records |
 | 2 | Build and upload the theme | local + wp-admin | No |
 | 3 | Reset the customized templates | Site Editor | Only if no row says `Customized` |
+| 3b | Check global styles are not overriding `theme.json` | browser + Site Editor | Only if the width check already reads `1100px` |
 | 4 | Point the Header part at the site-navigation block | Site Editor | No, in the same sitting as step 2 |
 | 5 | Purge LiteSpeed | admin bar | No |
 | 6 | Content and user edits | block editor + Users | Per [DEPLOY-LIST.md](DEPLOY-LIST.md) |
@@ -96,6 +97,66 @@ Leave every other `Customized` row alone — those are real customizations of pa
 overrides of ours.
 
 Done when: no row in the table above says `Customized`, and each reads as coming from the theme.
+
+## 3b. Check global styles are not overriding `theme.json`
+
+Same trap as step 3, different record. `theme.json` is a **Site Editor export**, and WordPress merges it with
+the `wp_global_styles` row in the database — and **the database wins**. So the theme can carry a change that
+never appears on the front end.
+
+Two settings in this release live in that file, and both fail silently if overridden:
+
+| Setting | Value the theme ships |
+|---|---|
+| Content / wide width | `1100px` (was `1280px`) |
+| h2 size | `clamp(2rem, 3.5vw, 3.5rem)` (was capped at `4rem`, the same as h1) |
+
+### Check it — no console needed
+
+Open any live page, then **View source** (`⌘⌥U` in Chrome/Safari, `Ctrl+U` on Windows) and search the source
+with `⌘F` for:
+
+```
+content-size
+```
+
+You will find a line like `--wp--style--global--content-size: 1100px;`.
+
+- **`1100px`** → the theme file is winning. Nothing to do; skip the rest of this step.
+- **`1280px`** → the database is overriding `theme.json`. Fix it below.
+
+If you would rather use the console: right-click → **Inspect** → **Console**, paste this and press Enter:
+
+```js
+getComputedStyle(document.documentElement).getPropertyValue('--wp--style--global--content-size')
+```
+
+Do this on the **front end**, not inside wp-admin — the admin screens do not load the site's global styles.
+
+### Fix it — Site Editor
+
+**Appearance → Editor → Styles**, then the **⋮ (options)** menu at the top right → **Reset styles** (the label
+varies by WordPress version — "Revert to theme defaults" or "Reset to defaults"). If that item is greyed out
+or missing, there are no customizations and the override is not what is wrong.
+
+**Read this before clicking it.** Reset clears **every** global style customization for the theme, not just the
+width — colours, typography, spacing, the lot. Before resetting, open **Styles → Revisions** to see what is in
+there. If the record holds styling that is genuinely wanted, do **not** reset; use the surgical route instead.
+
+### Surgical alternative — set the values in the Site Editor instead
+
+If resetting would lose wanted styling, set the two values by hand and leave the record in place:
+
+- **Styles → Layout → Content width** → `1100`, and **Wide width** → `1100`
+- **Styles → Typography → Headings → H2** → size `clamp(2rem, 3.5vw, 3.5rem)`, or the custom value the size
+  control allows
+
+This works, but understand the cost: the database keeps overriding `theme.json` for those settings **forever**,
+so a future change to the file will not show up either, and the two sources drift. Prefer the reset when you
+can afford it, and note in [DEPLOY-LIST.md](DEPLOY-LIST.md) if you took this route.
+
+Done when: view source shows `--wp--style--global--content-size: 1100px`, and an h2 on a live post measures
+about 50px on desktop rather than about 58px.
 
 ## 4. Point the Header part at the site-navigation block
 

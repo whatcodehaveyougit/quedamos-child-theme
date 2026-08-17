@@ -202,8 +202,11 @@
       margin-top: -$space-5;
     }
 
-    // The TOC becomes a fixed-width sticky column to the left of the prose.
-    .article-body {
+    // The TOC becomes a fixed-width sticky column to the left of the prose —
+    // but ONLY when there is a TOC to put in it. A post with no headings
+    // renders no TOC at all, and a hardcoded two-column grid then dropped the
+    // prose into the 220px column and squeezed it to a ribbon.
+    .article-body:has(.article-toc) {
       gap: $space-5;
       grid-template-columns: 220px minmax(0, 1fr);
       align-items: start;

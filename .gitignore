@@ -24,3 +24,8 @@ __MACOSX/
 # Stock WP themes (reinstallable from wp-admin)
 /themes/twentytwentythree/
 /themes/twentytwentyfive/
+
+# Tasks: a personal local working area — nothing in here is shared. The folder
+# skeleton (the .gitkeep files) stays in the repo so the stages exist on a fresh
+# clone; their contents never get committed.
+/tasks/

@@ -13,6 +13,15 @@
   background-color: white;
   transition: transform 0.2s ease;
 
+  // The bottom inset belongs to the card, not to a margin on whichever child
+  // lands last. WordPress's flow layout ships
+  // `:root :where(.is-layout-flow) > :last-child { margin-block-end: 0 }` at
+  // specificity (0,2,0), so a margin set from a component class here loses and
+  // the copy sat flush against the card's bottom edge. Padding can't be
+  // cancelled that way, and it holds whether the last child is the excerpt, the
+  // title, or nothing at all.
+  padding-bottom: $space-4;
+
   &:hover,
   &:focus-within {
     transform: translateY(-4px);
@@ -41,8 +50,62 @@
     }
   }
 
+  // Avatar, author, date and read-time, rendered by
+  // [quedamos_post_card_byline] between the image and the title.
+  &__byline {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    margin: $space-4 $space-4 0;
+    font-size: $small-font-size;
+  }
+
+  &__byline-avatar {
+    // Requested at 80px so it stays sharp on a 2x display, shown at 40.
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  &__byline-text {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    // Lets a long display name ellipsise rather than push the row wider than
+    // the card.
+    min-width: 0;
+  }
+
+  &__byline-author {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__byline-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-1 $space-3;
+  }
+
+  &__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-1;
+
+    .inline-svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  // The image is flush to the card edge, so the text below carries the card's
+  // padding itself. $space-4 is the padding qCard() uses for a card interior —
+  // $space-3 left the copy sitting too close to the edges to read as inset.
   &__title {
-    margin: $space-3 $space-3 0;
+    margin: $space-4 $space-4 0;
     font-size: $h5-font-size;
 
     a {
@@ -56,8 +119,16 @@
     }
   }
 
+  // The byline already provides the gap below the image, so the title only needs
+  // to be separated from the byline. Written as a sibling rule so a card without
+  // an author (no byline rendered) keeps the full inset under its image.
+  &__byline + &__title {
+    margin-top: $space-3;
+  }
+
+  // Bottom is 0 here on purpose — the card's padding-bottom owns that edge.
   &__excerpt {
-    margin: $space-2 $space-3 $space-3;
+    margin: $space-3 $space-4 0;
     font-size: $small-font-size;
   }
 }

@@ -55,14 +55,18 @@ accents). WordPress emits every entry as `--wp--preset--color--{slug}`.
 | White | `base-2` | `#ffffff` | *none* |
 | Black Contrast | `contrast` | `#000000` | *none* |
 | Primary Dark | `contrast-2` | `#9d292a` | *none* |
-| Contrast / Three | `contrast-3` | `#757783` | *none* |
+| Contrast / Three | `contrast-3` | `#757783` | `$text-grey` |
 | Accent | `accent` | `#fffb01` — yellow | *none* (but see `$accent-yellow`) |
 | Accent / Two | `accent-2` | `#e5f0fe` — pale blue | *none* |
 
 Note `$primary` is a **red**, not a teal — worth saying because `$hover-grey` is a teal and reads like a
 brand colour when it isn't (see Known drift).
 
-**Six of the nine palette colours have no Sass token.** So a component needing white, black or the pale
+`$text-grey` is the alias for `contrast-3`, added 2026-08-17 for secondary text that has to read as
+subordinate to the copy beside it (the article author bar's role line). It is the palette's only grey for
+text — reach for it rather than a new one.
+
+**Five of the nine palette colours have no Sass token.** So a component needing white, black or the pale
 blue has nothing to reference — which is exactly the situation the never-invent rule covers: don't paste
 `#fff`, add the alias to `variables.scss` (mirroring the three that exist) and use it. Page background is
 already `base-2` via `theme.json` `styles.color.background`, so a component usually doesn't need white at

@@ -57,6 +57,20 @@ shortcode needs a template file, buffer it: `ob_start(); include …; return ob_
 stray `<br>` and `<p>` tags. Build multi-element shortcode output as a single-line string, or strip
 newlines before returning: `return preg_replace( '/\n\s*/', '', $html );`.
 
+**And keep block-level tags out of the middle of it.** Stripping the newlines is not enough on its own:
+`wpautop()` also treats a block-level tag as a paragraph boundary, so a `<div>` nested inside shortcode
+output gets a stray `</div>`-closing `</p>` injected ahead of it — invalid markup that browsers then
+recover from in their own way. Build inner wrappers as `<span>` and give them `display: flex` / `block`
+in the SCSS. An outer wrapper at the very start of the string is fine; it's the nested ones that break.
+
+```php
+// ❌ BAD — wpautop injects `</p>` before the inner div
+return '<div class="article-author">' . $name . '<div class="article-author__actions">' . $icons . '</div></div>';
+
+// ✅ GOOD — inner wrapper is a span, laid out with flex in CSS
+return '<div class="article-author">' . $name . '<span class="article-author__actions">' . $icons . '</span></div>';
+```
+
 ## 2. Function prefix — `quedamos_*`
 
 `quedamos_*` for every new top-level PHP function in the theme. No exceptions, no unprefixed helpers.

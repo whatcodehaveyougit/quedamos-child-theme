@@ -25,7 +25,11 @@
 		<!-- wp:group {"className":"article-card","layout":{"type":"constrained"}} -->
 		<div class="wp-block-group article-card">
 
-			<!-- wp:group {"className":"article-body","layout":{"type":"default"}} -->
+			<!-- wp:shortcode -->
+		[quedamos_article_author]
+		<!-- /wp:shortcode -->
+
+		<!-- wp:group {"className":"article-body","layout":{"type":"default"}} -->
 			<div class="wp-block-group article-body">
 
 				<!-- wp:shortcode -->
@@ -55,7 +59,7 @@
 	<section class="wp-block-group article-related-section">
 
 		<!-- wp:heading {"level":2,"className":"article-related__title"} -->
-		<h2 class="wp-block-heading article-related__title">More from the blog</h2>
+		<h2 class="wp-block-heading article-related__title">Latest Articles</h2>
 		<!-- /wp:heading -->
 
 		<!-- wp:query {"queryId":0,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"className":"article-related-query"} -->
@@ -68,6 +72,12 @@
 
 					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","className":"post-card__image"} /-->
 
+					<!-- The avatar, author, date and read-time row is prepended to
+					     the title block below by quedamos_prepend_post_card_byline()
+					     in inc/blog/article-meta.php. It is not a block here because
+					     the read-time is derived from the post's word count, which no
+					     core block can express, and a shortcode cannot see which post
+					     the query loop is on. -->
 					<!-- wp:post-title {"isLink":true,"level":3,"className":"post-card__title"} /-->
 
 					<!-- wp:post-excerpt {"showMoreOnNewLine":false,"excerptLength":18,"className":"post-card__excerpt"} /-->

@@ -78,12 +78,13 @@ function quedamos_estimate_read_time( $post_id = 0 ) {
 }
 
 /**
- * The read-time label for the current post, e.g. "6 min read".
+ * The read-time label for a post, e.g. "6 min read".
  *
+ * @param int $post_id Post ID. Defaults to the current post.
  * @return string The read-time label, unescaped — callers escape at output.
  */
-function quedamos_read_time_label() {
-	$minutes = quedamos_estimate_read_time();
+function quedamos_read_time_label( $post_id = 0 ) {
+	$minutes = quedamos_estimate_read_time( $post_id );
 
 	/* translators: %d: estimated reading time in minutes. */
 	return sprintf( _n( '%d min read', '%d min read', $minutes, 'quedamos' ), $minutes );
@@ -92,20 +93,148 @@ function quedamos_read_time_label() {
 /**
  * One meta item — an icon paired with its label.
  *
+ * The class is a parameter because two components render this row: the article
+ * header byline and the post card. A card must not wear `article-byline__*`
+ * classes — each component owns its own names.
+ *
  * @param string $icon  Icon filename within svgs/, e.g. 'clock.svg'.
  * @param string $label The already-escaped label text.
+ * @param string $class Wrapper class. Defaults to the article header's.
  * @return string The meta item HTML.
  */
-function quedamos_article_meta_item( $icon, $label ) {
+function quedamos_article_meta_item( $icon, $label, $class = 'article-byline__item' ) {
 	return sprintf(
-		'<span class="article-byline__item">%s<span>%s</span></span>',
+		'<span class="%s">%s<span>%s</span></span>',
+		esc_attr( $class ),
 		quedamos_inline_svg( 'svgs/' . $icon ),
 		$label
 	);
 }
 
 /**
- * [quedamos_article_byline] — the category pill, author, date and read-time row.
+ * The compact publish date for a post card, e.g. "Aug 3" or "Aug 29, 2025".
+ *
+ * A card has room for a short date, so the year is dropped for anything published
+ * this year. It is kept on everything older, because "Aug 29" on a post from last
+ * year reads as if it went up a fortnight ago — the blog spans several years, so
+ * that matters here. The article header keeps the full "3 August 2026" form; it
+ * has the width for it and a reader who has committed to the post wants the date
+ * in full.
+ *
+ * @param int $post_id Post ID. Defaults to the current post.
+ * @return string The formatted date, unescaped — callers escape at output.
+ */
+function quedamos_card_date_label( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_the_ID();
+	$year    = get_the_date( 'Y', $post_id );
+
+	$format = ( current_time( 'Y' ) === $year ) ? 'M j' : 'M j, Y';
+
+	return (string) get_the_date( $format, $post_id );
+}
+
+/**
+ * The author's display name for a post.
+ *
+ * get_the_author() reads the $authordata global, which a block template never
+ * populates — inside a query loop it returns an empty string. Resolving from the
+ * post's own author ID is the only reliable route in FSE.
+ *
+ * @param int $post_id Post ID. Defaults to the current post.
+ * @return string The display name, or '' when it cannot be resolved.
+ */
+function quedamos_author_name( $post_id = 0 ) {
+	$post_id   = $post_id ? (int) $post_id : get_the_ID();
+	$author_id = (int) get_post_field( 'post_author', $post_id );
+
+	return $author_id ? (string) get_the_author_meta( 'display_name', $author_id ) : '';
+}
+
+/**
+ * The avatar, author, date and read-time row shown on a post card.
+ *
+ * Deliberately not a shortcode. A shortcode has no access to query-loop context:
+ * inside the related-posts grid `get_the_ID()` returns the post being *viewed*,
+ * so all three cards rendered the same author and date. The block filter below
+ * passes the looped post's ID in explicitly.
+ *
+ * The read-time is derived from the post's word count by
+ * quedamos_estimate_read_time() — there is no field for an author to fill in, and
+ * nothing to go stale when a post is edited.
+ *
+ * @param int $post_id Post ID to build the byline for.
+ * @return string The rendered byline HTML, or '' when there is no author to show.
+ */
+function quedamos_post_card_byline( $post_id ) {
+	$post_id = (int) $post_id;
+
+	if ( ! $post_id ) {
+		return '';
+	}
+
+	$author_id   = (int) get_post_field( 'post_author', $post_id );
+	$author_name = quedamos_author_name( $post_id );
+
+	if ( ! $author_name ) {
+		return '';
+	}
+
+	// 80px for a 40px slot, so the image is sharp on a 2x display. Gravatar
+	// serves its own placeholder when the author has no account, which is the
+	// grey silhouette rather than a broken image.
+	$avatar = $author_id ? get_avatar( $author_id, 80, '', $author_name, array( 'class' => 'post-card__byline-avatar' ) ) : '';
+
+	$meta = quedamos_article_meta_item( 'calendar.svg', esc_html( quedamos_card_date_label( $post_id ) ), 'post-card__meta-item' )
+		. quedamos_article_meta_item( 'clock.svg', esc_html( quedamos_read_time_label( $post_id ) ), 'post-card__meta-item' );
+
+	$html = sprintf(
+		'<div class="post-card__byline">%s<span class="post-card__byline-text"><span class="post-card__byline-author">%s</span><span class="post-card__byline-meta">%s</span></span></div>',
+		$avatar,
+		esc_html( $author_name ),
+		$meta
+	);
+
+	return preg_replace( '/\s*\R\s*/', '', $html );
+}
+
+/**
+ * Prepend the card byline to a post card's title block.
+ *
+ * Hooks the card's own title block rather than the group, because a block inside
+ * a query loop receives the looped post in its context — which is the only place
+ * the correct post ID is available. `$instance->context['postId']` is what makes
+ * each of the three cards show its own author, date and read-time.
+ *
+ * @param string   $block_content The block's rendered HTML.
+ * @param array    $block         The parsed block.
+ * @param WP_Block $instance      The block instance, carrying query-loop context.
+ * @return string The filtered block HTML.
+ */
+function quedamos_prepend_post_card_byline( $block_content, $block, $instance ) {
+	if ( 'core/post-title' !== ( $block['blockName'] ?? '' ) ) {
+		return $block_content;
+	}
+
+	// Guarded rather than accessed directly: most post-title blocks carry no
+	// className at all.
+	$class = $block['attrs']['className'] ?? '';
+
+	if ( false === strpos( (string) $class, 'post-card__title' ) ) {
+		return $block_content;
+	}
+
+	$post_id = $instance->context['postId'] ?? 0;
+
+	return quedamos_post_card_byline( $post_id ) . $block_content;
+}
+add_filter( 'render_block', 'quedamos_prepend_post_card_byline', 10, 3 );
+
+/**
+ * [quedamos_article_byline] — the category pill, date and read-time row.
+ *
+ * The author is deliberately absent: they are introduced properly on the author
+ * bar at the head of the card (inc/blog/article-author.php), with an avatar and
+ * a role, so repeating the name on the hero says the same thing twice.
  *
  * Built as a single-line string on purpose: wpautop() turns newlines in
  * shortcode output into stray <br> tags, so the row carries no line breaks.
@@ -124,27 +253,12 @@ function quedamos_article_byline_shortcode() {
 		);
 	}
 
-	// get_the_author() reads the $authordata global, which a block template
-	// never populates — it returned an empty string here. Resolve the display
-	// name from the post's own author ID instead.
-	$author_id   = (int) get_post_field( 'post_author', get_the_ID() );
-	$author_name = $author_id ? get_the_author_meta( 'display_name', $author_id ) : '';
-
-	$author = '';
-	if ( $author_name ) {
-		$author = sprintf(
-			'<span class="article-byline__author">%s</span>',
-			esc_html( $author_name )
-		);
-	}
-
 	$meta = quedamos_article_meta_item( 'calendar.svg', esc_html( get_the_date( 'j F Y' ) ) )
 		. quedamos_article_meta_item( 'clock.svg', esc_html( quedamos_read_time_label() ) );
 
 	$html = sprintf(
-		'<div class="article-byline">%s%s<span class="article-byline__meta">%s</span></div>',
+		'<div class="article-byline">%s<span class="article-byline__meta">%s</span></div>',
 		$pill,
-		$author,
 		$meta
 	);
 
@@ -178,40 +292,36 @@ function quedamos_article_hero_bg_shortcode() {
 add_shortcode( 'quedamos_article_hero_bg', 'quedamos_article_hero_bg_shortcode' );
 
 /**
- * Scope the "More articles" query loop to the current post's category.
+ * Pin the "Latest Articles" query loop to the three newest posts.
  *
  * The filter fires with the *post-template* block instance (core builds the
  * query vars there), not the outer wp:query block, and the query block does not
  * pass its className down as context — so this keys on the post-template's own
  * `article-related-grid` className, which is the identifier actually present on
- * the block instance received. The related cards stay derived from the content
- * rather than hardcoded, using a core query block rather than a bespoke render.
+ * the block instance received.
  *
- * Falls back to latest-across-all-categories when the post has no category, so
- * the section is never empty.
+ * Deliberately not scoped to the post's category: the section promises the
+ * latest three articles site-wide, and a category-scoped query renders fewer
+ * than three cards whenever the category is thin. Only the post being read is
+ * excluded, so the count is three wherever there are four or more posts.
  *
  * @param array    $query Query vars the block will run.
  * @param WP_Block $block The block instance (the post-template).
  * @return array Adjusted query vars.
  */
-function quedamos_related_posts_query_vars( $query, $block ) {
+function quedamos_latest_articles_query_vars( $query, $block ) {
 	$class = $block->parsed_block['attrs']['className'] ?? '';
 
 	if ( false === strpos( (string) $class, 'article-related-grid' ) || ! is_singular( 'post' ) ) {
 		return $query;
 	}
 
-	$post_id  = get_the_ID();
-	$category = quedamos_get_primary_category( $post_id );
-
-	$query['post__not_in']        = array_merge( $query['post__not_in'] ?? array(), array( $post_id ) );
+	$query['post__not_in']        = array_merge( $query['post__not_in'] ?? array(), array( get_the_ID() ) );
 	$query['posts_per_page']      = 3;
+	$query['orderby']             = 'date';
+	$query['order']               = 'DESC';
 	$query['ignore_sticky_posts'] = true;
-
-	if ( $category ) {
-		$query['category__in'] = array( $category->term_id );
-	}
 
 	return $query;
 }
-add_filter( 'query_loop_block_query_vars', 'quedamos_related_posts_query_vars', 10, 2 );
+add_filter( 'query_loop_block_query_vars', 'quedamos_latest_articles_query_vars', 10, 2 );

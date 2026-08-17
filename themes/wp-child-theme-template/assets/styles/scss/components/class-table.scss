@@ -28,7 +28,7 @@
     height: 100%;
     overflow: hidden;
     border-radius: $BR;
-    background-color: $background-grey;
+    background-color: $white;
   }
 
   // theme.json gives headings no colour of their own, so the course name and the
@@ -63,14 +63,15 @@
     padding: $space-3;
   }
 
-  // In Person / Online. Full height so the two sit level whichever has more
+  // In Person / Online. Deliberately NOT a card: the whole table already sits on
+  // one, and a card inside a card inside a card is three paddings deep before a
+  // word is read. The columns are plain areas on the level's own surface — the
+  // red bar above them is what separates one level from the next, so they need
+  // no surface of their own. Full height so the two sit level whichever has more
   // copy in it; the vertical stack and the gaps inside come from the group
   // block's flex layout.
   &__col {
     height: 100%;
-    padding: $space-3;
-    border-radius: $BR;
-    background-color: $white;
   }
 
   &__col-title {

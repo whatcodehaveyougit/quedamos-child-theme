@@ -380,6 +380,34 @@ transients (`wp transient delete --all --network`) or bump the version.
 - [ ] `dist/` rebuilt and shipped — the `.class-table` styles are new, so a stale bundle renders the
       pattern unstyled
 
+### 9. "Course detail with video" — insert it and paste the video URL
+
+A second pattern (`patterns/course-detail-with-video.php`) pairs a course write-up with a video: editable
+copy on the left, an embed on the right. It is designed to sit under the classes table, and like it, the
+code ships but nothing appears on any page until somebody inserts it.
+
+The embed ships **empty on purpose** — inserted, it shows the editor's "Paste a link…" field, so the video
+is added by pasting a URL rather than by editing markup.
+
+On live, for each course page that needs it:
+
+1. Edit the page → **+** → **Patterns** → search "Course detail with video" → insert it below the classes
+   table.
+2. Replace the placeholder copy: the title, the two section headings, and both lists.
+3. Click the embed block and paste the video URL.
+
+**Check the URL's provider actually embeds.** YouTube and Vimeo resolve through WordPress's built-in
+oEmbed list and need nothing. **Instagram and Facebook do not** — Meta requires an app access token, so a
+reel URL pasted straight in will not render and the block falls back to a plain link. If the video is an
+Instagram reel, it needs either a supported host or a plugin that carries a token, and that is a decision
+to make before promising it on a page.
+
+- [ ] Pattern inserted on every live course page that needs it
+- [ ] Placeholder copy replaced
+- [ ] Video URL pasted and **confirmed rendering on the front end**, not just in the editor
+- [ ] Checked at 1440px and 390px — copy and video side by side on desktop, stacked on mobile
+- [ ] `dist/` rebuilt and shipped — the `.course-detail` styles are new
+
 ## Done
 
 *Nothing yet.*

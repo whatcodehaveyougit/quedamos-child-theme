@@ -47,6 +47,30 @@ it.** Rename when you're already rewriting a block of styles; leave it alone oth
 
 (Never touch third-party plugin classes like `.ti-widget` — SCSS only *targets* those.)
 
+### A bare element selector is a site-wide rule — scope it
+
+Outside `reset.scss` and `typography.scss`, **never leave a rule keyed on an element alone** (`ul`, `img`,
+`figure`, `section`). It reads as local because of the file it sits in; it isn't. Anchor it to the thing it
+is actually for.
+
+```scss
+// ❌ BAD — in mobile-navigation.scss, but hits every list on the site
+@media screen and (min-width: 781px) {
+  ul { align-items: center; }
+}
+
+// ✅ GOOD — says what it's for
+ul.wp-block-navigation__container { align-items: center; }
+```
+
+The bad version is real: it shipped in `mobile-navigation.scss` and centred every flex-or-grid `ul` above
+781px. WordPress renders a post-template grid as a `<ul>`, so the related-posts cards on a single post came
+out staggered and unequal — a bug with no visible connection to the navigation file it came from.
+
+**This is why block markup needs reading before styling.** WordPress decides the tag: query loops are
+`ul`/`li`, featured images are `figure`, columns are `div`. Check what the block actually emits (view
+source, or the template) rather than assuming.
+
 ### Always nest BEM parts under the block — never flat
 
 A component's `&__element` and `&--modifier` selectors are written as nested `&` selectors under the one

@@ -1,9 +1,15 @@
 @import '../variables.scss';
 
 // Tier 1 — the single-article page (templates/single.html).
-// Header band (featured image + scrim) → white article card overlapping it →
-// CTA band → related posts grid.
+// Grey page ground → header band (featured image + scrim) → white article card
+// overlapping it → CTA band → related posts grid.
 .single-post-page {
+  // Both this page's white surfaces — the article card and the related-post
+  // cards — sat on the base-2 white body, so their only edge was a shadow. The
+  // grey ground is what makes them read as cards. Same grey as the nav and the
+  // homepage numbers band; the page is alignfull, so it runs edge to edge.
+  background-color: $background-grey;
+
   // The header falls back to the brand colour, so a post with no featured image
   // gets a solid band rather than an empty one. The image layer sits on top.
   .article-header-section {

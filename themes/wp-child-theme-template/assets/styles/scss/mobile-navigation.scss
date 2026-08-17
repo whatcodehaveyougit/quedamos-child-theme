@@ -154,7 +154,12 @@ ul.wp-block-navigation__submenu-container {
 }
 
 @media screen and (min-width: 781px) {
-  ul {
+  // Scoped to the navigation's own list. This was a bare `ul`, which reached
+  // every list on the site above 781px — including WordPress's post-template
+  // grid, which renders as a <ul>. There `align-items: center` centred each
+  // related-post card in its row instead of letting them share a top edge, so
+  // the three cards on a single post came out staggered and unequal.
+  ul.wp-block-navigation__container {
     justify-content: space-between;
     align-items: center;
     height: 100%;

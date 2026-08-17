@@ -5,8 +5,8 @@
 // only so every word in it stays editable in Gutenberg; this file supplies the
 // surface, the level bars and the type.
 //
-// The spacing split is deliberate. The gaps *between blocks* — the header row's
-// flex gap, the gutter between the two level groups, and the one between the two
+// The spacing split is deliberate. The gaps *between blocks* — the gutter
+// between the two level groups, and the one between the two
 // format columns — are set on the blocks themselves in the pattern, as
 // theme.json spacing presets. WordPress's layout support emits its own `gap` and
 // `margin-block-start` for exactly those containers, at the same specificity a
@@ -20,32 +20,6 @@
 
   padding: $space-4;
   background-color: $white;
-
-  // The block title on the left, the assessment note on the right, wrapping to
-  // two rows once there is no room — the group block's own flex layout does
-  // that. The inset below the row is padding rather than a margin because
-  // WordPress ships `:root :where(.is-layout-flow) > :first-child
-  // { margin-block-start: 0 }` at specificity (0,2,0), which a component margin
-  // loses to. Same trap post-card.scss works around.
-  &__header {
-    padding-block-end: $space-4;
-  }
-
-  // The h2 preset is fluid to 3.5rem — a page-level size that dwarfs a card, so
-  // this takes one step down the scale. Only the size moves; the tag still
-  // decides the family and weight.
-  &__title {
-    margin: 0;
-    font-size: $h4-font-size;
-  }
-
-  // "Not sure of your level?" — subordinate to the title beside it, which is
-  // what $text-grey exists for.
-  &__note {
-    margin: 0;
-    color: $text-grey;
-    font-size: $small-font-size;
-  }
 
   // One level group: the $primary bar and the two format columns under it, read
   // as a single tile. `overflow` is what clips the square-cornered bar to this

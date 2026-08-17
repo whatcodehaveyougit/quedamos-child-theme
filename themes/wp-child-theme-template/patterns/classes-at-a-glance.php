@@ -85,18 +85,6 @@ $quedamos_class_links = array(
 
 <!-- wp:group {"className":"class-table","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group class-table">
-	<!-- wp:group {"className":"class-table__header","style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
-	<div class="wp-block-group class-table__header">
-		<!-- wp:heading {"className":"class-table__title"} -->
-		<h2 class="wp-block-heading class-table__title">Classes at a glance</h2>
-		<!-- /wp:heading -->
-
-		<!-- wp:paragraph {"className":"class-table__note"} -->
-		<p class="class-table__note">Not sure of your level? Book a free assessment.</p>
-		<!-- /wp:paragraph -->
-	</div>
-	<!-- /wp:group -->
-
 	<!-- wp:columns {"className":"class-table__levels","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|20","left":"var:preset|spacing|20"}}}} -->
 	<div class="wp-block-columns class-table__levels">
 		<!-- wp:column -->

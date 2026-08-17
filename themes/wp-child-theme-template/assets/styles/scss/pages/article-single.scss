@@ -127,10 +127,17 @@
     border-bottom: 1px solid $hover-grey;
     font-size: $medium-font-size;
 
+    // The photo ships with the theme (images/ — see quedamos_author_photos()),
+    // so it is whatever aspect ratio was committed; object-fit stops a
+    // non-square file being squashed into the circle. Save the source cropped
+    // square around the face — cover crops to the centre, and centre on an
+    // uncropped portrait is the subject's midriff.
     &__avatar {
       width: 48px;
       height: 48px;
       border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
     }
 
     // Stacked on mobile — name over role — so the pair keeps a narrow

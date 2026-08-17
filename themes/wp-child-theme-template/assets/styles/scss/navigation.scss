@@ -16,6 +16,55 @@ header {
     white-space: nowrap;
     transition: 0.3s;
   }
+
+  // ── Moved here from mobile-navigation.scss ────────────────────────────────
+  // These all style the DESKTOP navigation, which renders core/navigation with
+  // overlayMenu: never — so it still emits the responsive-container wrapper even
+  // though it never opens as an overlay. They sat in mobile-navigation.scss
+  // because that file used to own the whole header; it now owns only the
+  // theme's own mobile-menu block, so they belong with the rest of the header
+  // chrome. Carried over verbatim: desktop styling is out of scope, and the
+  // hardcoded font values here are pre-existing drift, not new.
+  .header-row-container {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-top: $space-3;
+    padding-bottom: $space-3;
+  }
+
+  .wp-block-navigation__container {
+    gap: $space-1;
+  }
+
+  .wp-block-navigation__responsive-container .wp-block-navigation__responsive-container-content {
+    flex-wrap: nowrap;
+  }
+
+  .wp-block-navigation .wp-block-navigation-item__label {
+    padding-left: $space-2;
+    padding-right: $space-2;
+    font-family: 'Open Sans';
+    font-size: $medium-font-size;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+}
+
+@media screen and (min-width: 781px) {
+  // Moved here from mobile-navigation.scss with its comment intact — it styles
+  // the desktop nav's list, not the mobile menu.
+  //
+  // Scoped to the navigation's own list. This was a bare `ul`, which reached
+  // every list on the site above 781px — including WordPress's post-template
+  // grid, which renders as a <ul>. There `align-items: center` centred each
+  // related-post card in its row instead of letting them share a top edge, so
+  // the three cards on a single post came out staggered and unequal.
+  ul.wp-block-navigation__container {
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+  }
 }
 
 footer {

@@ -24,6 +24,68 @@ defined( 'ABSPATH' ) || exit;
 const QUEDAMOS_AUTHOR_ROLE = 'Spanish Language Educator';
 
 /**
+ * Author photos that ship with the theme, keyed by display name.
+ *
+ * Replaces Gravatar, which needed a photo attached to the author's email address
+ * at gravatar.com — a setup step outside both the repo and the database, and one
+ * nobody would think to repeat. These files are committed, so the photo is on
+ * live the moment the code is.
+ *
+ * Keyed by the lowercased display_name rather than a user ID or login, because
+ * the display name is the very string rendered beside the photo ("Written by
+ * Sara Carrillo") — the two therefore cannot drift apart. IDs and logins differ
+ * between installs (the author is `admin`, ID 1, locally); the display name is
+ * set on both by DEPLOY-LIST.md step 2.
+ *
+ * Paths are relative to the theme root, alongside svgs/.
+ *
+ * @return array<string, string> Lowercased display name => theme-relative image path.
+ */
+function quedamos_author_photos() {
+	return array(
+		'sara carrillo' => 'images/sara-carrillo.jpg',
+	);
+}
+
+/**
+ * The avatar image for the author bar.
+ *
+ * Three tiers, in order: the photo this theme ships for a known author, then the
+ * site icon — square already, and the school's own mark, so an unknown author
+ * gets branding rather than a stranger's face — then nothing at all. Never the
+ * Gravatar silhouette, which reads as a broken image rather than a neutral one.
+ *
+ * alt is empty in both cases: the author's name sits immediately beside the
+ * image, so a text alternative here only makes a screen reader say it twice.
+ *
+ * @param string $author_name The post author's display name.
+ * @return string The rendered <img>, or '' when there is nothing to show.
+ */
+function quedamos_author_avatar( $author_name ) {
+	$photos = quedamos_author_photos();
+	$key    = strtolower( trim( $author_name ) );
+	$photo  = isset( $photos[ $key ] ) ? $photos[ $key ] : '';
+
+	// The map naming a file is not proof the file is there — a missing photo
+	// falls through to the site icon rather than rendering a broken image.
+	if ( $photo && file_exists( get_stylesheet_directory() . '/' . $photo ) ) {
+		$src = get_stylesheet_directory_uri() . '/' . $photo;
+	} else {
+		// 96px for a 48px slot, so the image is sharp on a 2x display.
+		$src = get_site_icon_url( 96 );
+	}
+
+	if ( ! $src ) {
+		return '';
+	}
+
+	return sprintf(
+		'<img class="article-author__avatar" src="%s" alt="" width="96" height="96" decoding="async" />',
+		esc_url( $src )
+	);
+}
+
+/**
  * The school's social profiles, as icon links.
  *
  * Instagram is the only one the site has — the footer links the same profile.
@@ -129,9 +191,9 @@ function quedamos_article_author_actions( $url ) {
 /**
  * [quedamos_article_author] — the avatar, "Written by", role and social row.
  *
- * The avatar comes from get_avatar(), so it follows the author's Gravatar and
- * needs no field of its own. Returns nothing at all when the author cannot be
- * resolved, rather than an empty bar with a placeholder silhouette in it.
+ * The avatar comes from quedamos_author_avatar(), which ships the photo with the
+ * theme. Returns nothing at all when the author cannot be resolved, rather than
+ * an empty bar with a placeholder silhouette in it.
  *
  * Built as a single-line string: wpautop() turns newlines in shortcode output
  * into stray <br> tags.
@@ -146,10 +208,7 @@ function quedamos_article_author_shortcode() {
 		return '';
 	}
 
-	$author_id = (int) get_post_field( 'post_author', $post_id );
-
-	// 96px for a 48px slot, so the image is sharp on a 2x display.
-	$avatar = get_avatar( $author_id, 96, '', $author_name, array( 'class' => 'article-author__avatar' ) );
+	$avatar = quedamos_author_avatar( $author_name );
 
 	$written_by = sprintf(
 		/* translators: %s: the post author's name, already marked up. */

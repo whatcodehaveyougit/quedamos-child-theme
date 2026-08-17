@@ -1,17 +1,22 @@
 @import './variables.scss';
 
 header {
-  .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-    margin-left: 0px !important;
-    margin-right: 0px !important;
-  }
-
   .mobile-menu-top-bar {
     width: 95%;
     display: flex;
     justify-content: space-between;
     height: 65px;
     padding: $space-3;
+
+    // The bar renders the site logo at the 60px the old hardcoded <img> used.
+    // get_custom_logo() emits the full-size file instead, and the header's
+    // `min-width: 180px` then blew it up until it overlapped the first menu
+    // item — so that floor is lifted here and the intended width restored.
+    .wp-block-site-logo img {
+      min-width: 0;
+      width: 60px;
+      height: auto;
+    }
   }
 
   .wp-block-navigation__responsive-container.is-menu-open

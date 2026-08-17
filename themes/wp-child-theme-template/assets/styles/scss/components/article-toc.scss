@@ -93,6 +93,13 @@
     padding: 0;
     border: none;
 
+    // A long contents list can be taller than the viewport, which would strand
+    // its last entries off-screen with nowhere to scroll. Cap it to the visible
+    // height and let the list itself scroll. Scrolling *this* element is safe:
+    // sticky is broken by scrolling ancestors, not by the sticky box itself.
+    max-height: calc(100vh - #{$space-5});
+    overflow-y: auto;
+
     // Always open on desktop, so the summary is a plain label rather than a
     // control: the marker goes, and clicking can no longer collapse it.
     &__heading {

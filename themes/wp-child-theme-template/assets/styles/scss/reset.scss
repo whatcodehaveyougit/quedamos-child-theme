@@ -5,7 +5,13 @@
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+
+  // Prevents horizontal scrolling. `clip` rather than `hidden` on purpose:
+  // `hidden` forces the other axis to compute to `auto`, which makes this a
+  // scroll container and silently breaks `position: sticky` for every
+  // descendant on the page (it was why the article TOC would not stick).
+  // `clip` clips exactly the same way without creating that scroll container.
+  overflow-x: clip;
 }
 
 // :where(.wp-site-blocks) > * {

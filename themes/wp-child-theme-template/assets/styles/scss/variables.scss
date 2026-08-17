@@ -15,6 +15,20 @@ $h6-font-size: var(--wp--preset--font-size--heading-six-size);
 $medium-font-size: var(--wp--preset--font-size--medium);
 $small-font-size: var(--wp--preset--font-size--small);
 
+// The site's content column — the width the page body already lines up to.
+// Reads WordPress's own custom property (fed by theme.json's contentSize) so
+// there is one number, not a copy of 1280px that drifts the day theme.json
+// changes.
+$content-width: var(--wp--style--global--content-size);
+
+// Line an element's contents up with the page body. For a full-bleed band
+// (header, hero, CTA) put this on the INNER element: the background stays edge
+// to edge, the content sits in the same column as everything else.
+@mixin contentWidth() {
+  max-width: $content-width;
+  margin-inline: auto;
+}
+
 // The shared card surface — shadow and radius only, no padding or layout.
 // Extracted from qCard() so a card that manages its own padding (one with a
 // full-bleed image, say) can wear the same surface without fighting qCard's

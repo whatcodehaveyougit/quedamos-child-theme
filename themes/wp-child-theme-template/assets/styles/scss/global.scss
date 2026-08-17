@@ -8,6 +8,41 @@
   }
 }
 
+// ── Full-bleed bands line their contents up with the page body ──────────────
+//
+// The body content stops at the theme's content width and centres, but the
+// header and the cover bands were running the full viewport: at 1920px the logo
+// sat at x=24 and the nav ended at x=1896, while the article beneath them
+// started at x=320. The bands stay edge to edge — only what's inside them moves
+// into the shared column.
+//
+// The header does this in CSS rather than by editing the template part, because
+// that part lives in the database and would have to be fixed again by hand on
+// every environment. Its group is set to contentSize:100%, which is what let it
+// span the viewport in the first place.
+// The doubled class is deliberate. WordPress generates
+// `.wp-container-… > .alignwide { max-width: 100% }` from the block's own
+// contentSize:100%, which is two classes; a single-class selector here loses to
+// it and nothing moves. Matching the wrapper on both its classes takes this to
+// three, so it wins outright rather than depending on stylesheet order.
+.navigation-row-container.wp-block-group > .wp-block-group {
+  @include contentWidth();
+}
+
+// Covers are the site's full-bleed band: the home hero, the MyMission CTA, the
+// page title header. Their inner container carries the content.
+.wp-block-cover__inner-container {
+  @include contentWidth();
+}
+
+// WordPress's block-gap puts a margin between the top-level children of a
+// template, which left a 16px white strip between the header and the content
+// beneath it. Content sits flush under the header; this is the whole site's
+// rule rather than something each template sets for itself.
+.wp-site-blocks > header + * {
+  margin-block-start: 0;
+}
+
 .entry-content {
   > .wp-block-group:nth-child(2) {
     margin-top: $space-4;

@@ -21,6 +21,14 @@
     background-position: center;
     background-size: cover;
 
+    // The band is a constrained group, so WordPress caps its children at the
+    // content width and centres them. That applies to this layer too even
+    // though it is absolutely positioned, which left the image 1280px wide in a
+    // 1920px band with the fallback colour showing down both sides. The image
+    // is the band's background, not its content, so it opts out.
+    max-width: none;
+    margin-inline: 0;
+
     // Scrim: the header text is white over an arbitrary photo, so the overlay
     // is what guarantees the contrast rather than the image itself.
     &::after {

@@ -325,6 +325,14 @@ On live, for each course page:
 **The price is written twice** — in the list text and in the `qd_price` parameter — so changing one and not
 the other quotes a visitor one figure on the course page and charges another on the booking page. Check both.
 
+**If the pattern is missing from the inserter after deploying, the theme's pattern cache is stale.**
+WordPress scans `patterns/` once and caches the result in a site transient keyed by the theme version, so a
+new pattern file added without a version bump stays invisible however many times the page is reloaded. This
+bit on local: the pattern registered only after the cached scan was cleared. Bumping the theme version on
+the merge (`style.css` + `package.json`, as every merge to `main` does) busts it by itself — so this is only
+a manual step if a deploy ever ships the pattern without a version change, in which case clear the site
+transients (`wp transient delete --all --network`) or bump the version.
+
 - [ ] Pattern inserted on every live course page that needs it
 - [ ] All placeholder days, times, venues, prices and availability notes replaced
 - [ ] Each Book Now link's `qd_price` matches the price printed above it

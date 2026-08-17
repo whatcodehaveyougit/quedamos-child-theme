@@ -20,6 +20,32 @@ body div.home-page-container {
   div:nth-child(1) {
     margin-top: 0px;
   }
+
+  // The hero band, made shallower.
+  //
+  // !important, which this theme otherwise avoids, because the value being
+  // beaten is an INLINE style: the cover block carries `padding-top:5vw;
+  // padding-bottom:5vw` written into the page's markup by the block editor, and
+  // an inline declaration outranks every selector a stylesheet can write. There
+  // is no specificity that wins here — only the cascade's escape hatch does.
+  //
+  // The cost is real and worth stating: the hero's height is now decided here
+  // and not in Gutenberg. Editing the cover's padding on the page will appear to
+  // do nothing until this rule is changed or removed. The alternative was
+  // editing the page content itself, which does stay editable but lives in the
+  // database, so it would not travel with the repo and would need repeating on
+  // live by hand.
+  //
+  // Still vw, not a px token: 5vw was proportional to the viewport, and swapping
+  // it for a fixed step would freeze the band's depth on a phone and a 27" alike.
+  // 3vw keeps the hero's proportions and takes roughly 58px off it at 1440.
+  //
+  // The two 48px spacer blocks inside the cover are untouched — they are content
+  // and remain the editor's to change.
+  > .wp-block-cover:first-child {
+    padding-top: 3vw !important;
+    padding-bottom: 3vw !important;
+  }
 }
 
 .why-choose-us-container {

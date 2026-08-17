@@ -99,9 +99,21 @@
     font-size: $small-font-size;
   }
 
-  // `class-table__cta` carries no rules on purpose. `width: 100` on the button
-  // block is what makes it fill its column, and the $primary fill, the radius
-  // and the $secondary hover all come from theme.json's core/button styles. The
-  // hook is on the buttons wrapper in the pattern for the day that stops being
-  // true.
+  // The button sits at the foot of its column whatever the copy above it does.
+  // Without this the two buttons in a level drift apart the moment one column's
+  // venue wraps to a second line and the other's does not — which is every
+  // narrow viewport, since the columns stay side by side all the way down.
+  //
+  // Written against the column as well as the button so it carries two classes.
+  // Core ships `:root :where(.is-layout-flex) > * { margin: 0 }` for every flex
+  // container, which ties with a plain `.class-table__cta` at (0,1,0) and wins
+  // on enqueue order — the auto margin computed to 0 until this selector went to
+  // (0,2,0). Specificity, not `!important`.
+  //
+  // Nothing else here: `width: 100` on the button block is what makes it fill
+  // the column, and the $primary fill, the radius and the $secondary hover all
+  // come from theme.json's core/button styles.
+  &__col &__cta {
+    margin-block-start: auto;
+  }
 }

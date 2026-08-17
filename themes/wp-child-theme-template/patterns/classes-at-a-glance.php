@@ -103,8 +103,8 @@ $quedamos_class_links = array(
 				</div>
 				<!-- /wp:group -->
 
-				<!-- wp:columns {"className":"class-table__formats","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|10","left":"var:preset|spacing|10"}}}} -->
-				<div class="wp-block-columns class-table__formats">
+				<!-- wp:columns {"isStackedOnMobile":false,"className":"class-table__formats","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|10","left":"var:preset|spacing|10"}}}} -->
+				<div class="wp-block-columns is-not-stacked-on-mobile class-table__formats">
 					<!-- wp:column -->
 					<div class="wp-block-column">
 						<!-- wp:group {"className":"class-table__col","style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"stretch"}} -->
@@ -207,8 +207,8 @@ $quedamos_class_links = array(
 				</div>
 				<!-- /wp:group -->
 
-				<!-- wp:columns {"className":"class-table__formats","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|10","left":"var:preset|spacing|10"}}}} -->
-				<div class="wp-block-columns class-table__formats">
+				<!-- wp:columns {"isStackedOnMobile":false,"className":"class-table__formats","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|10","left":"var:preset|spacing|10"}}}} -->
+				<div class="wp-block-columns is-not-stacked-on-mobile class-table__formats">
 					<!-- wp:column -->
 					<div class="wp-block-column">
 						<!-- wp:group {"className":"class-table__col","style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"stretch"}} -->

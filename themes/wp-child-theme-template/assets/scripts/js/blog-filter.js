@@ -20,6 +20,9 @@ const PILL_SELECTOR = '.category-filter__pill';
 const PAGINATION_SELECTOR = '.blog-pagination a[href]';
 const CURRENT_PILL_SELECTOR = '.category-filter__pill--current';
 
+// Incremented per request so a response that has been overtaken can be dropped.
+let latestRequest = 0;
+
 /**
  * Whether a click should be left to the browser.
  *
@@ -62,6 +65,11 @@ function swapTo(url, moveFocus) {
     return Promise.resolve(false);
   }
 
+  // Two pills tapped in quick succession leave two requests in flight, and they
+  // can come back in either order. Only the newest one is allowed to land.
+  latestRequest += 1;
+  const thisRequest = latestRequest;
+
   listing.setAttribute('aria-busy', 'true');
 
   return fetch(url, { credentials: 'same-origin' })
@@ -73,6 +81,10 @@ function swapTo(url, moveFocus) {
       return response.text();
     })
     .then(function(html) {
+      if (thisRequest !== latestRequest) {
+        return false;
+      }
+
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const nextFilter = doc.querySelector(FILTER_SELECTOR);
       const nextListing = doc.querySelector(LISTING_SELECTOR);
@@ -103,6 +115,10 @@ function swapTo(url, moveFocus) {
       return true;
     })
     .catch(function() {
+      if (thisRequest !== latestRequest) {
+        return false;
+      }
+
       listing.removeAttribute('aria-busy');
       window.location.assign(url);
 

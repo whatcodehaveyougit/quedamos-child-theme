@@ -78,15 +78,14 @@
     }
   }
 
-  // The click-to-close surface. The comps dim the page behind the card, and this
-  // ships without that dim — a dark translucent layer has no token, and the
-  // nearest candidate, $hover-grey, is a teal at 0.12 and is not one. Rather than
-  // paste a literal, the panel's own qCardSurface() shadow does the separating and
-  // the gap is raised instead. Adding a scrim token later turns the dim on from
-  // this one rule.
+  // The click-to-close surface, and the dim that puts the page behind the panel
+  // rather than beside it. $scrim is a neutral black at half opacity rather than a
+  // palette colour, because a tinted dim would fight the brand red — see
+  // variables.scss.
   &__scrim {
     position: absolute;
     inset: 0;
+    background-color: $scrim;
   }
 
   // An inset card rather than a full-bleed overlay — margins on all four sides,
@@ -118,16 +117,19 @@
     border-bottom: 1px solid $hover-grey;
   }
 
-  // navigation.scss floors the header's site-logo image at a min-width of 180px,
-  // which blew the panel's logo up until it overlapped the first row. The floor is
-  // lifted here and the width set back to the size the old injected top bar used,
-  // for which $space-5 is the nearest token.
-  &__logo {
-    .wp-block-site-logo img {
-      min-width: 0;
-      width: $space-5;
-      height: auto;
-    }
+  // The panel's logo comes from get_custom_logo(), which returns a bare
+  // <a class="custom-logo-link"><img class="custom-logo"> — it has NO
+  // .wp-block-site-logo wrapper, because that class belongs to the site-logo
+  // *block*, not to the template tag. So the img is addressed directly. Targeting
+  // .wp-block-site-logo img here matched nothing, which left the logo at its
+  // intrinsic file size, several hundred pixels wide and overlapping the rows.
+  //
+  // navigation.scss's min-width: 180px floor is keyed on .wp-block-site-logo img
+  // too, so it never reaches this image and there is nothing to override.
+  &__logo img {
+    display: block;
+    width: $space-5;
+    height: auto;
   }
 
   // Roomy rows, one per line, separated by space rather than by a border on each
@@ -167,10 +169,9 @@
   // works. 0.2s ease is the theme's existing transform duration, from
   // components/post-card.scss and components/article-toc.scss.
   //
-  // One thing from the comps is deliberately not shipped, the staggered rows.
-  // Stepping a transition-delay per row needs a step duration, and the theme has
-  // only 0.2s and 0.3s — there is no token to step by, and inventing one is the
-  // thing the never-invent rule exists to stop. Raised rather than resolved.
+  // Every hidden starting state lives inside this query, never outside it. A row
+  // parked at opacity 0 outside the gate would stay invisible for a reduced-motion
+  // reader, which turns an enhancement into a broken menu.
   @media (prefers-reduced-motion: no-preference) {
     &__overlay {
       transition:
@@ -186,6 +187,30 @@
 
     &__overlay.is-open &__panel {
       transform: none;
+    }
+
+    // The rows walk in behind the panel, one $stagger-step apart, so the list
+    // reads as one movement settling rather than as six separate arrivals. The
+    // delay is stepped by nth-child because CSS has no index to multiply, and the
+    // loop runs to 8 rather than to the menu's current 6 so adding a row does not
+    // silently drop it out of the animation.
+    &__item {
+      opacity: 0;
+      transform: translateY(-$space-2);
+    }
+
+    &__overlay.is-open &__item {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+      @for $row from 1 through 8 {
+        &:nth-child(#{$row}) {
+          transition-delay: $stagger-step * $row;
+        }
+      }
     }
 
     // The hamburger's open state. The panel covers the header, so the icon turns

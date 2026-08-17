@@ -7,6 +7,18 @@ $text-grey: var(--wp--preset--color--contrast-3);
 $hover-grey: rgba(35, 90, 108, 0.12);
 $accent-yellow: #fffb01;
 $BR: 10px;
+
+// The dim behind a modal layer, so the page reads as being *behind* the thing on
+// top of it rather than beside it. Not a palette colour: it is a neutral black at
+// half opacity, which works over any of the site's surfaces, where a tinted scrim
+// would fight the brand red. First used by the mobile menu panel.
+$scrim: rgba(0, 0, 0, 0.5);
+
+// One step of a staggered entrance — multiply by the item's index to walk a list
+// in behind its container. Six rows at this step land in ~0.24s, which reads as
+// one movement rather than as six. Always inside a
+// `prefers-reduced-motion: no-preference` query.
+$stagger-step: 0.04s;
 $domain-url: 'https://quedamoslanguages.com';
 
 $h1-font-size: var(--wp--preset--font-size--heading-one-size);

@@ -99,6 +99,21 @@ function quedamos_mobile_menu_items( $ref ) {
 
 		$label = $block['attrs']['label'] ?? '';
 		$url   = $block['attrs']['url'] ?? '';
+		$id    = isset( $block['attrs']['id'] ) ? (int) $block['attrs']['id'] : 0;
+
+		// The url attribute is a snapshot taken when the row was added, so it goes
+		// stale the moment a page's slug changes — and two of this menu's rows are
+		// already stale, pointing at /about/ and /faqs/ which both 404 now that
+		// those pages have longer SEO slugs. When the row carries a post ID, that
+		// ID is the durable fact and the permalink is derived from it instead.
+		// A custom link has no ID, so it keeps its stored url.
+		if ( $id > 0 ) {
+			$permalink = get_permalink( $id );
+
+			if ( $permalink ) {
+				$url = $permalink;
+			}
+		}
 
 		if ( '' === $label || '' === $url ) {
 			continue;
@@ -107,7 +122,7 @@ function quedamos_mobile_menu_items( $ref ) {
 		$items[] = array(
 			'label' => $label,
 			'url'   => $url,
-			'id'    => isset( $block['attrs']['id'] ) ? (int) $block['attrs']['id'] : 0,
+			'id'    => $id,
 		);
 	}
 
@@ -130,4 +145,37 @@ function quedamos_mobile_menu_current_id() {
 	}
 
 	return (int) get_queried_object_id();
+}
+
+/**
+ * Whether a menu row is the page currently being viewed.
+ *
+ * Post ID is the primary test, for the trailing-slash and scheme reasons above.
+ * But a menu can hold a custom link, which carries no id at all — and this
+ * site's Home row is exactly that: label "Home", url "/", kind "custom". Left on
+ * the id test alone it could never match, so the homepage was the one page in six
+ * that never marked itself.
+ *
+ * So a row with no id falls back to its URL: the site root means the front page,
+ * and any other path is handed to url_to_postid() to resolve against the routing
+ * WordPress already does, rather than compared as a string here.
+ *
+ * @param array $item One entry from quedamos_mobile_menu_items().
+ * @param int   $current The current post ID, from quedamos_mobile_menu_current_id().
+ * @return bool True when this row is the current page.
+ */
+function quedamos_mobile_menu_is_current( $item, $current ) {
+	if ( $item['id'] > 0 ) {
+		return $item['id'] === $current;
+	}
+
+	$path = trim( (string) wp_parse_url( $item['url'], PHP_URL_PATH ), '/' );
+
+	if ( '' === $path ) {
+		return is_front_page();
+	}
+
+	$resolved = url_to_postid( $item['url'] );
+
+	return $resolved > 0 && $resolved === $current;
 }

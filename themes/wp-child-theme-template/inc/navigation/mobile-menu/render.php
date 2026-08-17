@@ -70,7 +70,7 @@ $quedamos_menu_id      = wp_unique_id( 'quedamos-mobile-menu-' );
 
 			<ul class="mobile-menu__list">
 				<?php foreach ( $quedamos_menu_items as $quedamos_menu_item ) : ?>
-					<?php $quedamos_menu_is_current = $quedamos_menu_item['id'] > 0 && $quedamos_menu_item['id'] === $quedamos_menu_current; ?>
+					<?php $quedamos_menu_is_current = quedamos_mobile_menu_is_current( $quedamos_menu_item, $quedamos_menu_current ); ?>
 					<li class="mobile-menu__item">
 						<a
 							class="mobile-menu__link<?php echo $quedamos_menu_is_current ? ' mobile-menu__link--current' : ''; ?>"

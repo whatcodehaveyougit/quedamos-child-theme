@@ -11,7 +11,24 @@ command below, in the order it must run — see [DEPLOY-MANUAL.md](DEPLOY-MANUAL
 ## Every deploy
 
 - [ ] Build assets: `cd themes/wp-child-theme-template && npm run build`, then get `dist/` onto live.
+      **`dist/` now holds images as well as CSS and JS** — Parcel copies the page backdrops in beside the
+      bundle under a content hash. Ship the whole folder; a `dist/` with only `styles/` and `scripts/`
+      loses every backdrop.
 - [ ] Load the live homepage and one course page in a browser.
+- [ ] **Check the page backdrops actually loaded** on the blog listing and one article. The stylesheet
+      points at them with a RELATIVE url (`url(../backdrop-bubbles-light.<hash>.webp)`), which resolves
+      against wherever the stylesheet is served from — and LiteSpeed's CSS Combine, Minify and UCSS are
+      all on, which serve a combined file out of `/wp-content/litespeed/css/`. LiteSpeed rewrites
+      relative urls to absolute when it combines, so this should hold, but it cannot be tested locally:
+      Local runs no LiteSpeed server, so the optimiser never executes here.
+
+      Thirty-second check: open the blog listing, DevTools → Network → Img, and confirm no
+      `backdrop-bubbles-*` request 404s. Or in the console:
+      `getComputedStyle(document.querySelector('.blog-page')).backgroundImage` — the url it prints must
+      be fetchable.
+
+      If they do 404, the fix is a plugin setting, not a code change: exclude the theme stylesheet from
+      LiteSpeed's CSS Combine (LiteSpeed Cache → Page Optimization → CSS Settings → CSS Excludes).
 
 ## Pending
 

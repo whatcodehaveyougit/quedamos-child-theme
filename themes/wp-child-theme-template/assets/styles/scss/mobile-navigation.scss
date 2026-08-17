@@ -4,28 +4,28 @@
 // block (inc/navigation/mobile-menu/render.php). Kept beside navigation.scss
 // because both are sitewide header chrome.
 //
-// None of core's .wp-block-navigation__* overlay classes appear here any more:
-// the block owns its markup, so there is nothing to fight, and the !important
-// pile that forced grey slabs back over a red overlay is gone with it. What is
-// left is a light inset card on the site's own grey surface — the comps this was
-// built from are a dark-themed brand, and Quedamos stays light.
+// None of core's overlay classes appear here any more. The block owns its markup,
+// so there is nothing to fight, and the pile of forced overrides that pushed grey
+// slabs back over a red overlay has gone with them. What is left is a light inset
+// card on the site's own grey surface — the comps this was built from are a
+// dark-themed brand, and Quedamos stays light.
 .mobile-menu {
   display: flex;
   align-items: center;
 
   // ── The toggle ──────────────────────────────────────────────────────────────
   // Neither comp shows the closed header, so the toggle's appearance is this
-  // file's own proposal: svgs/menu.svg at the intrinsic 24px it and
+  // file's own proposal — svgs/menu.svg at the intrinsic 24px it and
   // svgs/close.svg are both drawn at, on no background, taking its colour from
-  // the header text around it. Drawn to match close.svg exactly — same viewBox,
-  // same stroke width, same round caps, stroke="currentColor" — so the two read
-  // as one pair.
+  // the header text around it. menu.svg is drawn to match close.svg exactly, same
+  // viewBox, same stroke width, same round caps, same currentColor stroke, so the
+  // two read as one pair.
   //
-  // The close button gets the same treatment. The system has no outline, ghost
-  // or icon-button variant (its one button is a filled $primary pill), so the
-  // comps' outlined square button has no token to build from; a bare icon that
-  // takes $primary on hover is the nearest thing the system already says, and it
-  // mirrors the hover/focus pair in components/article-toc.scss.
+  // The close button gets the same treatment. The system has no outline, ghost or
+  // icon-button variant — its one button is a filled $primary pill — so the comps'
+  // outlined square button has no token to build from. A bare icon that takes
+  // $primary on hover is the nearest thing the system already says, and it mirrors
+  // the hover and focus pair in components/article-toc.scss.
   &__toggle,
   &__close {
     display: flex;
@@ -47,10 +47,10 @@
     color: $primary;
   }
 
-  // reset.scss zeroes the outline on every :focus, so a keyboard user would get
-  // no ring at all here. Restored on :focus-visible only — a mouse click should
-  // not draw one — and built from the 2px/$primary pair components/article-toc.scss
-  // already uses to mark the focused row.
+  // reset.scss zeroes the outline on every focus, so a keyboard user would get no
+  // ring at all here. Restored on focus-visible only, since a mouse click should
+  // not draw one, and built from the 2px and $primary pair that
+  // components/article-toc.scss already uses to mark the focused row.
   &__toggle:focus-visible,
   &__close:focus-visible,
   &__link:focus-visible {
@@ -59,14 +59,14 @@
   }
 
   // ── The panel ───────────────────────────────────────────────────────────────
-  // Hidden by visibility rather than display: it keeps the panel out of the tab
-  // order and the accessibility tree while still allowing the fade below.
-  // assets/scripts/js/mobile-menu.js only toggles .is-open, so every question
-  // about how the panel appears is answered in this file.
+  // Hidden by visibility rather than by display, which keeps the panel out of the
+  // tab order and the accessibility tree while still allowing the fade below.
+  // assets/scripts/js/mobile-menu.js only toggles the is-open class, so every
+  // question about how the panel appears is answered in this file.
   &__overlay {
     position: fixed;
     inset: 0;
-    // 999 is the theme's one existing stacking value (components.scss) — reused
+    // 999 is the theme's one existing stacking value (components.scss), reused
     // rather than starting a second scale.
     z-index: 999;
     visibility: hidden;
@@ -79,19 +79,19 @@
   }
 
   // The click-to-close surface. The comps dim the page behind the card, and this
-  // ships without that dim: a dark translucent layer has no token, and the
-  // nearest candidate ($hover-grey) is a teal at 0.12 and is not one. Rather
-  // than paste a literal, the panel's own qCardSurface() shadow does the
-  // separating and the gap is raised instead. Adding a scrim token later turns
-  // it on from this one rule.
+  // ships without that dim — a dark translucent layer has no token, and the
+  // nearest candidate, $hover-grey, is a teal at 0.12 and is not one. Rather than
+  // paste a literal, the panel's own qCardSurface() shadow does the separating and
+  // the gap is raised instead. Adding a scrim token later turns the dim on from
+  // this one rule.
   &__scrim {
     position: absolute;
     inset: 0;
   }
 
-  // An inset card, not a full-bleed overlay: margins on all four sides, $BR
-  // corners, the page still visible behind it. Height follows the content and is
-  // capped to the viewport, so a longer menu scrolls inside the card instead of
+  // An inset card rather than a full-bleed overlay — margins on all four sides,
+  // $BR corners, the page still visible behind it. Height follows the content and
+  // is capped to the viewport, so a longer menu scrolls inside the card instead of
   // running off the bottom of it.
   &__panel {
     @include qCardSurface();
@@ -105,10 +105,10 @@
 
   // Logo left, close button right, a full-width rule beneath.
   //
-  // $hover-grey as a border colour is not what the token was named for, and
-  // there is no hairline or border token in the system — but
-  // components/article-toc.scss already draws its border from it, so this
-  // follows the file rather than inventing a second answer.
+  // $hover-grey as a border colour is not what the token was named for, and the
+  // system has no hairline or border token at all — but
+  // components/article-toc.scss already draws its border from it, so this follows
+  // the file rather than inventing a second answer.
   &__top-bar {
     display: flex;
     align-items: center;
@@ -118,10 +118,10 @@
     border-bottom: 1px solid $hover-grey;
   }
 
-  // navigation.scss floors .wp-block-site-logo img at min-width: 180px for the
-  // header, which blew the panel's logo up until it overlapped the first row.
-  // The floor is lifted here and the width set back to the size the old injected
-  // top bar used; $space-5 is the token nearest that 60px.
+  // navigation.scss floors the header's site-logo image at a min-width of 180px,
+  // which blew the panel's logo up until it overlapped the first row. The floor is
+  // lifted here and the width set back to the size the old injected top bar used,
+  // for which $space-5 is the nearest token.
   &__logo {
     .wp-block-site-logo img {
       min-width: 0;
@@ -133,9 +133,9 @@
   // Roomy rows, one per line, separated by space rather than by a border on each
   // item — the biggest departure from the grey slabs this replaces.
   //
-  // No colour or type rules: theme.json already sets links to contrast with no
-  // underline and an underline on hover, and the rows are body copy at the body
-  // size, so the house treatment is inherited rather than restated.
+  // No colour or type rules here. theme.json already renders links in contrast
+  // with no underline and an underline on hover, and the rows are body copy at the
+  // body size, so the house treatment is inherited rather than restated.
   &__list {
     display: flex;
     flex-direction: column;
@@ -154,24 +154,23 @@
     padding: $space-2 0;
   }
 
-  // $primary is the accent on a light panel, not the background: the row being
-  // hovered, the row focused, and the page you are on. render.php sets
-  // aria-current="page" alongside this class, so the marking is announced as
-  // well as shown.
+  // $primary is the accent on a light panel, never the background — the row being
+  // hovered, the row focused, and the page you are on. render.php marks the same
+  // row with aria-current, so the current page is announced as well as shown.
   &__link--current {
     color: $primary;
   }
 
   // ── Motion ──────────────────────────────────────────────────────────────────
-  // Gated the way global.scss gates smooth scrolling: motion is an enhancement,
-  // so with it suppressed the panel simply appears and every state the JS sets
-  // still works. 0.2s ease is the theme's existing transform duration
-  // (components/post-card.scss, components/article-toc.scss).
+  // Gated the way global.scss gates smooth scrolling. Motion is an enhancement, so
+  // with it suppressed the panel simply appears and every state the JS sets still
+  // works. 0.2s ease is the theme's existing transform duration, from
+  // components/post-card.scss and components/article-toc.scss.
   //
-  // Not shipped: the comps' staggered rows. Stepping a transition-delay per row
-  // needs a step duration, and the theme has only 0.2s and 0.3s — there is no
-  // token to step by, and inventing one is the thing the never-invent rule
-  // exists to stop. Raised rather than resolved.
+  // One thing from the comps is deliberately not shipped, the staggered rows.
+  // Stepping a transition-delay per row needs a step duration, and the theme has
+  // only 0.2s and 0.3s — there is no token to step by, and inventing one is the
+  // thing the never-invent rule exists to stop. Raised rather than resolved.
   @media (prefers-reduced-motion: no-preference) {
     &__overlay {
       transition:
@@ -190,10 +189,10 @@
     }
 
     // The hamburger's open state. The panel covers the header, so the icon turns
-    // and fades out from under it rather than morphing into an X the reader
-    // would never see. (A morph would also mean styling the SVG's own <line>
-    // children, which quedamos_inline_svg()'s wp_kses allowlist gives no way to
-    // address individually.)
+    // and fades out from under it rather than morphing into an X the reader would
+    // never see. A morph would also mean styling the SVG's own line children,
+    // which the wp_kses allowlist behind quedamos_inline_svg() gives no way to
+    // address individually.
     &__toggle .inline-svg {
       transition:
         opacity 0.2s ease,
@@ -212,11 +211,11 @@
   }
 }
 
-// The page behind the open panel holds still. The class is set on <html> by
-// assets/scripts/js/mobile-menu.js, which is also where the constant naming it
-// lives. Only the y axis: reset.scss deliberately runs `overflow-x: clip` there,
-// and `hidden` on both axes would make the document a scroll container — the
-// thing that silently broke position: sticky for the article TOC before.
+// The page behind the open panel holds still. The class is set on the html element
+// by assets/scripts/js/mobile-menu.js, which is also where the constant naming it
+// lives. Only the y axis is locked, because reset.scss deliberately clips the x
+// axis there and hiding both axes would make the document a scroll container — the
+// thing that silently broke sticky positioning for the article TOC before.
 .has-mobile-menu-open {
   overflow-y: hidden;
 
@@ -226,18 +225,18 @@
 }
 
 // ── The mobile/desktop swap ───────────────────────────────────────────────────
-// 782px, not the house 768px: it is WordPress's own navigation-block overlay
-// breakpoint and the value .q-navigation-desktop has always switched at, so the
-// header keeps matching core rather than the house scale. The .mobile-menu half
-// of the pair is the media query at the end of the block above — below 782px the
-// toggle shows and the desktop nav does not, at 782px and up the reverse, and
+// 782px, not the house 768px, because it is WordPress's own navigation-block
+// overlay breakpoint and the value .q-navigation-desktop has always switched at,
+// so the header keeps matching core rather than the house scale. The .mobile-menu
+// half of the pair is the media query at the end of the block above — below 782px
+// the toggle shows and the desktop nav does not, at 782px and up the reverse, and
 // there is no width at which both are visible.
 //
 // .q-navigation-mobile is the core/navigation overlay this block replaces. Its
-// rule stays until the Header template part has been swapped on every
-// environment — that part lives in the database and the edit is a manual step
-// (see DEPLOY-LIST.md), so without this the old overlay would appear beside the
-// desktop nav in the gap between the deploy and the edit.
+// rule stays until the Header template part has been swapped on every environment.
+// That part lives in the database and the edit is a manual step, recorded in
+// DEPLOY-LIST.md, so without this the old overlay would appear beside the desktop
+// nav in the gap between the deploy and the edit.
 header .q-navigation-desktop {
   display: none;
 }

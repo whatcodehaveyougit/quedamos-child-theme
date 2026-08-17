@@ -11,7 +11,7 @@
  *
  * Behaviour (open, close, focus trap, Esc, scroll lock) is in
  * assets/scripts/js/mobile-menu.js and hooks onto the data-mobile-menu-*
- * attributes below. No <script> is emitted from here.
+ * attributes below. Nothing is inlined as script markup from here.
  *
  * @package Quedamos
  *

@@ -15,6 +15,11 @@
   // reads as cramped rather than tight.
   padding-block: $space-3 $space-5;
 
+  // The speech-bubble backdrop. @include, not a copy: the single-article page
+  // wears the same treatment in blue, and two hand-written copies would drift
+  // the moment one of them is adjusted.
+  @include qBubbleBackdrop('light', $background-grey);
+
   // theme.json sets no heading colour, so headings inherit black. $primary is a
   // token, which is what makes the comp's red title legitimate rather than an
   // invented value.

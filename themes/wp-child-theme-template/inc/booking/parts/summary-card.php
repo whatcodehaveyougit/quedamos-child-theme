@@ -3,8 +3,13 @@
  * Booking summary card view.
  *
  * Rendered by quedamos_booking_summary_shortcode(), which provides $course,
- * $course_price, $location, $participants and $subtotal. Derived values come
- * from the module's helpers so this file stays readable as markup.
+ * $course_price, $location, $currency_symbol, $participants and $subtotal.
+ * Derived values come from the module's helpers so this file stays readable as
+ * markup.
+ *
+ * The totals are recalculated as the participant count changes by
+ * assets/scripts/js/booking-summary.js, which reads the price and symbol from
+ * the localised quedamosBooking object rather than from this markup.
  *
  * @package Quedamos
  */
@@ -19,10 +24,12 @@ $location_label = quedamos_booking_location_label( $location );
     <h2>Booking Details</h2>
     <div class="course-title"><span>Course:</span> <?php echo esc_html( $course ); ?></div>
     <div class="sessions"><span>Block of 5 Classes</span></div>
+    <?php if ( '' !== $location_label ) : ?>
     <div class="location">
       <span>Location:</span>
       <?php echo esc_html( $location_label ); ?>
     </div>
+    <?php endif; ?>
 
   </div>
   <hr>
@@ -30,15 +37,15 @@ $location_label = quedamos_booking_location_label( $location );
     <h3>Payment Details</h3>
     <div class="subtotal-row">
       <span>Subtotal</span>
-      <span>£<?php echo esc_html( number_format( $subtotal, 0 ) ); ?></span>
+      <span><?php echo esc_html( $currency_symbol . number_format( $subtotal, 0 ) ); ?></span>
     </div>
     <div class="participants"><?php echo esc_html( $participants ); ?> participants ×
-      £<?php echo esc_html( number_format( $course_price, 0 ) ); ?></div>
+      <?php echo esc_html( $currency_symbol . number_format( $course_price, 0 ) ); ?></div>
   </div>
   <hr>
   <div class="total-row">
     <span>Total</span>
-    <span>£<?php echo esc_html( number_format( $subtotal, 0 ) ); ?></span>
+    <span><?php echo esc_html( $currency_symbol . number_format( $subtotal, 0 ) ); ?></span>
   </div>
 </div>
 
@@ -167,40 +174,3 @@ hr {
   }
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Find the participants input inside the .qd-participants container
-  const participantsInput = document.querySelector('.qd-participants input[type="number"]');
-  if (!participantsInput) return;
-
-  // Find the price per participant from the payment details row
-  const priceText = document.querySelector('.participants');
-  let pricePerParticipant = 0;
-  if (priceText) {
-    // Extract the price from the text, e.g., "2 participants × £150"
-    const match = priceText.textContent.match(/£(\d+)/);
-    if (match) pricePerParticipant = parseInt(match[1], 10);
-  }
-
-  // Elements to update
-  const participantsRow = document.querySelector('.participants');
-  const subtotalRow = document.querySelector('.subtotal-row span:last-child');
-  const totalRow = document.querySelector('.total-row span:last-child');
-
-  function updateBookingSummary() {
-    const numParticipants = parseInt(participantsInput.value, 10) || 0;
-    // Update participants text
-    if (participantsRow) {
-      participantsRow.textContent = `${numParticipants} participants × £${pricePerParticipant}`;
-    }
-    // Update subtotal and total
-    const total = numParticipants * pricePerParticipant;
-    if (subtotalRow) subtotalRow.textContent = `£${total}`;
-    if (totalRow) totalRow.textContent = `£${total}`;
-  }
-
-  // Listen for input changes
-  participantsInput.addEventListener('input', updateBookingSummary);
-});
-</script>

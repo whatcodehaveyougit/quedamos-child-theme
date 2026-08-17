@@ -1,6 +1,7 @@
 // import './js/general.js';
 import './js/article-toc.js';
 import './js/blog-filter.js';
+import './js/booking-summary.js';
 import './js/copy-link.js';
 import './js/site-navigation.js';
 import './js/animations/count-up.js';

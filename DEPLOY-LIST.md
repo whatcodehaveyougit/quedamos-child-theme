@@ -236,6 +236,48 @@ database copy of the Blog Home template**, the same record step 4 is about.
 - [ ] No `wp-block-spacer` between `</header>` and `<main class="blog-page">` in live's page source
 - [ ] "Our Blog" sits 64px below the header, matching local
 
+### 7. Booking links — add `qd_currency` to the euro-priced courses
+
+The booking summary now reads a `qd_currency` parameter off the booking link and prints `£` or `€`
+accordingly. It is **not** derived from the course or the location: the link says which, and a link that
+does not say falls back to pounds.
+
+The links live in **course post content**, so they do not travel with the repo. Until this step runs, live's
+euro-priced courses keep quoting pounds — the same figure, the wrong symbol, on the page where the visitor
+decides what they are about to pay.
+
+Two courses carry booking links today (`Spanish Classes in Edinburgh`, `Spanish Classes in Mallorca`), each
+with an in-person and an online link. Append `&qd_currency=euros` to every link on a course priced in euros;
+leave pound-priced links alone, or append `&qd_currency=pounds` to make it explicit.
+
+```
+/booking-form/?qd_course=…&qd_price=149&qd_start_date=…&qd_location=inPerson&qd_currency=euros
+```
+
+Find them on live — IDs differ from local's 115 and 1560:
+
+```
+wp post list --post_type=course --fields=ID,post_title
+wp post get <id> --field=post_content | grep -o '[^"]*qd_price[^"]*'
+```
+
+Then edit the buttons in the block editor. Only `euros` switches the symbol; anything else, including a
+missing parameter, renders `£`.
+
+- [ ] Confirm with Sigurd **which** courses are priced in euros before editing anything — the code assumes
+      nothing, so this is the only place the answer is recorded
+- [ ] Euro course booking buttons carry `&qd_currency=euros`
+- [ ] Clicking one lands on `/booking-form/` showing `€` on Subtotal, the participants line and Total
+- [ ] Changing the participant count keeps the `€` and multiplies correctly
+- [ ] A pound course still shows `£` throughout
+
+Also in this release: the summary card **omits the Location row entirely** when the link carries no
+`qd_location`. Every current link has one, so nothing on live changes — but a link built without it now
+renders a card with no empty "Location:" label.
+
+- [ ] `dist/` rebuilt and shipped — the participant-count recalculation moved out of an inline `<script>`
+      in the card into the Parcel bundle, so a stale `dist/` leaves the totals frozen at one participant
+
 ## Done
 
 *Nothing yet.*

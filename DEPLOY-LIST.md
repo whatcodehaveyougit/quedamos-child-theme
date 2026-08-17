@@ -56,17 +56,46 @@ behind every byline and every post's `author`. Two halves cannot be, because the
 one-`r` spelling. Recorded because that one field feeds `<title>`, `og:title`, `twitter:title` *and* the
 `AboutPage` name in the JSON-LD — a typo there was a typo in four places at once.
 
-**⚠ The same edit renamed the page**, `about-spanish-tutor-edinburgh` → `about-spanish-tutor-**teaching**-edinburgh`,
-which is worth knowing about because the slug is load-bearing in two ways neither visible from wp-admin:
+**⚠ The same edit renamed the page** — `about-spanish-tutor-edinburgh` → `about-spanish-tutor-**teaching**-edinburgh`.
+That was a side effect of changing the SEO title in Rank Math, not a deliberate rename, and the slug is
+load-bearing in two ways neither visible from wp-admin:
 
-- The URL indexed since 2024 began returning a hard **404** — no redirect. Now fixed in code:
-  `quedamos_redirect_map()` carries the 301 and it ships with the theme, so this needs nothing on live.
+- The URL indexed since 2024 — **the one Search Console reports** — began returning a hard **404** on live.
 - `QUEDAMOS_AUTHOR_PAGE_SLUG` resolves the profile page for both the byline link and the Person entity's
   `@id`. A slug it cannot find makes `quedamos_author_page_url()` return `''` — the byline link silently
-  disappears and the Person loses its home. The constant now matches live, and local's slug was renamed to
-  agree (2026-08-17).
+  disappears and the Person loses its home.
 
-**Renaming that page again is a three-part change: the constant, the redirect map, and both environments.**
+### 7. Rename the About page back on live · **BLOCKING**
+
+**Decided 2026-08-17: the short URL is canonical.** It is the one with the history and the one Search
+Console reports, so the page moves back rather than the site redirecting to the accidental slug. The code
+already assumes it — `QUEDAMOS_AUTHOR_PAGE_SLUG` is `about-spanish-tutor-edinburgh`, and the redirect map
+now sends the *teaching* URL to the short one, catching anything that picked it up while it was live.
+
+**Until live is renamed, the deploy makes things worse, not better:** the constant will resolve to nothing,
+so the byline link vanishes from every post and the Person entity loses its `@id`. Do this in the same
+sitting as the theme upload.
+
+Live only — local was renamed back on 2026-08-17 and is already correct.
+
+**Pages → About → open it →** in the sidebar under **Permalink**, set the URL slug to:
+
+```
+about-spanish-tutor-edinburgh
+```
+
+Then **Update**. If Rank Math offers to change the slug when you next edit the title, decline it — that is
+exactly how this happened.
+
+Do **not** add a WordPress-generated redirect if prompted: the theme's own map already handles the
+teaching → short direction, and two mechanisms for one URL is what
+[CLAUDE.md](CLAUDE.md) exists to prevent.
+
+- [ ] `/about-spanish-tutor-edinburgh/` returns **200** on live
+- [ ] `/about-spanish-tutor-teaching-edinburgh/` **301s** to it
+- [ ] A live post's byline name is a link, and it points at the short URL
+- [ ] The About page's JSON-LD `Person` node is `@id`'d `…/about-spanish-tutor-edinburgh/#sara`
+- [ ] LiteSpeed purged afterwards
 
 **b) Her surname appears nowhere in the visible text.** Still outstanding. The body prose only ever says
 "Sara" — the full name exists solely in `<head>`. An assistant that will not read metadata as a claim about
@@ -79,9 +108,9 @@ Then purge LiteSpeed — a cached `<head>` will keep serving the old markup.
 - [x] `rank_math_title` reads "Sara Carrillo…" with two `r`s and no leading space
 - [x] `view-source:` on the live About page shows **no** occurrence of `Carillo` (one `r`) anywhere
 - [ ] The visible body text names her in full at least once
-- [ ] `/about-spanish-tutor-edinburgh/` 301s to the new slug rather than 404ing (ships with the theme —
-      verify after the deploy, no live action needed)
-- [ ] The page's JSON-LD has a `Person` node `@id`'d `…/about-spanish-tutor-teaching-edinburgh/#sara`, and
+- [ ] `/about-spanish-tutor-edinburgh/` returns 200 rather than 404ing — needs the live rename in step 7,
+      not just the theme upload
+- [ ] The page's JSON-LD has a `Person` node `@id`'d `…/about-spanish-tutor-edinburgh/#sara`, and
       the `AboutPage` node carries `mainEntity` pointing at it
 - [ ] A live post's `BlogPosting.author` resolves to that same `#sara` @id — not `/author/admin/`
 - [ ] The site node is typed `Organization` only, with `founder` → Sara (it was `["Organization","Person"]`

@@ -81,15 +81,19 @@ const QUEDAMOS_AUTHOR_PHOTO = 'images/sara-carrillo.webp';
  *
  * **Renaming that page is a three-part change.** The slug lives in the database,
  * so it can be changed from wp-admin by somebody who will never see this file:
- * update this constant, add the old path to `quedamos_redirect_map()`, and check
- * both environments agree. It was renamed from 'about-spanish-tutor-edinburgh'
- * on 2026-08-17 and none of that happened — the old URL 404'd, and because a
- * missing page makes quedamos_author_page_url() return '', the byline link
- * vanished and the Person entity lost its home in the same move.
+ * update this constant, put the old path in `quedamos_redirect_map()`, and change
+ * the page in **both** environments. It was renamed to
+ * 'about-spanish-tutor-teaching-edinburgh' and none of that happened — the URL
+ * indexed since 2024 began returning a hard 404, and because a missing page makes
+ * quedamos_author_page_url() return '', the byline link vanished and the Person
+ * entity lost its home in the same move.
  *
- * Verified identical on local and live 2026-08-17.
+ * Moved back on 2026-08-17: the short URL is the one Search Console reports and
+ * the one with the history, so it is the canonical name. **Live must be renamed
+ * to match — see DEPLOY-LIST.md.** Until it is, this constant resolves to nothing
+ * on live and both the byline link and the Person @id disappear.
  */
-const QUEDAMOS_AUTHOR_PAGE_SLUG = 'about-spanish-tutor-teaching-edinburgh';
+const QUEDAMOS_AUTHOR_PAGE_SLUG = 'about-spanish-tutor-edinburgh';
 
 /**
  * The permalink of the author's profile page.

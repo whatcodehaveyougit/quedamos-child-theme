@@ -354,6 +354,15 @@ On live, for each course page:
 **The price is written twice** — in the list text and in the `qd_price` parameter — so changing one and not
 the other quotes a visitor one figure on the course page and charges another on the booking page. Check both.
 
+**Expect the inserted block to be structure-locked, and know the way out.** WordPress stamps the pattern's
+root group with a `metadata` object naming the pattern, which puts the whole instance into **content-only
+editing**: the text is editable, but List View shows only the headings, paragraphs, lists and buttons — no
+Group or Columns rows, and no parent block to select, collapse or move. Nothing is broken and nothing is
+missing from the markup; it is only how the editor presents a pattern instance. To get the structure back,
+select any block inside it and click **Modify** in the toolbar. Note the same applies to the `CourseTemplate`
+wrapper the course pages already sit in, which is why those pages behave this way before this pattern is
+inserted at all.
+
 **If the pattern is missing from the inserter after deploying, the theme's pattern cache is stale.**
 WordPress scans `patterns/` once and caches the result in a site transient keyed by the theme version, so a
 new pattern file added without a version bump stays invisible however many times the page is reloaded. This

@@ -35,7 +35,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The placeholder portrait.
+ * The portrait.
  *
  * A theme file rather than a media library ID, for the reason patterns/404.php
  * records: an attachment ID is a per-environment value, so a pattern carrying one
@@ -43,15 +43,13 @@ defined( 'ABSPATH' ) || exit;
  * resolved through get_stylesheet_directory_uri() and never hardcoded
  * (writing-php §7).
  *
- * The path is written out here rather than read from
- * inc/helpers/author-identity.php's QUEDAMOS_AUTHOR_PHOTO, which happens to name
- * the same file. That constant is the *byline avatar* — one person's identity,
- * which the schema and every post byline resolve to — whereas this is a
- * placeholder any insert of the pattern is expected to replace. Binding the two
- * would mean changing the author's photo silently changed every tutor band on
- * the site.
+ * Deliberately NOT inc/helpers/author-identity.php's QUEDAMOS_AUTHOR_PHOTO. That
+ * constant is the *byline avatar* — a 256px square that the schema and every post
+ * byline resolve to — whereas this is a 900x1200 portrait sized for the band.
+ * Binding the two would mean changing the author's photo silently changed every
+ * tutor band on the site, and would put a square avatar in a 3:4 frame.
  */
-$quedamos_tutor_portrait = get_stylesheet_directory_uri() . '/images/sara-carrillo.webp';
+$quedamos_tutor_portrait = get_stylesheet_directory_uri() . '/images/sara-carrillo-portrait.webp';
 
 /**
  * The placeholder CTA target.
@@ -115,7 +113,7 @@ $quedamos_tutor_cta = home_url( '/contact/' );
 		<div class="wp-block-column is-vertically-aligned-center tutor-intro__media">
 
 			<!-- wp:image {"sizeSlug":"large","className":"tutor-intro__portrait"} -->
-			<figure class="wp-block-image size-large tutor-intro__portrait"><img src="<?php echo esc_url( $quedamos_tutor_portrait ); ?>" alt="A portrait of the tutor"/></figure>
+			<figure class="wp-block-image size-large tutor-intro__portrait"><img src="<?php echo esc_url( $quedamos_tutor_portrait ); ?>" alt="A portrait of the tutor" width="900" height="1200"/></figure>
 			<!-- /wp:image -->
 
 			<!-- wp:paragraph {"className":"tutor-intro__quote"} -->

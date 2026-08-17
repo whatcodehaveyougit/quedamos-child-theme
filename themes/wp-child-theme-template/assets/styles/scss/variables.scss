@@ -1,6 +1,9 @@
 $background-grey: var(--wp--preset--color--base);
 $primary: var(--wp--preset--color--custom-primary);
 $secondary: var(--wp--preset--color--custom-secondary);
+// The palette's grey, for secondary text that must read as subordinate to the
+// copy beside it. An alias of the existing `contrast-3` entry, not a new colour.
+$text-grey: var(--wp--preset--color--contrast-3);
 $hover-grey: rgba(35, 90, 108, 0.12);
 $accent-yellow: #fffb01;
 $BR: 10px;

@@ -55,14 +55,18 @@ accents). WordPress emits every entry as `--wp--preset--color--{slug}`.
 | White | `base-2` | `#ffffff` | *none* |
 | Black Contrast | `contrast` | `#000000` | *none* |
 | Primary Dark | `contrast-2` | `#9d292a` | *none* |
-| Contrast / Three | `contrast-3` | `#757783` | *none* |
+| Contrast / Three | `contrast-3` | `#757783` | `$text-grey` |
 | Accent | `accent` | `#fffb01` — yellow | *none* (but see `$accent-yellow`) |
 | Accent / Two | `accent-2` | `#e5f0fe` — pale blue | *none* |
 
 Note `$primary` is a **red**, not a teal — worth saying because `$hover-grey` is a teal and reads like a
 brand colour when it isn't (see Known drift).
 
-**Six of the nine palette colours have no Sass token.** So a component needing white, black or the pale
+`$text-grey` is the alias for `contrast-3`, added 2026-08-17 for secondary text that has to read as
+subordinate to the copy beside it (the article author bar's role line). It is the palette's only grey for
+text — reach for it rather than a new one.
+
+**Five of the nine palette colours have no Sass token.** So a component needing white, black or the pale
 blue has nothing to reference — which is exactly the situation the never-invent rule covers: don't paste
 `#fff`, add the alias to `variables.scss` (mirroring the three that exist) and use it. Page background is
 already `base-2` via `theme.json` `styles.color.background`, so a component usually doesn't need white at
@@ -82,6 +86,14 @@ Three families, one weight each, all self-hosted `.woff` from
 
 Only one weight per family is loaded. Asking for `font-weight: 700` on Poppins gets a synthesised faux
 bold, not a real one — if a design needs another weight, the font file has to be added first.
+
+**The Open Sans filename lies — it is not a variable font.** Checked 2026-08-17 by reading the binary:
+`OpenSans-VariableFont_wdthwght.woff` carries no `fvar` table, and its `OS/2` reports `usWeightClass=400`
+with the name "Open Sans Regular". It is a static regular that kept a variable font's name, presumably
+having been instanced at some point. So **do not "open up the axis"** by widening the `fontFace`
+`fontWeight` to a range like `300 800`: that tells the browser the face already covers 700, which stops
+it synthesising and makes bold text render as plain regular — worse than the faux bold, and silently so.
+A real bold means adding a real bold file.
 
 ### Size tokens
 
@@ -177,6 +189,19 @@ a decision to raise, not to invent.
 **Link** (`styles.elements.link`): colour `contrast` (`#000000`), `text-decoration: none`, underline on
 hover. That underline-on-hover is the system's default hover treatment for text.
 
+**Body-copy links are the exception, and they are CSS, not `theme.json`.** A link sitting in a sentence
+gets `$secondary` and `font-weight: 700` so it is visible as a link before the pointer reaches it. The
+rule is in [global.scss](../themes/wp-child-theme-template/assets/styles/scss/global.scss); it cannot be
+`styles.elements.link` because that reaches every link on the page — nav, buttons, card titles, footer.
+It applies to an `<a href>` inside `p`, `li`, `dd`, `figcaption`, `td` or `th`, anywhere in
+`.wp-site-blocks` except the `<header>`, the `<footer>` and a Query Loop's `li.wp-block-post` (a card, not
+a sentence). Everything else — buttons, nav, post cards, `.course-item` tiles, the article TOC,
+pagination, the contact details — keeps the black `theme.json` default. Hover still adds the underline.
+
+So there are **three** link treatments on the site now, and a new one should be a fourth only if none fit:
+black default (`theme.json`), blue bold prose link (`global.scss`), and `.post-card__title` / `.article-toc__link`,
+which were already `$secondary` in their own components.
+
 ## Breakpoints
 
 **There are no breakpoint tokens**, and the theme has drifted across five values. Current usage across
@@ -213,6 +238,12 @@ rewriting the block that contains them.
 - **`pages/home.scss`** carries `#ecf9f0`, `#555`, `#eef0ef`, `#ffbb2c`, `#5578ff`, `#e80368`, `#e361ff`,
   `#47aeff`, `#ffa76e` — none in the system. This is the debt the never-invent rule exists to stop.
 - **`-container` as a generic class suffix** — widespread legacy naming. See writing-scss §1.
+- **`$secondary` fails WCAG AA as text.** `#4285f4` on white is **3.56:1**, and on the `accent-2` pale
+  blue band (`#e5f0fe`) it is **3.09:1** — both under the 4.5:1 AA minimum for normal-size text. It clears
+  the 3:1 large-text threshold, so headings and card titles are fine, but the body-copy link rule above
+  and anything else setting `$secondary` on running text does not comply. Shipped knowingly on
+  2026-08-17; the fix is a darker blue in the palette (around `#1257c4` reaches 4.54:1 on white), which is
+  a brand decision, not one to take unilaterally.
 
 ## Adding a value to the system
 

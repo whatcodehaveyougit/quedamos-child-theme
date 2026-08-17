@@ -11,6 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/article-meta.php';
+require_once __DIR__ . '/article-author.php';
 require_once __DIR__ . '/article-headings.php';
 require_once __DIR__ . '/article-featured-image.php';
 require_once __DIR__ . '/article-toc.php';

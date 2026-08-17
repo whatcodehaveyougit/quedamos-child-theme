@@ -41,35 +41,78 @@ Additional CSS class(es) on each **number** paragraph, not the label:
 
 Note: these figures are carried over from 2024 — check `7 YEARS EXPERIENCE` is still right before publishing.
 
-### 2. Header template part — point it at the `quedamos/mobile-menu` block
+### 2. Article author bar — the author's name and photo
 
-The mobile navigation is now the theme's own block instead of a filter on `core/navigation`. The block only
-renders once the **Header** template part references it, and that part lives in the **database**, so it does
-not travel with the repo. **Until this step runs, live has no mobile menu at all** — the old overlay's PHP
-filter is gone with the code that replaced it.
+The single-post template now opens with an author bar reading "Written by *&lt;display name&gt;*", with the
+author's avatar beside it. Both come from the WordPress user record, which lives in the database and does
+**not** travel with the repo — on live the bar will say whatever `display_name` says today, most likely
+just "Sara", next to a grey placeholder silhouette.
 
-In the Site Editor → Patterns → Template Parts → **Header**, edit as code and replace:
+The role line ("Spanish Language Educator") is hardcoded in `inc/blog/article-author.php` and needs
+nothing on live.
 
-```
-<!-- wp:navigation {"ref":5,"overlayMenu":"always","className":"q-navigation-mobile"} /-->
-```
-
-with:
+Run on live, or set it in Users → Profile:
 
 ```
-<!-- wp:quedamos/mobile-menu {"ref":<live menu id>} /-->
+wp user update <id> --display_name="Sara Carrillo" --first_name="Sara" --last_name="Carrillo"
 ```
 
-- **`ref` is a database ID and live's is not `5`.** `5` is the local `wp_navigation` post. Get live's with
-  `wp post list --post_type=wp_navigation --fields=ID,post_title` and use that number.
+- [ ] Display name set to `Sara Carrillo`
+- [ ] Avatar showing — the bar uses Gravatar, so the photo has to be attached to the author's email
+      address at gravatar.com. Until then the silhouette shows on live *and* locally.
+- [ ] Load a live post and confirm the bar reads "Written by Sara Carrillo · Spanish Language Educator"
+
+### 3. Header template part — point it at the `quedamos/mobile-menu` block · **BLOCKING**
+
+**Do this in the same release as the code, not after it.** The mobile navigation is now the theme's own
+block instead of a filter on `core/navigation`. The block renders only once the **Header** template part
+references it, and that part lives in the **database**, so it does not travel with the repo. Until this step
+runs, **live has no mobile menu at all** — the old overlay's PHP filter was deleted along with the code that
+replaced it.
+
+Already done locally, so this is live-only. The safe way is WP-CLI rather than the Site Editor, because the
+part is stored as block markup and the editor will show the new block as unrecognised:
+
+```bash
+# 1. Find live's menu ID — it is NOT 5, that is the local post.
+wp post list --post_type=wp_navigation --fields=ID,post_title
+
+# 2. Find the Header template part's post ID.
+wp post list --post_type=wp_template_part --fields=ID,post_title
+
+# 3. Back the current markup up before touching it.
+wp post get <header-id> --field=post_content > header-part-backup.txt
+
+# 4. Swap the block, substituting live's menu ID for <live-menu-id>.
+wp eval '
+$id  = <header-id>;
+$old = get_post_field( "post_content", $id );
+$new = preg_replace(
+    "#<!-- wp:navigation \{[^}]*\"className\":\"q-navigation-mobile\"[^}]*\} /-->#",
+    "<!-- wp:quedamos/mobile-menu {\"ref\":<live-menu-id>} /-->",
+    $old
+);
+if ( $new === $old ) { WP_CLI::error( "Nothing matched — check the markup by hand." ); }
+wp_update_post( array( "ID" => $id, "post_content" => wp_slash( $new ) ) );
+WP_CLI::success( "Header updated." );
+'
+```
+
+Then purge LiteSpeed (`wp litespeed-purge all`) — a cached header will hide the change completely.
+
+- **`ref` is a database ID and live's is not `5`.** If it is wrong or omitted the block falls back to the
+  site's most recent `wp_navigation` post, so a mistake degrades to "possibly the wrong menu" rather than an
+  empty header. Still worth getting right.
 - Leave the **desktop** navigation block (`className: q-navigation-desktop`, `overlayMenu: never`)
   untouched — it keeps its own `ref`.
-- If the `ref` is wrong or omitted the block falls back to the site's most recent `wp_navigation` post, so a
-  mistake here degrades to "possibly the wrong menu" rather than an empty header. Still worth getting right.
-- The block has no editor script, so the Site Editor shows it as an unrecognised block. That is expected —
-  it renders correctly on the front end.
+- The block has no editor script, so the Site Editor shows it as an unrecognised block. That is expected;
+  it renders correctly on the front end. Don't "fix" it.
+- `header .q-navigation-mobile { display: none }` is still in the CSS on purpose, so the old overlay can't
+  appear beside the desktop nav in the window between the code deploy and this step. Once every environment
+  is swapped, that rule can go.
 
 - [ ] Header template part updated with live's own `ref`
+- [ ] LiteSpeed purged
 - [ ] Hamburger shows on live at 390px and the panel opens with all six links
 - [ ] Desktop nav unchanged at 1280px, and no width shows both navs at once
 

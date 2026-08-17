@@ -94,15 +94,128 @@
   }
 
   // The card lifts over the header band, which is what ties the two together.
+  // The bottom margin is what separates the card from the MyMission cover
+  // below it: that cover is a synced block carrying an inline `margin-top:0`,
+  // which no class rule can outrank, so the space has to come from this side.
   .article-body-section {
     margin-top: -$space-4;
+    margin-bottom: $space-5;
   }
 
+  // Asymmetric on purpose: the card now opens with the author bar, and a full
+  // $space-5 above a header row reads as a gap rather than as breathing room.
+  // The bottom keeps the larger value — that edge sits against the CTA band.
   .article-card {
     @include qCardSurface();
 
-    padding: $space-4 $space-3;
+    padding: $space-3 $space-3 $space-4;
     background-color: white;
+  }
+
+  // The author bar at the head of the card: avatar, "Written by <name>", the
+  // role, and the school's Instagram pushed to the far end. Sibling of
+  // .article-byline rather than a variant of it — that row sits on the hero
+  // scrim and carries the post's metadata, this one sits on white and carries
+  // the person.
+  .article-author {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2 $space-3;
+    padding-bottom: $space-3;
+    margin-bottom: $space-4;
+    border-bottom: 1px solid $hover-grey;
+    font-size: $medium-font-size;
+
+    &__avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+    }
+
+    // Stacked on mobile — name over role — so the pair keeps a narrow
+    // min-content width and stays beside the avatar instead of being pushed
+    // under it. They sit on one line from 768px (media query at the foot).
+    &__identity {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__role {
+      color: $text-grey;
+    }
+
+    // The separator belongs to the one-line form only: stacked, it would hang
+    // at the start of the role line with nothing before it.
+    &__role::before {
+      content: '·';
+      display: none;
+      margin-right: $space-2;
+    }
+
+    // margin-left rather than justify-content: space-between, so the icons stay
+    // at the far end even when the identity block wraps to two lines.
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: $space-2;
+      margin-left: auto;
+    }
+
+    // One circle for both members of the row — the Instagram link is an <a>,
+    // the copy control is a <button>, and they must not look like two things.
+    &__action {
+      display: inline-flex;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid $hover-grey;
+      border-radius: 50%;
+      background: none;
+      color: $primary;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    &__action:hover,
+    &__action:focus-visible {
+      background-color: $background-grey;
+      text-decoration: none;
+    }
+
+    &__action .inline-svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    // The confirmation sits above the button as a bubble. It is empty until the
+    // script fills it, so there is nothing to hide when the page has no JS.
+    &__copy-feedback {
+      position: absolute;
+      bottom: calc(100% + #{$space-1});
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0 $space-2;
+      border-radius: $BR;
+      background-color: $primary;
+      color: white;
+      font-size: $small-font-size;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    // The second half is written out rather than interpolated with `&`: inside
+    // a nested rule Sass expands every `&` to the *whole* parent chain, so
+    // `&__copy.is-copied &__copy-feedback` would repeat `.single-post-page`.
+    &__copy.is-copied .article-author__copy-feedback {
+      opacity: 1;
+    }
   }
 
   // TOC above the prose on mobile, beside it from 992px (see the media query
@@ -144,6 +257,17 @@
       height: auto;
       border-radius: $BR;
     }
+
+    // A .q-card dropped into body copy — the "Speak Spanish From the First
+    // Lesson" CTA — must size to its own content. qCard()'s `height: 100%` is
+    // there for a card sitting in a row of equal-height cards; here the parent
+    // is .article-prose, a stretched grid item whose height is the whole
+    // article, so the card inherited it and `space-between` threw the icon and
+    // the button to opposite ends of a several-thousand-pixel box.
+    .q-card {
+      height: auto;
+      justify-content: flex-start;
+    }
   }
 
   .article-tags {
@@ -169,10 +293,9 @@
   }
 
   // The CTA is the site-wide MyMission synced block, styled by
-  // .my-mission-container in components.scss — only its spacing belongs here.
-  .my-mission-container {
-    margin-top: $space-5;
-  }
+  // .my-mission-container in components.scss. Its spacing is set on
+  // .article-body-section above, not here: the block's own inline
+  // `margin-top:0` beats any class rule this file could write.
 
   .article-related-section {
     @include containerPadding();
@@ -195,7 +318,18 @@
     }
 
     .article-card {
-      padding: $space-5 $space-4;
+      padding: $space-4 $space-4 $space-5;
+    }
+
+    // Name and role side by side, separated by the dot, once there is room.
+    .article-author__identity {
+      flex-direction: row;
+      align-items: center;
+      gap: $space-2;
+    }
+
+    .article-author__role::before {
+      display: inline;
     }
 
     .article-related-grid {

@@ -33,7 +33,13 @@ function quedamos_redirect_map() {
 		// Duplicate of /booking-form/ created 2025-07-01: same title, no form on
 		// it, no inbound internal links. Removed 2026-08-17 to stop the two pages
 		// competing for the same search result.
-		'/booking-form-2/' => '/booking-form/',
+		'/booking-form-2/'                => '/booking-form/',
+
+		// The About page was renamed 2026-08-17 ('…-tutor-' → '…-tutor-teaching-'),
+		// leaving the URL it had been indexed at since 2024 returning a hard 404.
+		// It is also the author's profile page, so the dead URL took the site's
+		// only credentialed Person entity with it.
+		'/about-spanish-tutor-edinburgh/' => '/about-spanish-tutor-teaching-edinburgh/',
 	);
 }
 

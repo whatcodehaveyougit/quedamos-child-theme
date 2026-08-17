@@ -11,6 +11,12 @@
  *
  * Pagination links inside the swapped listing are handled by the same delegated
  * listener, so they keep working after a filter change.
+ *
+ * Back and forward restore from markup this page load already rendered rather
+ * than from the network. Once the URL is pushed, the browser can move between
+ * entries faster than a fetch can answer, and a listing that contradicts the
+ * address bar — even for a few hundred milliseconds — is the reader being told
+ * two different things at once.
  */
 
 const PAGE_SELECTOR = '.blog-page';
@@ -22,6 +28,106 @@ const CURRENT_PILL_SELECTOR = '.category-filter__pill--current';
 
 // Incremented per request so a response that has been overtaken can be dropped.
 let latestRequest = 0;
+
+// The markup of every listing URL this page load has shown, keyed by URL, so a
+// history entry can be put back without asking the server for it again. It only
+// ever holds the URLs the reader actually visited in this document, and it goes
+// with the document.
+const rendered = new Map();
+
+// Which entry the DOM is showing. A popstate that lands back on it — a fragment
+// link, say — has nothing to restore, so the current markup is left alone.
+let currentKey = '';
+
+/**
+ * The cache key for a URL: the URL without its fragment.
+ *
+ * A fragment moves the reader within a listing, it does not change which posts
+ * that listing holds, so both spellings must find the same stored markup.
+ *
+ * @param {string} url The URL to key.
+ * @return {string} The key.
+ */
+function cacheKey(url) {
+  const parsed = new URL(url, window.location.href);
+  parsed.hash = '';
+
+  return parsed.href;
+}
+
+/**
+ * Take over from any request still in flight.
+ *
+ * A fetch already running belongs to a click the reader has since navigated away
+ * from, so its response must not be allowed to land on top of what replaced it —
+ * and the busy state it put on the listing has to come off with it.
+ */
+function cancelInFlight() {
+  latestRequest += 1;
+
+  const listing = document.querySelector(LISTING_SELECTOR);
+  if (listing) {
+    listing.removeAttribute('aria-busy');
+  }
+}
+
+/**
+ * Store the markup now on screen against the URL now in the address bar.
+ *
+ * Called after the URL has moved, never before, so the two always match.
+ */
+function remember() {
+  const filter = document.querySelector(FILTER_SELECTOR);
+  const listing = document.querySelector(LISTING_SELECTOR);
+  if (!filter || !listing) {
+    return;
+  }
+
+  currentKey = cacheKey(window.location.href);
+
+  rendered.set(currentKey, {
+    filter: filter.outerHTML,
+    listing: listing.outerHTML,
+    title: document.title,
+  });
+}
+
+/**
+ * Turn stored markup back into an element.
+ *
+ * @param {string} html The markup.
+ * @return {Element|null} The element it describes.
+ */
+function elementFrom(html) {
+  const holder = document.createElement('template');
+  holder.innerHTML = html;
+
+  return holder.content.firstElementChild;
+}
+
+/**
+ * Put a filter row and a listing on the page in place of the ones there now.
+ *
+ * @param {Element} nextFilter The filter row to show.
+ * @param {Element} nextListing The listing to show.
+ * @param {string} title The document title that goes with them.
+ */
+function render(nextFilter, nextListing, title) {
+  const currentFilter = document.querySelector(FILTER_SELECTOR);
+  const currentListing = document.querySelector(LISTING_SELECTOR);
+
+  if (currentFilter) {
+    currentFilter.replaceWith(nextFilter);
+  }
+
+  if (currentListing) {
+    currentListing.replaceWith(nextListing);
+  }
+
+  if (title) {
+    document.title = title;
+  }
+}
 
 /**
  * Whether a click should be left to the browser.
@@ -67,7 +173,7 @@ function swapTo(url, moveFocus) {
 
   // Two pills tapped in quick succession leave two requests in flight, and they
   // can come back in either order. Only the newest one is allowed to land.
-  latestRequest += 1;
+  cancelInFlight();
   const thisRequest = latestRequest;
 
   listing.setAttribute('aria-busy', 'true');
@@ -93,20 +199,7 @@ function swapTo(url, moveFocus) {
         throw new Error('unrecognised');
       }
 
-      const currentFilter = document.querySelector(FILTER_SELECTOR);
-      const currentListing = document.querySelector(LISTING_SELECTOR);
-
-      if (currentFilter) {
-        currentFilter.replaceWith(nextFilter);
-      }
-
-      if (currentListing) {
-        currentListing.replaceWith(nextListing);
-      }
-
-      if (doc.title) {
-        document.title = doc.title;
-      }
+      render(nextFilter, nextListing, doc.title);
 
       if (moveFocus) {
         focusCurrentPill();
@@ -150,6 +243,10 @@ export function initBlogFilter() {
     return;
   }
 
+  // The entry the reader landed on. Without it, going back to the page they
+  // started from is the one hop that has nothing to restore.
+  remember();
+
   // Delegated from the page wrapper, which is never replaced — the pills and the
   // pagination links both live inside regions that are.
   page.addEventListener('click', function(event) {
@@ -172,20 +269,51 @@ export function initBlogFilter() {
     const url = link.href;
 
     swapTo(url, true).then(function(swapped) {
-      if (swapped && window.location.href !== url) {
+      if (!swapped) {
+        return;
+      }
+
+      if (window.location.href !== url) {
         window.history.pushState({ quedamosBlogFilter: true }, '', url);
       }
+
+      // After the push, so the markup is stored against the URL it belongs to.
+      remember();
     });
   });
 
-  // Back and forward re-render from the URL the browser restored. Focus is left
-  // alone here: the reader moved through history, they did not press anything.
+  // Back and forward. Focus is left alone: the reader moved through history,
+  // they did not press anything.
   window.addEventListener('popstate', function() {
     if (!document.querySelector(FILTER_SELECTOR)) {
       return;
     }
 
-    swapTo(window.location.href, false);
+    // The browser has already moved the URL, so whatever was being fetched for
+    // the entry we just left is no longer wanted.
+    cancelInFlight();
+
+    const key = cacheKey(window.location.href);
+    if (key === currentKey) {
+      return;
+    }
+
+    const entry = rendered.get(key);
+    if (entry) {
+      render(elementFrom(entry.filter), elementFrom(entry.listing), entry.title);
+      currentKey = key;
+
+      return;
+    }
+
+    // Nothing stored for this entry — a session the browser restored, say. Fall
+    // back to the network. No pushState on this path: the browser has moved
+    // already, and pushing here would bury the entry the reader came from.
+    swapTo(window.location.href, false).then(function(swapped) {
+      if (swapped) {
+        remember();
+      }
+    });
   });
 }
 

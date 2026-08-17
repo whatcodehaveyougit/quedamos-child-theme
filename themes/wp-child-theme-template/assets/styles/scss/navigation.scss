@@ -1,6 +1,14 @@
 @import './variables.scss';
 
-header {
+// The site header, and only the site header. This was a bare `header` selector,
+// which is a site-wide rule dressed up as a local one: every `<header>` on the
+// site took the grey band and the 16px inset, including the ones templates use
+// for a page's own title block. That is how the blog listing's
+// `.blog-header-section` ended up with a stray grey band behind "Our Blog".
+// `templates/single.html`'s `.article-header-section` was unaffected either way
+// — it sets its own background and padding at higher specificity — so scoping
+// this to the template part changes nothing but the leak.
+header.wp-block-template-part {
   padding: 16px 0;
   background-color: $background-grey;
   .wp-block-site-logo img {

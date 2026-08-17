@@ -20,6 +20,27 @@
 
   .blog-intro {
     margin-top: $space-3;
+
+    // A measure cap, not a layout width — the same idea as the article title's
+    // `max-width: 20ch` in pages/article-single.scss, so the intro is measured
+    // in characters and follows the type rather than a fixed column. 60ch sits
+    // inside the 45-75 character measure prose is set to, and it lands the
+    // intro on three lines at just under half the content column, which is the
+    // proportion the comp shows.
+    //
+    // Capped with padding rather than max-width because this is a constrained
+    // layout: WordPress gives every child of one `margin-left: auto` and
+    // `margin-right: auto`, and flags both as important. A max-width therefore
+    // centred the intro — 338px in from the left at 1280px, while the H1 above
+    // it started at 24px — and no margin declared here can outrank that. Padding
+    // can't be cancelled that way, the same trap and the same answer as the
+    // card's own insets in components/post-card.scss. Keeping the box full width
+    // leaves those auto margins no free space to distribute, so the intro stays
+    // flush under the title.
+    //
+    // Below 768px the viewport is already narrower than the measure, the calc
+    // goes negative and padding clamps it to zero — mobile is untouched.
+    padding-inline-end: calc(100% - 60ch);
   }
 
   .blog-filter-section {

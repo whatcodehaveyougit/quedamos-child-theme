@@ -200,6 +200,14 @@
         // the source aspect ratio, which is why the ratio the block sets
         // inline only governs the stacked view.
         flex: 0 0 45%;
+
+        // Same trap as the body below, and the reason the 45% above did not
+        // hold: a flex item's automatic minimum size is its content's, so the
+        // featured image's intrinsic width outvoted the declared basis. It took
+        // 76% of the card at 768px and 67% at 992px, squeezing the excerpt to
+        // one word a line, and only settled at 45% once the column was wide
+        // enough for the intrinsic width to fit inside it.
+        min-width: 0;
       }
 
       .post-card__body {

@@ -1,0 +1,74 @@
+@import '../variables.scss';
+
+// Tier 1 — the blog listing. Worn by templates/home.html (/blog) and by
+// templates/category.html (a category archive), which are the same page with a
+// different H1 and a different query behind it.
+//
+// This partial only positions things. The pills are a component
+// (components/category-filter.scss) and the cards are a component
+// (components/post-card.scss); neither is repainted from here.
+.blog-page {
+  padding-block: $space-5;
+
+  // theme.json sets no heading colour, so headings inherit black. $primary is a
+  // token, which is what makes the comp's red title legitimate rather than an
+  // invented value.
+  .blog-title {
+    color: $primary;
+    text-transform: uppercase;
+  }
+
+  .blog-intro {
+    margin-top: $space-3;
+
+    // A measure cap, not a layout width — the same idea as the article title's
+    // `max-width: 20ch` in pages/article-single.scss, so the intro is measured
+    // in characters and follows the type rather than a fixed column. 60ch sits
+    // inside the 45-75 character measure prose is set to, and it lands the
+    // intro on three lines at just under half the content column, which is the
+    // proportion the comp shows. Below 768px the viewport is already narrower
+    // than the measure, so mobile is untouched.
+    //
+    // This is a plain max-width only because the templates wrap the title and
+    // intro in .blog-header-copy, a flow group. A constrained layout gives
+    // every direct child `margin-left: auto` and `margin-right: auto` and flags
+    // both as important, so a capped box sitting directly in one is centred and
+    // no margin declared here can outrank it. A flow layout imposes neither, so
+    // the intro left-aligns on the group's edge — the same edge the H1 sits on
+    // — at every width. See the comment in templates/home.html.
+    max-width: 60ch;
+  }
+
+  .blog-filter-section {
+    margin-top: $space-3;
+  }
+
+  .blog-listing-section {
+    margin-top: $space-4;
+  }
+
+  // A query loop renders as a <ul>, and WordPress's own grid layout would set
+  // the gap from the global block-gap. Stated here so the listing matches the
+  // related-posts grid on a single post, which uses the same step.
+  //
+  // `minmax(0, 1fr)` rather than the shorter `1fr`, which means
+  // `minmax(auto, 1fr)`: the `auto` floor is the item's MIN-CONTENT width, and
+  // the horizontal card's is large — its image column is `flex: 0 0 45%`, and a
+  // percentage basis is indefinite while the track is being measured, so the
+  // image falls back to its intrinsic width and a zero shrink factor stops it
+  // coming back down. The track was sized to that instead of to the container:
+  // 988px inside a 720px column at 768px wide, so every card ran off the screen
+  // and `body { overflow-x: clip }` quietly cut the title, excerpt and right
+  // edge off. It corrected itself around 950px, which is why it read as a
+  // narrow-desktop glitch rather than a grid bug. A zero floor lets the track
+  // be the container's width and the card lays out inside it at every size.
+  .blog-list {
+    display: grid;
+    gap: $space-3;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .blog-pagination {
+    margin-top: $space-4;
+  }
+}

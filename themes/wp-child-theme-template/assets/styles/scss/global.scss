@@ -35,6 +35,47 @@
   @include contentWidth();
 }
 
+// ── The footer sits at the bottom of the viewport on a short page ───────────
+//
+// `.wp-site-blocks` was a plain block with no minimum height, so a page whose
+// content did not fill the screen left the footer stranded partway up it with
+// white below: the 404 ended 207px short of the fold at 900px, and an empty
+// search or a one-post category archive around 10px short. This is the whole
+// site's rule, not the blog listing's — every short page had it, and one
+// mechanism for one concern is the point.
+//
+// The column is the standard sticky footer: the box is at least a screen tall,
+// `main` takes the slack, so any background it carries reaches the footer, and
+// on a page taller than the screen nothing changes at all — `min-height` is a
+// floor, not a height.
+//
+// Two things to know before touching this:
+//
+// 1. A flex container STOPS ITS CHILDREN'S MARGINS COLLAPSING. Only the 404's
+//    `main` carries vertical margins here, and its neighbours' are zero, so the
+//    collapsed and uncollapsed results are the same 104px — verified across all
+//    13 page types at 390px and 1440px. A template that later puts a margin on
+//    two adjacent top-level children will get the sum where it used to get the
+//    larger of the two.
+// 2. `100vh` on purpose — `100dvh`/`100svh` have no precedent in this theme.
+//    Because this is a `min-height`, the worst a mobile browser's toolbar can
+//    do is make a short page slightly taller than the visible area, which the
+//    footer-at-the-bottom rule does not depend on.
+//
+// Every template renders header/main/footer as direct children of this box, so
+// `main` is always there to grow. A future template without a `<main>` would
+// keep the old behaviour rather than break — the box would simply be a screen
+// tall with the slack left at the end.
+.wp-site-blocks {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  > main {
+    flex-grow: 1;
+  }
+}
+
 // WordPress's block-gap puts a margin between the top-level children of a
 // template, which left a 16px white strip between the header and the content
 // beneath it. Content sits flush under the header; this is the whole site's

@@ -1,0 +1,137 @@
+<!-- The blog listing at /blog.
+
+     templates/category.html renders the same listing for a category archive.
+     Block templates have no include mechanism and parts/ would mean declaring
+     templateParts in a theme.json that is a Site Editor export (see CLAUDE.md),
+     so the filter row, the query and the card below are duplicated there.
+     CHANGE BOTH TOGETHER.
+
+     The title and intro are hardcoded here rather than read from the posts
+     page's own content, which does not render on this template — this way they
+     are version controlled. -->
+
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","align":"full","className":"blog-page","layout":{"type":"default"}} -->
+<main class="wp-block-group alignfull blog-page">
+
+	<!-- wp:group {"tagName":"header","className":"blog-header-section","layout":{"type":"constrained"}} -->
+	<header class="wp-block-group blog-header-section">
+
+		<!-- The title and intro sit inside a flow group, not directly in the
+		     constrained section. A constrained layout gives every direct child
+		     `margin-left: auto` and `margin-right: auto` and flags both as
+		     important, which centres anything narrower than the content column —
+		     so the intro could not be both capped to a readable measure and
+		     flush under the title. A flow layout imposes neither, so the group
+		     takes the 1280px column and the intro is free to cap itself in
+		     pages/blog.scss. Mirrored in templates/category.html. -->
+		<!-- wp:group {"className":"blog-header-copy","layout":{"type":"default"}} -->
+		<div class="wp-block-group blog-header-copy">
+
+			<!-- wp:heading {"level":1,"className":"blog-title"} -->
+			<h1 class="wp-block-heading blog-title">Our Blog</h1>
+			<!-- /wp:heading -->
+
+			<!-- wp:paragraph {"className":"blog-intro"} -->
+			<p class="blog-intro">Learning doesn't stop when class ends! Film recommendations, song lyrics broken down, poems and current news — all picked to help you practise Spanish outside the classroom.</p>
+			<!-- /wp:paragraph -->
+
+		</div>
+		<!-- /wp:group -->
+
+	</header>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"className":"blog-filter-section","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group blog-filter-section">
+
+		<!-- Real links to real category archives. blog-filter.js swaps this
+		     section and the listing below it in place; with JavaScript off the
+		     click is an ordinary navigation to the same URL. -->
+		<!-- wp:shortcode -->
+		[quedamos_category_filter]
+		<!-- /wp:shortcode -->
+
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"tagName":"section","className":"blog-listing-section","layout":{"type":"constrained"}} -->
+	<section class="wp-block-group blog-listing-section">
+
+		<!-- inherit:true so the main query drives the listing and core's
+		     pagination keeps working on both templates. It also means perPage
+		     below never runs — the page size is set on the main query by
+		     quedamos_set_blog_posts_per_page() in inc/blog/listing-query.php.
+		     It is kept in step with that constant so the markup can't tell the
+		     next reader a different number. -->
+		<!-- wp:query {"queryId":0,"query":{"perPage":20,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"blog-query"} -->
+		<div class="wp-block-query blog-query">
+
+			<!-- wp:post-template {"className":"blog-list","layout":{"type":"grid","columnCount":1}} -->
+
+				<!-- wp:group {"className":"post-card post-card--horizontal","layout":{"type":"default"}} -->
+				<div class="wp-block-group post-card post-card--horizontal">
+
+					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","className":"post-card__image"} /-->
+
+					<!-- wp:group {"className":"post-card__body","layout":{"type":"default"}} -->
+					<div class="wp-block-group post-card__body">
+
+						<!-- One chip, not the post's whole term list:
+						     quedamos_post_card_category() in inc/blog/post-card.php
+						     replaces this block with the primary category, or with
+						     nothing when the post has none. -->
+						<!-- wp:post-terms {"term":"category","className":"post-card__category"} /-->
+
+						<!-- The avatar, author, date and read-time row is prepended
+						     to the title block by quedamos_prepend_post_card_byline()
+						     in inc/blog/article-meta.php — the post-card__title class
+						     is what triggers it. -->
+						<!-- wp:post-title {"isLink":true,"level":3,"className":"post-card__title"} /-->
+
+						<!-- wp:post-excerpt {"showMoreOnNewLine":false,"excerptLength":24,"className":"post-card__excerpt"} /-->
+
+						<!-- A real core/button, so the fill, radius, padding and
+						     hover swap all come from theme.json and are never
+						     restated. Its href is empty here because a template
+						     cannot know the post; quedamos_post_card_read_more()
+						     fills it in and inlines the arrow. -->
+						<!-- wp:buttons {"className":"post-card__read-more"} -->
+						<div class="wp-block-buttons post-card__read-more">
+							<!-- wp:button -->
+							<div class="wp-block-button"><a class="wp-block-button__link wp-element-button">Read more</a></div>
+							<!-- /wp:button -->
+						</div>
+						<!-- /wp:buttons -->
+
+					</div>
+					<!-- /wp:group -->
+
+				</div>
+				<!-- /wp:group -->
+
+			<!-- /wp:post-template -->
+
+			<!-- wp:query-no-results -->
+				<!-- wp:paragraph -->
+				<p>No articles here yet — try another category.</p>
+				<!-- /wp:paragraph -->
+			<!-- /wp:query-no-results -->
+
+			<!-- wp:query-pagination {"className":"blog-pagination","layout":{"type":"flex","justifyContent":"center"}} -->
+				<!-- wp:query-pagination-previous /-->
+				<!-- wp:query-pagination-numbers /-->
+				<!-- wp:query-pagination-next /-->
+			<!-- /wp:query-pagination -->
+
+		</div>
+		<!-- /wp:query -->
+
+	</section>
+	<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

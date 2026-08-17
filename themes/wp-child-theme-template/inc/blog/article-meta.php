@@ -26,15 +26,28 @@ const QUEDAMOS_WORDS_PER_MINUTE = 200;
 /**
  * Return the primary `category` term for a post.
  *
- * Skips the catch-all "Uncategorised" where a real category also exists, and
- * falls back to the first assigned term otherwise.
+ * Rank Math stores an editor's explicit choice of primary category in post meta;
+ * that answer wins whenever it is set and still points at a live term. Otherwise
+ * the first assigned term is used, skipping the catch-all "Uncategorised" where a
+ * real category also exists.
+ *
+ * One function rather than two on purpose: the article header's pill and the
+ * listing card's chip must not be able to disagree about which category a post
+ * belongs to.
  *
  * @param int $post_id Post ID. Defaults to the current post.
  * @return WP_Term|null The primary category, or null when the post has none.
  */
 function quedamos_get_primary_category( $post_id = 0 ) {
 	$post_id = $post_id ? (int) $post_id : get_the_ID();
-	$terms   = get_the_terms( $post_id, 'category' );
+
+	$chosen = quedamos_rank_math_primary_category( $post_id );
+
+	if ( $chosen ) {
+		return $chosen;
+	}
+
+	$terms = get_the_terms( $post_id, 'category' );
 
 	if ( ! $terms || is_wp_error( $terms ) ) {
 		return null;
@@ -50,6 +63,33 @@ function quedamos_get_primary_category( $post_id = 0 ) {
 	// catch-all, there is nothing worth showing. Callers treat null as "hide
 	// the pill" rather than printing "Uncategorized" at the top of an article.
 	return null;
+}
+
+/**
+ * The category an editor picked as primary in Rank Math, when there is one.
+ *
+ * The meta holds a term ID, and it goes stale the moment that term is deleted or
+ * unassigned from the post — so it is validated against the post's own terms
+ * before being trusted, not just fetched. Returns null when Rank Math is not
+ * installed, which is the same as "no choice was made".
+ *
+ * @param int $post_id Post ID.
+ * @return WP_Term|null The chosen category, or null when there isn't a valid one.
+ */
+function quedamos_rank_math_primary_category( $post_id ) {
+	$term_id = (int) get_post_meta( (int) $post_id, 'rank_math_primary_category', true );
+
+	if ( ! $term_id ) {
+		return null;
+	}
+
+	$term = get_term( $term_id, 'category' );
+
+	if ( ! $term || is_wp_error( $term ) ) {
+		return null;
+	}
+
+	return has_term( $term_id, 'category', (int) $post_id ) ? $term : null;
 }
 
 /**

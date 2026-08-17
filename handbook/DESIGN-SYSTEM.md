@@ -52,12 +52,12 @@ accents). WordPress emits every entry as `--wp--preset--color--{slug}`.
 | Primary | `custom-primary` | `#be2c2d` — brand red | `$primary` |
 | Secondary | `custom-secondary` | `#4285f4` — blue | `$secondary` |
 | Grey Base | `base` | `#f6f7f6` | `$background-grey` |
-| White | `base-2` | `#ffffff` | *none* |
+| White | `base-2` | `#ffffff` | `$white` |
 | Black Contrast | `contrast` | `#000000` | *none* |
 | Primary Dark | `contrast-2` | `#9d292a` | *none* |
 | Contrast / Three | `contrast-3` | `#757783` | `$text-grey` |
 | Accent | `accent` | `#fffb01` — yellow | *none* (but see `$accent-yellow`) |
-| Accent / Two | `accent-2` | `#e5f0fe` — pale blue | *none* |
+| Accent / Two | `accent-2` | `#e5f0fe` — pale blue | `$accent-blue` |
 
 Note `$primary` is a **red**, not a teal — worth saying because `$hover-grey` is a teal and reads like a
 brand colour when it isn't (see Known drift).
@@ -66,11 +66,16 @@ brand colour when it isn't (see Known drift).
 subordinate to the copy beside it (the article author bar's role line). It is the palette's only grey for
 text — reach for it rather than a new one.
 
-**Five of the nine palette colours have no Sass token.** So a component needing white, black or the pale
-blue has nothing to reference — which is exactly the situation the never-invent rule covers: don't paste
-`#fff`, add the alias to `variables.scss` (mirroring the three that exist) and use it. Page background is
-already `base-2` via `theme.json` `styles.color.background`, so a component usually doesn't need white at
-all.
+`$white` (`base-2`) and `$accent-blue` (`accent-2`) were added 2026-08-17 for the blog listing — `$white`
+for the text on a filled category pill, `$accent-blue` for the post card's category chip. Both are aliases
+of palette entries that were already there, not new colours. Page background is already `base-2` via
+`theme.json` `styles.color.background`, so a component usually doesn't need `$white` at all.
+
+**Three of the nine palette colours still have no Sass token** — `contrast`, `contrast-2` and `accent`. A
+component needing one of them has nothing to reference, which is exactly the situation the never-invent
+rule covers: don't paste the hex, add the alias to `variables.scss` (mirroring the ones that exist) and use
+it. Black in particular is rarely needed: `theme.json` already paints links and body copy with `contrast`,
+so inheriting is usually the right answer.
 
 ## Typography
 

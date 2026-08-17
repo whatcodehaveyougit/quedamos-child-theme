@@ -14,6 +14,25 @@
     margin-block-start: 0;
   }
 
+  // The wrapper carried 32px of its own above and below, which showed as a white
+  // strip between the red band at the foot of the page and the footer — and
+  // again between the page header and the first section. The bands run edge to
+  // edge, so the page should meet the header and the footer the same way.
+  margin-block: 0;
+
+  // Closing the gaps above took the breathing room with it, because the space
+  // was margin between the bands rather than padding inside them. The banded
+  // sections were never affected — they carry `.padding-2` (2rem) and the cover
+  // brings its own — but the two opening sections have no padding of their own,
+  // so the intro ended up flush against the red page header above it and the
+  // grey band below.
+  //
+  // $space-4 is 32px, the same as `.padding-2`, so a section with a background
+  // and one without now sit on the same rhythm.
+  > *:not(.padding-2):not(.wp-block-cover) {
+    padding-block: $space-4;
+  }
+
   h2 {
     font-size: $h3-font-size;
   }

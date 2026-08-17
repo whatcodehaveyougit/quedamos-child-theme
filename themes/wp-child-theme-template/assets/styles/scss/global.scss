@@ -85,7 +85,17 @@
 }
 
 .entry-content {
-  > .wp-block-group:nth-child(2) {
+  // The default page shape: a header band, then a content group that stands off
+  // it. `:not(.about-page)` exempts a page built as a stack of full-bleed bands,
+  // where that margin shows as a white strip against the page header above and
+  // the site footer below. Those pages carry the space as padding inside each
+  // band instead — see pages/about.scss.
+  //
+  // Exempted here rather than overridden from the page partial: this selector is
+  // (0,3,0) and global.scss is imported last, so a page rule would have to climb
+  // to four classes to win. Naming the exception where the rule lives is easier
+  // to follow than a specificity ladder somewhere else.
+  > .wp-block-group:nth-child(2):not(.about-page) {
     margin-top: $space-4;
     margin-bottom: $space-4;
   }

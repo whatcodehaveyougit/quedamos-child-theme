@@ -1,6 +1,6 @@
 {
   "name": "sigurd-child",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Gulp This child theme uses gulp, to build the assets run this command in the root directory of the child theme",
   "directories": {
     "doc": "docs"

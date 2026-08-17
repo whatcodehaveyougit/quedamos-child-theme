@@ -3,9 +3,9 @@
  * Blog module.
  *
  * Everything specific to posts: the single-article display meta consumed by
- * templates/single.html, the related-posts query scoping, and the blog
- * listing's filter row, card and page size, consumed by templates/home.html and
- * templates/category.html.
+ * templates/single.html, the query scoping behind the "Latest Articles" band in
+ * patterns/latest-articles.php, and the blog listing's filter row, card and page
+ * size, consumed by templates/home.html and templates/category.html.
  *
  * @package Quedamos
  */

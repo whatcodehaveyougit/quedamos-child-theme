@@ -1,0 +1,42 @@
+@import '../variables.scss';
+
+// Tier 3 — the "Latest Articles" band (patterns/latest-articles.php), used at the
+// foot of a single post and insertable on any page.
+// Centred heading over a grid of .post-card, one column on mobile and three from
+// the tablet breakpoint up.
+//
+// The band owns its own spacing and grid and nothing else: the cards inside it
+// are .post-card, and components/post-card.scss is the only file allowed to paint
+// them. It paints no ground either — the page underneath supplies that (the
+// single post's blue bubble backdrop, for one), which is what lets the same band
+// sit on two differently-coloured pages.
+//
+// Both parts below are written as descendants of the block rather than as
+// `&__title` / `&__grid`, so the selector is (0,2,0) — the same move, for the
+// same reason, as .tutor-intro__quote. Core's own layout CSS lands at (0,1,0)
+// on both of them: `:root :where(.is-layout-constrained) > *` zeroes the
+// heading's block-end margin, and the post-template's grid layout class states
+// `repeat(3, minmax(0, 1fr))` at every width. A single component class only
+// *ties* with those, and a tie is settled by stylesheet order — by whichever
+// enqueue happens to come last, which for block-support styles is not something
+// this file can rely on. These rules used to sit under `.single-post-page` and
+// were (0,2,0) by accident of nesting; pulling them into a component must not
+// quietly hand core the mobile layout back.
+.latest-articles {
+  @include containerPadding();
+
+  .latest-articles__title {
+    margin-bottom: $space-4;
+    text-align: center;
+  }
+
+  .latest-articles__grid {
+    display: grid;
+    gap: $space-3;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}

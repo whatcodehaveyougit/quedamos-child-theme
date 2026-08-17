@@ -348,13 +348,17 @@ add_shortcode( 'quedamos_article_hero_bg', 'quedamos_article_hero_bg_shortcode' 
  * The filter fires with the *post-template* block instance (core builds the
  * query vars there), not the outer wp:query block, and the query block does not
  * pass its className down as context — so this keys on the post-template's own
- * `article-related-grid` className, which is the identifier actually present on
- * the block instance received.
+ * `latest-articles__grid` className, which is the identifier actually present on
+ * the block instance received. That class is written in
+ * patterns/latest-articles.php — RENAME BOTH TOGETHER.
  *
- * Deliberately not scoped to the post's category: the section promises the
- * latest three articles site-wide, and a category-scoped query renders fewer
- * than three cards whenever the category is thin. Only the post being read is
- * excluded, so the count is three wherever there are four or more posts.
+ * Not scoped to a template. The band is a pattern, so it can be inserted on any
+ * page, and the three newest posts is what it promises wherever it lands; keying
+ * on the class alone is what lets one filter serve every placement. Only the
+ * exclusion below is single-post business.
+ *
+ * Deliberately not scoped to the post's category either: a category-scoped query
+ * renders fewer than three cards whenever the category is thin.
  *
  * @param array    $query Query vars the block will run.
  * @param WP_Block $block The block instance (the post-template).
@@ -363,11 +367,17 @@ add_shortcode( 'quedamos_article_hero_bg', 'quedamos_article_hero_bg_shortcode' 
 function quedamos_latest_articles_query_vars( $query, $block ) {
 	$class = $block->parsed_block['attrs']['className'] ?? '';
 
-	if ( false === strpos( (string) $class, 'article-related-grid' ) || ! is_singular( 'post' ) ) {
+	if ( false === strpos( (string) $class, 'latest-articles__grid' ) ) {
 		return $query;
 	}
 
-	$query['post__not_in']        = array_merge( $query['post__not_in'] ?? array(), array( get_the_ID() ) );
+	// Drop the post being read, so the band never offers the reader the article
+	// they are already on. Anywhere else there is no post to exclude and the
+	// newest three are already the right three.
+	if ( is_singular( 'post' ) ) {
+		$query['post__not_in'] = array_merge( $query['post__not_in'] ?? array(), array( get_the_ID() ) );
+	}
+
 	$query['posts_per_page']      = 3;
 	$query['orderby']             = 'date';
 	$query['order']               = 'DESC';

@@ -442,6 +442,38 @@ Do this on **both** environments, or the two About pages diverge.
 - [ ] Bands still meet edge to edge — no white stripe above or below the new one
 - [ ] LiteSpeed purged
 
+### 11. Home page — insert the `quedamos/latest-articles` pattern
+
+The "Latest Articles" band that closes every blog post is now a pattern, `patterns/latest-articles.php`
+("Latest articles" in the inserter), so the same band can run on the home page. `templates/single.html`
+references the pattern, so **the single-post end of this ships with the code and needs nothing doing** — the
+home page is the half that lives in the database.
+
+**The inserter will not list it until the theme version changes.** WordPress caches a theme's pattern list
+in a site transient keyed on the version in `style.css`, with a 30-minute TTL — so a new pattern file in a
+theme still calling itself 1.9 is invisible until that expires. The version bump that goes with every merge
+to `main` clears it; if the pattern is missing anyway, wait out the half hour or delete the
+`wp_theme_files_patterns-*` transient.
+
+**Pages → Home → open it →** insert **Latest articles** from the block inserter where the band should sit
+(below the existing content, unless Sigurd says otherwise), then Update. The pattern is unsynced, so the
+heading text is editable once inserted; the query underneath needs no configuring — it is pinned to the
+three newest posts by `quedamos_latest_articles_query_vars()` in `inc/blog/article-meta.php`, which keys on
+the `latest-articles__grid` class the inserted markup carries.
+
+The band paints no background of its own, on purpose: it takes whatever ground the section above and below
+it sits on. Check it does not land on a stripe that swallows the white cards.
+
+Do this on **both** environments, or the two home pages diverge.
+
+- [ ] **Latest articles** inserted on the home page and updated
+- [ ] `view-source:` on the home page shows `class="wp-block-group alignfull latest-articles"`
+- [ ] Three cards render, newest first, each with its own avatar, date and read-time row
+- [ ] At 375px the cards stack to one column; at 1440px they are three equal columns
+- [ ] The single-post band still renders identically — same heading, same three cards, and the post being
+      read is still absent from them
+- [ ] LiteSpeed purged
+
 ## Done
 
 *Nothing yet.*

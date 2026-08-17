@@ -74,6 +74,66 @@ $content-width: var(--wp--style--global--content-size);
   padding: 3rem 2rem;
 }
 
+// The theme's own image folder, resolved from PARCEL's project root (this
+// theme), not the web root — a leading / means "the theme folder" here.
+//
+// Deliberately not the $domain-url form the two older background-images use.
+// That pins a stylesheet to 'https://quedamoslanguages.com', so localhost
+// fetches its artwork off the live site; it survives only because an absolute
+// URL is the one shape Parcel leaves alone (CLAUDE.md, on hardcoded production
+// URLs). A path Parcel CAN resolve is the better trade: it copies the file into
+// dist/ under a content hash and rewrites this URL to match, so the artwork
+// cache-busts itself and no domain is written down.
+//
+// Two consequences worth knowing. dist/ now holds images as well as CSS and JS,
+// so whatever ships the bundle must ship them too. And the path is anchored to
+// the project root rather than to the calling file, which is what lets a mixin
+// in this file be called from any depth — a relative ../../ would resolve
+// against the partial that calls it and break the moment one moved.
+$theme-images: '/images';
+
+// The speech-bubble page backdrop, in a named colourway.
+//
+// TWO pieces of artwork per colourway, because `cover` on a backdrop is decided
+// by the viewport's orientation and the site is read in both:
+//
+//   backdrop-bubbles-<c>.webp            1200x1800 portrait  — phones
+//   backdrop-bubbles-<c>-landscape.webp  1920x1080 landscape — tablet and up
+//
+// One file cannot serve both. `cover` scales the artwork until it fills the
+// viewport, so the mismatched axis is cropped and the rest is magnified: the
+// portrait file on a 1920 desktop rendered its bubbles at 160% and threw away
+// everything below the top third. Each file is drawn for the shape it is served
+// to, and both keep the centre clear so the artwork never fights the copy.
+//
+// Mobile-first, matching the theme's other breakpoints: the portrait file is the
+// base case and the landscape one takes over from 768px.
+//
+// Attachment splits on the same line. FIXED above 768px, so the bubbles hold
+// their place while a long listing scrolls past rather than stretching to the
+// page's full height. SCROLL below it, because iOS Safari sizes a fixed
+// background against the document instead of the viewport and blows the artwork
+// up to nonsense on a phone.
+//
+// $fallback paints underneath: the ground is correct before the image arrives
+// and stays correct if it never does.
+//
+// @param string $colourway One of light, blue, red — matching images/backdrop-bubbles-*.webp.
+// @param color  $fallback  The ground colour under the artwork.
+@mixin qBubbleBackdrop($colourway, $fallback) {
+  background-color: $fallback;
+  background-image: url('#{$theme-images}/backdrop-bubbles-#{$colourway}.webp');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  background-attachment: scroll;
+
+  @media (min-width: 768px) {
+    background-image: url('#{$theme-images}/backdrop-bubbles-#{$colourway}-landscape.webp');
+    background-attachment: fixed;
+  }
+}
+
 // Style System
 
 $space-inset-default: 16px 16px 16px 16px;

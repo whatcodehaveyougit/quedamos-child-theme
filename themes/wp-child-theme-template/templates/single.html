@@ -55,49 +55,12 @@
 	[quedamos_synced_block title="MyMission"]
 	<!-- /wp:shortcode -->
 
-	<!-- wp:group {"tagName":"section","className":"article-related-section","layout":{"type":"constrained"}} -->
-	<section class="wp-block-group article-related-section">
-
-		<!-- wp:heading {"level":2,"className":"article-related__title"} -->
-		<h2 class="wp-block-heading article-related__title">Latest Articles</h2>
-		<!-- /wp:heading -->
-
-		<!-- wp:query {"queryId":0,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"className":"article-related-query"} -->
-		<div class="wp-block-query article-related-query">
-
-			<!-- wp:post-template {"className":"article-related-grid","layout":{"type":"grid","columnCount":3}} -->
-
-				<!-- wp:group {"className":"post-card","layout":{"type":"default"}} -->
-				<div class="wp-block-group post-card">
-
-					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","className":"post-card__image"} /-->
-
-					<!-- The avatar, author, date and read-time row is prepended to
-					     the title block below by quedamos_prepend_post_card_byline()
-					     in inc/blog/article-meta.php. It is not a block here because
-					     the read-time is derived from the post's word count, which no
-					     core block can express, and a shortcode cannot see which post
-					     the query loop is on. -->
-					<!-- wp:post-title {"isLink":true,"level":3,"className":"post-card__title"} /-->
-
-					<!-- wp:post-excerpt {"showMoreOnNewLine":false,"excerptLength":18,"className":"post-card__excerpt"} /-->
-
-				</div>
-				<!-- /wp:group -->
-
-			<!-- /wp:post-template -->
-
-			<!-- wp:query-no-results -->
-				<!-- wp:paragraph -->
-				<p>No other articles yet — check back soon.</p>
-				<!-- /wp:paragraph -->
-			<!-- /wp:query-no-results -->
-
-		</div>
-		<!-- /wp:query -->
-
-	</section>
-	<!-- /wp:group -->
+	<!-- The "Latest Articles" band, which is also insertable on a page from the
+	     block inserter — its markup, its class hooks and its query live in
+	     patterns/latest-articles.php. Referenced rather than inlined so the two
+	     placements cannot drift: core resolves wp:pattern at render time, so this
+	     template always shows whatever that file currently says. -->
+	<!-- wp:pattern {"slug":"quedamos/latest-articles"} /-->
 
 </main>
 <!-- /wp:group -->

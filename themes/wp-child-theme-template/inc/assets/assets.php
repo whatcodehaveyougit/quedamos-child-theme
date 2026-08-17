@@ -52,6 +52,34 @@ function quedamos_enqueue_assets() {
 add_action( 'wp_enqueue_scripts', 'quedamos_enqueue_assets' );
 
 /**
+ * Load the built bundle into the block editor as well as the front end.
+ *
+ * Without this the editor renders the theme's own markup unstyled — a card
+ * pattern comes out as bare headings and bulleted lists, and any layout fix
+ * living in the bundle (the Special Offer band's centring, say) is simply absent
+ * — so what the editor shows is not what the page will look like.
+ *
+ * add_editor_style() takes a path relative to the theme and works with the
+ * iframed block editor, which is why the enqueue above cannot serve both: it
+ * runs on wp_enqueue_scripts, a front-end-only hook.
+ *
+ * The path is not versioned. filemtime() cache-busting is not available here —
+ * add_editor_style() takes a bare path — so a rebuilt bundle can need a hard
+ * refresh of an already-open editor. Harmless, and the alternative is
+ * hand-rolling the enqueue into the editor settings filter.
+ *
+ * @return void
+ */
+function quedamos_add_editor_styles() {
+	if ( ! file_exists( get_stylesheet_directory() . '/dist/styles/style.css' ) ) {
+		return;
+	}
+
+	add_editor_style( 'dist/styles/style.css' );
+}
+add_action( 'after_setup_theme', 'quedamos_add_editor_styles' );
+
+/**
  * A cache-busting version string for a theme asset.
  *
  * filemtime() emits a warning and returns false for a missing file, which is a

@@ -1,0 +1,119 @@
+@import '../variables.scss';
+
+// Tier 3 — the "Classes at a glance" comparison card. Inserted on a course page
+// from patterns/classes-at-a-glance.php, which composes it out of core blocks
+// only so every word in it stays editable in Gutenberg; this file supplies the
+// surface, the level bars and the type.
+//
+// The spacing split is deliberate. The gaps *between blocks* — the gutter
+// between the two level groups, and the one between the two
+// format columns — are set on the blocks themselves in the pattern, as
+// theme.json spacing presets. WordPress's layout support emits its own `gap` and
+// `margin-block-start` for exactly those containers, at the same specificity a
+// component rule here would have, so which one won would come down to enqueue
+// order. Everything below is padding, colour, radius, list reset or type — none
+// of which WordPress sets for these blocks, so all of it holds.
+//
+// The table itself paints nothing — no surface, no padding. Each level group
+// below is its own card, and a card around cards was the double padding this
+// component kept re-inventing: an outer inset, then the level's, then the
+// column's, three deep before a word is read.
+//
+// A page may position this table; it must never repaint its internals.
+.class-table {
+  // One level group — the $primary bar and the two format columns under it — is
+  // the card. qCardSurface() is the shared shadow and radius, the same surface
+  // post-card wears, rather than a second set of shadow values living here.
+  // `overflow` is what clips the square-cornered bar to that radius, the same
+  // way post-card clips its featured image.
+  &__level {
+    @include qCardSurface();
+
+    height: 100%;
+    overflow: hidden;
+    background-color: $white;
+  }
+
+  // theme.json gives headings no colour of their own, so the course name and the
+  // CEFR code both inherit this.
+  &__bar {
+    padding: $space-3 $space-4;
+    background-color: $primary;
+    color: $white;
+  }
+
+  // The colour is repeated from __bar rather than inherited from it. The parent
+  // theme colours every heading `contrast` via `:root :where(h1,…,h6)`, and a
+  // direct rule on the element beats a colour handed down by inheritance
+  // however close the ancestor — so on the red bar the course name has to claim
+  // white for itself. The paragraph beside it has no such rule to beat and does
+  // inherit.
+  &__level-name {
+    margin: 0;
+    color: $white;
+    font-size: $h5-font-size;
+  }
+
+  // The CEFR code sits opposite the course name and has to read as a label
+  // rather than as body copy. 600 is the weight post-card already uses for the
+  // one line it needs to lift out of a block of text.
+  &__level-code {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  &__formats {
+    padding: $space-3;
+  }
+
+  // In Person / Online. Deliberately NOT a card: the level group around them
+  // already is one. The columns are plain areas on its surface — the red bar
+  // above them is what separates one level from the next, so they need no
+  // surface of their own. Full height so the two sit level whichever has more
+  // copy in it; the vertical stack and the gaps inside come from the group
+  // block's flex layout.
+  &__col {
+    height: 100%;
+  }
+
+  &__col-title {
+    margin: 0;
+    font-size: $h5-font-size;
+  }
+
+  // Day and time, venue, price. The leading emoji are typed content rather than
+  // icons, so the list only has to drop the browser's bullets and indent and set
+  // its own rhythm.
+  &__meta {
+    display: grid;
+    gap: $space-2;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: $small-font-size;
+  }
+
+  &__availability {
+    margin: 0;
+    color: $text-grey;
+    font-size: $small-font-size;
+  }
+
+  // The button sits at the foot of its column whatever the copy above it does.
+  // Without this the two buttons in a level drift apart the moment one column's
+  // venue wraps to a second line and the other's does not — which is every
+  // narrow viewport, since the columns stay side by side all the way down.
+  //
+  // Written against the column as well as the button so it carries two classes.
+  // Core ships `:root :where(.is-layout-flex) > * { margin: 0 }` for every flex
+  // container, which ties with a plain `.class-table__cta` at (0,1,0) and wins
+  // on enqueue order — the auto margin computed to 0 until this selector went to
+  // (0,2,0). Specificity, not `!important`.
+  //
+  // Nothing else here: `width: 100` on the button block is what makes it fill
+  // the column, and the $primary fill, the radius and the $secondary hover all
+  // come from theme.json's core/button styles.
+  &__col &__cta {
+    margin-block-start: auto;
+  }
+}

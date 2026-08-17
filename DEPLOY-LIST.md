@@ -331,6 +331,117 @@ renders a card with no empty "Location:" label.
 - [ ] `dist/` rebuilt and shipped — the participant-count recalculation moved out of an inline `<script>`
       in the card into the Parcel bundle, so a stale `dist/` leaves the totals frozen at one participant
 
+### 8. "Classes at a glance" — insert the pattern on each course page and fill it in
+
+The theme now ships a **Classes at a glance** block pattern (`patterns/classes-at-a-glance.php`) and the
+`.class-table` styles that dress it. A pattern is only a starting point in the inserter: the code ships, the
+block does **not** appear on any page until somebody inserts it. Nothing on live changes until this runs.
+
+It is a plain (unsynced) pattern, so it is inserted once per course page and then edited freely — later
+edits to the theme file do not reach pages already using it.
+
+On live, for each course page:
+
+1. Edit the page → **+** → **Patterns** → search "Classes at a glance" (it is filed under Featured,
+   Columns and Call to Action) → insert it where the class comparison belongs.
+2. Replace the placeholder content: the two level names and CEFR codes, and for each of the four columns
+   the day and time, the venue, the price line and the availability note.
+3. Fix each **Book Now** button's link. The pattern ships placeholders pointing at
+   `/booking-form/?qd_course=…&qd_price=120&qd_location=inPerson&qd_currency=pounds`. Update `qd_course`
+   to the real course name, `qd_price` to the real figure, `qd_location` to `inPerson` or `online`, and
+   `qd_currency` to `euros` on a euro-priced course (see Pending 7).
+
+**The price is written twice** — in the list text and in the `qd_price` parameter — so changing one and not
+the other quotes a visitor one figure on the course page and charges another on the booking page. Check both.
+
+**Expect the inserted block to be structure-locked, and know the way out.** WordPress stamps the pattern's
+root group with a `metadata` object naming the pattern, which puts the whole instance into **content-only
+editing**: the text is editable, but List View shows only the headings, paragraphs, lists and buttons — no
+Group or Columns rows, and no parent block to select, collapse or move. Nothing is broken and nothing is
+missing from the markup; it is only how the editor presents a pattern instance. To get the structure back,
+select any block inside it and click **Modify** in the toolbar. Note the same applies to the `CourseTemplate`
+wrapper the course pages already sit in, which is why those pages behave this way before this pattern is
+inserted at all.
+
+**If the pattern is missing from the inserter after deploying, the theme's pattern cache is stale.**
+WordPress scans `patterns/` once and caches the result in a site transient keyed by the theme version, so a
+new pattern file added without a version bump stays invisible however many times the page is reloaded. This
+bit on local: the pattern registered only after the cached scan was cleared. Bumping the theme version on
+the merge (`style.css` + `package.json`, as every merge to `main` does) busts it by itself — so this is only
+a manual step if a deploy ever ships the pattern without a version change, in which case clear the site
+transients (`wp transient delete --all --network`) or bump the version.
+
+- [ ] Pattern inserted on every live course page that needs it
+- [ ] All placeholder days, times, venues, prices and availability notes replaced
+- [ ] Each Book Now link's `qd_price` matches the price printed above it
+- [ ] Clicking a Book Now button lands on `/booking-form/` with the right course, venue and total
+- [ ] Checked at 1440px, 768px and 390px — two level groups side by side on desktop, stacked on mobile,
+      no horizontal scroll
+- [ ] `dist/` rebuilt and shipped — the `.class-table` styles are new, so a stale bundle renders the
+      pattern unstyled
+
+### 9. "Course detail with video" — insert it and paste the video URL
+
+A second pattern (`patterns/course-detail-with-video.php`) pairs a course write-up with a video: editable
+copy on the left, an embed on the right. It is designed to sit under the classes table, and like it, the
+code ships but nothing appears on any page until somebody inserts it.
+
+The embed ships **empty on purpose** — inserted, it shows the editor's "Paste a link…" field, so the video
+is added by pasting a URL rather than by editing markup.
+
+On live, for each course page that needs it:
+
+1. Edit the page → **+** → **Patterns** → search "Course detail with video" → insert it below the classes
+   table.
+2. Replace the placeholder copy: the title, the two section headings, and both lists.
+3. Click the embed block and paste the video URL.
+
+**Check the URL's provider actually embeds.** YouTube and Vimeo resolve through WordPress's built-in
+oEmbed list and need nothing. **Instagram and Facebook do not** — Meta requires an app access token, so a
+reel URL pasted straight in will not render and the block falls back to a plain link. If the video is an
+Instagram reel, it needs either a supported host or a plugin that carries a token, and that is a decision
+to make before promising it on a page.
+
+- [ ] Pattern inserted on every live course page that needs it
+- [ ] Placeholder copy replaced
+- [ ] Video URL pasted and **confirmed rendering on the front end**, not just in the editor
+- [ ] Checked at 1440px and 390px — copy and video side by side on desktop, stacked on mobile
+- [ ] `dist/` rebuilt and shipped — the `.course-detail` styles are new
+### 10. About page — swap the tutor band for the `quedamos/tutor-intro` pattern
+
+The "Meet your tutor" band now ships with the theme as `patterns/tutor-intro.php` ("Meet your tutor" in the
+inserter). The band **on the page** is still the old core blocks saved in the database, and a pattern insert
+is a content edit, so it does not travel with the repo — until this runs, the code is deployed and nothing
+on the About page changes.
+
+Nothing breaks if it is never done: the old band keeps rendering exactly as it does today, because the new
+CSS is keyed on `.tutor-intro` classes the database markup does not carry. This is a tidy-up, not a blocker.
+
+**Pages → About → open it →** delete the existing tutor band (the two-column group holding the eyebrow,
+"¡Hola! I'm Sara", the three emoji lines, the button, and the portrait with the white card), then insert
+**Meet your tutor** from the block inserter in its place and put the real copy back in. The pattern is
+unsynced, so every word is editable once inserted.
+
+Two things change on purpose when you do:
+
+- **The card over the photo becomes one paragraph.** Today it is "7+ years" in large red type over a
+  smaller grey line; the pattern replaces both with a single quote. Write one sentence rather than pasting
+  the two tiers back in — reinstating them undoes the point of the change.
+- **The portrait is a theme-file placeholder** (`images/sara-carrillo.webp`). Replace it from the media
+  library with the photo the page uses today, or leave it — either renders on both environments.
+
+Also set the button's link: the pattern ships pointing at `/contact/`, which is a placeholder.
+
+Do this on **both** environments, or the two About pages diverge.
+
+- [ ] Old band removed, **Meet your tutor** inserted, and the copy restored
+- [ ] The card reads as one paragraph of quote text, not a figure plus a caption
+- [ ] `view-source:` on the About page shows `class="wp-block-group alignfull tutor-intro"`
+- [ ] At 1440px the card overlaps the portrait's lower-left; at 375px it tucks under the photo and the copy
+      is centred
+- [ ] Bands still meet edge to edge — no white stripe above or below the new one
+- [ ] LiteSpeed purged
+
 ## Done
 
 *Nothing yet.*

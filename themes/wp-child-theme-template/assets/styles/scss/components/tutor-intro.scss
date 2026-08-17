@@ -1,0 +1,132 @@
+@import '../variables.scss';
+
+// Tier 3 — the "Meet your tutor" intro band. Inserted from
+// patterns/tutor-intro.php, which composes it out of core blocks only so every
+// word stays editable in Gutenberg; this file supplies the band, the eyebrow,
+// the portrait's radius and the quote card.
+//
+// Almost everything else is deliberately absent. The heading size, the body
+// type, the button's red fill, its pill radius and its hover swap to $secondary
+// all come from theme.json and are inherited — a component that restated them
+// would be a second answer to a question the system has already answered. That
+// is why `__grid`, `__title` and `__lede` appear in the pattern but not here:
+// the classes exist because pattern markup is copied into the post on insert and
+// can never be amended from the theme afterwards, not because they need painting.
+//
+// A page may position this band; it must never repaint its internals.
+.tutor-intro {
+  // $space-inset-4 is the same 32px the About page already gives a band without
+  // a background of its own, so the two sit on one rhythm. On that page the
+  // page partial's own `> *:not(.padding-2)` rule is more specific and wins —
+  // identical value, so nothing moves; this is what makes the band stand up
+  // anywhere else.
+  padding: $space-inset-4;
+  background-color: $accent-blue;
+
+  // Centred while the two columns are stacked, left-aligned once they sit side
+  // by side — the same 768px switch the About page makes for its own headings
+  // and paragraphs, so a band inserted there does not disagree with the copy
+  // above it.
+  &__copy {
+    text-align: center;
+
+    @media (min-width: 768px) {
+      text-align: left;
+    }
+  }
+
+  // The same treatment .error-404-eyebrow already established for a kicker over
+  // a heading — uppercase, tracked out, one step below body copy — in $primary
+  // rather than $white because this one sits on the pale blue rather than over
+  // a photo. 600 is the weight post-card uses for the one line it needs to lift
+  // out of a block of text; there is no heavier Open Sans face loaded, so
+  // anything above it renders as a synthesised bold.
+  &__eyebrow {
+    margin: $space-stack-2;
+    color: $primary;
+    font-size: $small-font-size;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  // Each line is led by its own emoji, so a bullet in front of it would be a
+  // second marker for the same job. Zeroing the inline padding is what stops
+  // the list hanging off-centre from the copy above it while the columns are
+  // stacked.
+  &__features {
+    padding-inline-start: 0;
+    list-style: none;
+  }
+
+  // core/button's flex layout has no justification of its own unless the block
+  // markup asks for one, and asking would fix it at one value. Setting it here
+  // keeps the button under the copy it belongs to at both alignments.
+  &__cta {
+    justify-content: center;
+
+    @media (min-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+
+  // The positioning context for the quote card below.
+  &__media {
+    position: relative;
+
+    // Written as a descendant of the column rather than as `&__quote` so the
+    // selector is (0,2,0). WordPress's flow layout ships
+    // `:root :where(.is-layout-flow) > * + * { margin-block-start: … }` at
+    // (0,1,0), which a single component class only ties with — and a tie is
+    // settled by stylesheet order, i.e. by whichever enqueue happens to come
+    // last. The card's whole reason for existing is that it sits over the
+    // portrait, so it cannot be left to that.
+    .tutor-intro__quote {
+      // Stacked: the card tucks up under the portrait's bottom edge, inset from
+      // both sides so it reads as sitting on the photo rather than beside it.
+      margin: -$space-4 $space-3 0;
+
+      // Two columns. Core's own columns block stops stacking at 782px, so the
+      // overlap is switched on at the house 992px — the same breakpoint the
+      // About page uses for its two-column split — which is safely past it.
+      @media (min-width: 992px) {
+        position: absolute;
+        bottom: -$space-3;
+        left: -$space-3;
+        max-width: 75%;
+        margin: 0;
+      }
+    }
+  }
+
+  // The portrait. `img` rather than the figure carries the radius because the
+  // figure is transparent; $BR is the site's one radius, the same curve the
+  // About page already gives every image on it.
+  &__portrait {
+    margin: 0;
+
+    img {
+      display: block;
+      width: 100%;
+      border-radius: $BR;
+    }
+  }
+
+  // One paragraph of quote text over the portrait's lower-left corner —
+  // deliberately one tier, replacing the big-figure-over-a-caption pair the
+  // About page carries today.
+  //
+  // position: relative rather than a z-index: the card comes after the portrait
+  // in the DOM, so being positioned at all is enough to paint it on top while
+  // the columns are stacked.
+  //
+  // The surface is qCardSurface() — the shadow and radius every other card on
+  // the site wears — and the interior inset is the $space-4 qCard() uses.
+  &__quote {
+    @include qCardSurface();
+
+    position: relative;
+    padding: $space-inset-4;
+    background-color: $white;
+  }
+}

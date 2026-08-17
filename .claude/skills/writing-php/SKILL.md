@@ -90,6 +90,7 @@ If code is specific to module X, it lives inside module X. Removing the module f
 | `inc/booking/` | Booking summary shortcode and its view template |
 | `inc/courses/` | Course archive query shortcode |
 | `inc/navigation/` | Mobile menu — the `core/navigation` render filter |
+| `inc/redirects/` | The site's 301 redirect map — **every** redirect lives here (§9) |
 | `inc/schema/` | Schema.org output (the ACF-driven JSON-LD shortcode) |
 
 ### Rules
@@ -249,7 +250,37 @@ Where's the line? A single function call or lone ternary inline is fine. The mom
 helper lives in the module that owns the data, not global `inc/helpers/`, unless it's genuinely
 cross-cutting.
 
-## 9. Adding a new convention
+## 9. Every redirect goes in the redirects map — one file, no exceptions
+
+All 301s live in the `quedamos_redirect_map()` array in
+[inc/redirects/redirects.php](../../../themes/wp-child-theme-template/inc/redirects/redirects.php), as
+`'/old-path/' => '/new-path/'`. Nowhere else — not a redirect plugin, not `.htaccess`, not an ad-hoc
+`wp_redirect()` bolted onto a `template_redirect` hook in some other module.
+
+Redirects are the site's least visible moving part: when a URL misbehaves, the first question is always
+*"is something redirecting it?"*, and that question has to have exactly one place to look. Scattered
+redirects also stack — two rules can chain or loop, and neither author knows the other exists.
+
+```php
+// ❌ BAD — a redirect hidden inside an unrelated module
+add_action( 'template_redirect', function () {
+	if ( is_page( 'booking-form-2' ) ) {
+		wp_redirect( '/booking-form/' );
+		exit;
+	}
+} );
+
+// ✅ GOOD — one line in the map, with a comment saying why
+'/booking-form-2/' => '/booking-form/',
+```
+
+**Always comment each entry with the reason and date.** An uncommented redirect is one nobody will ever
+be confident enough to delete, so the map only ever grows.
+
+Add the map entry **before** deleting the old page — the redirect fires whether or not the page still
+exists, so there's no window where the URL 404s.
+
+## 10. Adding a new convention
 
 If you discover a PHP pattern that should be enforced project-wide, **edit this file** and commit it
 alongside the change that motivated it. Skills are committed to git and apply to every collaborator —

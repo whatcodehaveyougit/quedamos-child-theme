@@ -25,6 +25,17 @@ Read the skill **before** writing code, not after:
 | Any `.scss` under `themes/wp-child-theme-template/assets/styles/` | [writing-scss](.claude/skills/writing-scss/SKILL.md) |
 | Any `.js` under `themes/wp-child-theme-template/assets/scripts/` | [writing-js](.claude/skills/writing-js/SKILL.md) |
 
+## Redirects live in one file
+
+Every 301 on this site is a single line in `quedamos_redirect_map()` in
+[inc/redirects/redirects.php](themes/wp-child-theme-template/inc/redirects/redirects.php) — never a
+redirect plugin, an `.htaccess` rule, or a stray `wp_redirect()` in another module. When a URL misbehaves
+there must be exactly one place to look. Rules and rationale:
+[writing-php §9](.claude/skills/writing-php/SKILL.md).
+
+Add the map entry **before** deleting the old page; the redirect fires whether or not the page still
+exists, so there's no window where the URL 404s.
+
 ## Known state — read before you trust the theme layout
 
 Three things are true today that will surprise you if you assume a standard block theme:
@@ -41,9 +52,11 @@ Three things are true today that will surprise you if you assume a standard bloc
 
 ## Environment
 
-`home_url()` resolves to `localhost:10009` locally (Local by Flywheel) and `quedamoslanguages.com` on
-live. Anything that must only run in production gates on `quedamos_is_live_site()` — never on a
-`WP_ENVIRONMENT_TYPE` constant, which is unset here and defaults to `production` even locally.
+`home_url()` resolves to `localhost:10033` locally (Local by Flywheel — the port is assigned by Local
+and can change, so check `wp option get home` rather than trusting this number) and
+`quedamoslanguages.com` on live. Anything that must only run in production gates on
+`quedamos_is_live_site()` — never on a `WP_ENVIRONMENT_TYPE` constant, which is unset here and defaults
+to `production` even locally.
 
 ## Git
 

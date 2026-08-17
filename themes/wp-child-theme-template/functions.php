@@ -22,6 +22,7 @@ $quedamos_modules = array(
 	'helpers',
 	'assets',
 	'analytics',
+	'redirects',
 	'navigation',
 	'blog',
 	'booking',

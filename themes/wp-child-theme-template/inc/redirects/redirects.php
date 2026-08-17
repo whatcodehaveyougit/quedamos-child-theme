@@ -35,11 +35,13 @@ function quedamos_redirect_map() {
 		// competing for the same search result.
 		'/booking-form-2/'                => '/booking-form/',
 
-		// The About page was renamed 2026-08-17 ('…-tutor-' → '…-tutor-teaching-'),
-		// leaving the URL it had been indexed at since 2024 returning a hard 404.
-		// It is also the author's profile page, so the dead URL took the site's
-		// only credentialed Person entity with it.
-		'/about-spanish-tutor-edinburgh/' => '/about-spanish-tutor-teaching-edinburgh/',
+		// The About page had been renamed to '…-tutor-teaching-edinburgh', which
+		// 404'd the URL it had been indexed at since 2024 — the one Search
+		// Console reports. Decided 2026-08-17 to move it back rather than
+		// redirect to the newer slug: the short URL is the one with the history.
+		// The redirect therefore points the other way, catching anything that
+		// picked up the longer slug while it was live.
+		'/about-spanish-tutor-teaching-edinburgh/' => '/about-spanish-tutor-edinburgh/',
 	);
 }
 

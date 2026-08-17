@@ -7,10 +7,15 @@
  * course page's "Book now" link, so everything here is display-only — no state
  * is written and nothing is trusted.
  *
+ * form-fields.php carries those same values into the WPForms submission, so the
+ * booking email says which course was booked and at what price.
+ *
  * @package Quedamos
  */
 
 defined( 'ABSPATH' ) || exit;
+
+require_once get_stylesheet_directory() . '/inc/booking/form-fields.php';
 
 /**
  * Read the summary card's display values out of the query string.
@@ -22,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
  * and escaped again at output in the view; no nonce is required because nothing
  * is mutated.
  *
- * @return array The course, price, location, currency symbol, participant count and subtotal.
+ * @return array The course, price, location, currency, currency symbol, participant count and subtotal.
  */
 function quedamos_booking_summary_data() {
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only display of link parameters.
@@ -38,6 +43,7 @@ function quedamos_booking_summary_data() {
 		'course'          => $course,
 		'course_price'    => $course_price,
 		'location'        => $location,
+		'currency'        => $currency,
 		'currency_symbol' => quedamos_booking_currency_symbol( $currency ),
 		'participants'    => $participants,
 		'subtotal'        => $course_price * $participants,
@@ -67,6 +73,25 @@ function quedamos_booking_summary_shortcode() {
 add_shortcode( 'booking_summary', 'quedamos_booking_summary_shortcode' );
 
 /**
+ * Is the page being rendered the one carrying the booking summary card?
+ *
+ * Asked by page content rather than by page ID: the booking page's ID is a
+ * database value that differs between local and live, and the shortcode is the
+ * thing that actually matters to every caller here.
+ *
+ * @return bool Whether the current singular post renders [booking_summary].
+ */
+function quedamos_is_booking_summary_page() {
+	if ( ! is_singular() ) {
+		return false;
+	}
+
+	$post = get_post();
+
+	return $post && has_shortcode( $post->post_content, 'booking_summary' );
+}
+
+/**
  * Hand the price and currency symbol to the bundle.
  *
  * This has to hook `wp_enqueue_scripts` and cannot be done from the shortcode:
@@ -80,13 +105,7 @@ add_shortcode( 'booking_summary', 'quedamos_booking_summary_shortcode' );
  * @return void
  */
 function quedamos_booking_localize_summary() {
-	if ( ! is_singular() ) {
-		return;
-	}
-
-	$post = get_post();
-
-	if ( ! $post || ! has_shortcode( $post->post_content, 'booking_summary' ) ) {
+	if ( ! quedamos_is_booking_summary_page() ) {
 		return;
 	}
 

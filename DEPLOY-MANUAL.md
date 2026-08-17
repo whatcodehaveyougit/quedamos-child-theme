@@ -9,16 +9,17 @@ Every WP-CLI snippet in that file has a wp-admin equivalent here.
 
 ## Run the steps in this order
 
-The order is not cosmetic. Between the code landing (step 2) and the header swap (step 4), **live has no
-mobile menu** — the old overlay's PHP filter was deleted along with the code it replaced. Keep that window
-to minutes, in one sitting.
+The order is not cosmetic. Between the code landing (step 2) and the header swap (step 4), live keeps its
+old `core/navigation` header. That still works — the transitional CSS shipped with this release exists
+precisely to hold that window together — but live gets **none** of the navigation change until step 4,
+including the **About and FAQs links that 404 on live's desktop nav today**. Keep the window to one sitting.
 
 | # | Step | Where | Skippable? |
 |---|---|---|---|
 | 1 | Take the backups | wp-admin | No — steps 3 and 4 destroy DB records |
 | 2 | Build and upload the theme | local + wp-admin | No |
 | 3 | Reset the customized templates | Site Editor | Only if no row says `Customized` |
-| 4 | Point the Header part at the mobile-menu block | Site Editor | No, in the same sitting as step 2 |
+| 4 | Point the Header part at the site-navigation block | Site Editor | No, in the same sitting as step 2 |
 | 5 | Purge LiteSpeed | admin bar | No |
 | 6 | Content and user edits | block editor + Users | Per [DEPLOY-LIST.md](DEPLOY-LIST.md) |
 | 7 | Verify on the front end | browser | No |
@@ -96,37 +97,44 @@ overrides of ours.
 
 Done when: no row in the table above says `Customized`, and each reads as coming from the theme.
 
-## 4. Point the Header part at the mobile-menu block
+## 4. Point the Header part at the site-navigation block
 
-The mobile navigation is the theme's own block
-([inc/navigation/mobile-menu/block.json](themes/wp-child-theme-template/inc/navigation/mobile-menu/block.json)),
+The header navigation — **desktop row and mobile panel both** — is the theme's own block
+([inc/navigation/site-navigation/block.json](themes/wp-child-theme-template/inc/navigation/site-navigation/block.json)),
 and it renders only once the **Header** template part references it. That part lives in the database.
 
+One block replaces the **two** `core/navigation` blocks the header carries today.
+
 **Appearance → Editor → Patterns → Template Parts → Header** → open → **⋮ (Options) → Code editor**
-(`⌘⇧⌥M`). Find the mobile navigation block comment — the one carrying
-`"className":"q-navigation-mobile"` — and replace the whole comment with:
+(`⌘⇧⌥M`). You are looking for two comments inside the same group:
+
+- the desktop nav — `"className":"q-navigation-desktop"`, `"overlayMenu":"never"`
+- the mobile nav — `"className":"q-navigation-mobile"`
+
+**Delete both**, and put this single comment in their place:
 
 ```
-<!-- wp:quedamos/mobile-menu {"ref":N} /-->
+<!-- wp:quedamos/site-navigation {"ref":N} /-->
 ```
 
-**You do not need to look up live's menu ID.** `N` is the `"ref"` already sitting in the
-`q-navigation-mobile` comment you are replacing — copy it across unchanged. (`ref` is a database ID; live's is
-not the local `5`. Get it wrong and the block falls back to the site's most recent `wp_navigation` post, so a
-mistake degrades to "possibly the wrong menu" rather than an empty header.)
-
-Leave the **desktop** navigation block (`className: q-navigation-desktop`, `overlayMenu: never`) exactly as
-it is — it keeps its own `ref`.
+**You do not need to look up live's menu ID.** `N` is the `"ref"` already sitting in the two comments you
+are deleting — they share it. Copy it across unchanged. (`ref` is a database ID; live's is not the local
+`5`. Get it wrong and the block falls back to the site's most recent `wp_navigation` post, so a mistake
+degrades to "possibly the wrong menu" rather than an empty header.)
 
 Save.
 
-Two traps:
+Then switch back to visual mode and check it: the block **does** have an editor script, so it renders as a
+proper **Site navigation** block with a **Menu** picker in the right-hand sidebar. If instead you see
+"unsupported block", the theme code has not deployed — go back and fix step 2 rather than clicking
+*Attempt block recovery*.
 
-- The block has **no editor script**, so switching back to visual mode shows it as an unsupported block. That
-  is expected and it renders correctly on the front end. Do **not** click *Attempt block recovery*, and do not
-  re-save the part from visual mode.
-- `header .q-navigation-mobile { display: none }` is still in the CSS on purpose, so the old overlay cannot
-  appear beside the desktop nav in the window between step 2 and this step. Don't remove it until every
+Two notes:
+
+- Adding the block from scratch is fine too — it is in the inserter under **Design → Site navigation**. Set
+  the menu from the sidebar rather than typing a `ref`.
+- The transitional `.q-navigation-*` rules are still in the CSS on purpose, so an un-migrated header cannot
+  show both navs at once in the window between step 2 and this step. Don't remove them until every
   environment is swapped.
 
 ## 5. Purge LiteSpeed
@@ -162,10 +170,39 @@ site than your visitors get.
       means `dist/` did not make it up, and the site is running unstyled or on a stale bundle
 - [ ] `/blog` shows the title, intro and filter pills; a pill click filters the list and changes the URL, and
       loading that URL directly gives the same page
+- [ ] A category archive loads — on live that is `https://quedamoslanguages.com/category/<slug>/`, e.g.
+      [`/category/events/`](https://quedamoslanguages.com/category/events/). See the URL warning below
+      before deciding it is broken
 - [ ] One single post renders, with the author bar and photo
 - [ ] At 390px wide: the hamburger shows and the panel opens with every link
 - [ ] At 1280px: the desktop nav is unchanged, and no width shows both navs at once
+- [ ] **About** and **FAQs** in the desktop nav no longer 404 — the point of step 4
 - [ ] Every box ticked for this release in [DEPLOY-LIST.md](DEPLOY-LIST.md)
+
+### Type live's URLs, not local's
+
+Live and your local checkout **do not share a permalink structure**, so a URL that works locally can 404 on
+live while the page itself is perfectly healthy. Verified against live on 2026-08-17:
+
+| | Local | Live |
+|---|---|---|
+| Blog listing | `/blog/` | `/blog/` |
+| A single post | `/blog/<slug>/` | `/<slug>/` |
+| A category archive | `/blog/category/<slug>/` | `/category/<slug>/` |
+
+On live, `/blog/<anything>` is read as a **single post slug** — which is why `/blog/events` 404s even though
+the Events archive exists at `/category/events/`. A 404 there is a wrong guess at the URL, not a missing page
+and not a failed deploy.
+
+The safe move is never to type these by hand: open `/blog` and **copy the link off a pill or a card**, which
+WordPress generated for whatever structure live is actually on. To read that structure directly, go to
+**Settings → Permalinks** — the *Custom structure* field is the browser equivalent of
+`wp option get permalink_structure`. If it no longer matches the table above, correct the table in this file
+and in [DEPLOY-LIST.md](DEPLOY-LIST.md) as part of the same visit.
+
+Nothing in the theme hardcodes either shape — pills come from `get_category_link()`, the All pill from the
+posts-page setting, post links from `get_permalink()` — so there is nothing to change in the code when the
+two environments differ. Only the URL you check by hand.
 
 Then move the finished items to the **Done** section of [DEPLOY-LIST.md](DEPLOY-LIST.md) and commit that, so
 the next deploy starts from an honest list.
@@ -174,12 +211,15 @@ the next deploy starts from an honest list.
 
 In this order, because each is cheaper than the next:
 
-1. **Purge LiteSpeed again** and recheck logged out. Most "the deploy didn't work" is a cached page.
-2. **Check for a `Customized` template row** you missed in step 3 — the symptom is a page rendering the old
+1. **If it is a 404, check the URL before anything else** — live's permalink structure is not local's, so
+   `/blog/<slug>` and `/blog/category/<slug>/` 404 on live by design. See *Type live's URLs, not local's* in
+   step 7, and reach the page by clicking through from `/blog` instead.
+2. **Purge LiteSpeed again** and recheck logged out. Most "the deploy didn't work" is a cached page.
+3. **Check for a `Customized` template row** you missed in step 3 — the symptom is a page rendering the old
    design perfectly while the new code is definitely on the server.
-3. **Check `dist/` uploaded** — the `?ver=` check in step 7. A theme zip built before `npm run build` installs
+4. **Check `dist/` uploaded** — the `?ver=` check in step 7. A theme zip built before `npm run build` installs
    cleanly and looks broken.
-4. **Restore from step 1's backups** — paste the saved markup back into the same code editor.
+5. **Restore from step 1's backups** — paste the saved markup back into the same code editor.
 
 `theme.json` has the same database-wins problem as templates: the matching `wp_global_styles` record overrides
 it, so a global style change may need clearing in the Site Editor before it shows. See

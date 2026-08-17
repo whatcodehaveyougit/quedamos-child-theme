@@ -50,15 +50,13 @@ The single-post template now opens with an author bar reading "Written by *&lt;d
 comes from the WordPress user record, which lives in the database and does **not** travel with the repo —
 on live the bar will say whatever `display_name` says today, most likely just "Sara".
 
-The name is also the **key to the author's photo**: `quedamos_author_photos()` in
-`inc/blog/article-author.php` maps `sara carrillo` to `images/sara-carrillo.webp`, which ships with the
-theme. Until the display name matches, the bar falls back to the site icon — so this step decides whether
-live shows Sara's face or the school's mark.
+**The photo no longer depends on this name.** It used to: a map keyed by lowercased display name meant live's
+"Sara Carrillo Carrillo" missed the key `sara carrillo` and every byline fell back to the site icon. Sara is
+the blog's only author, so `QUEDAMOS_AUTHOR_PHOTO` in `inc/blog/article-author.php` is now a plain constant
+pointing at `images/sara-carrillo.webp` and both the author bar and the card bylines render it
+unconditionally. Nothing on live has to match anything for the photo to appear.
 
-That same map now also feeds `get_avatar()` through a `pre_get_avatar_data` filter, so the display name
-additionally decides what the **blog listing and related-post card bylines** show. Without it they fall back
-to gravatar.com, which has no account for this address and returns the silhouette placeholder — so a wrong
-display name is now visible on `/blog` as well as on a single post.
+So this step is now **cosmetic only** — it decides what the byline text reads, not whether the face shows.
 
 The role line ("Spanish Language Educator") is hardcoded in the same file and needs nothing on live.
 
@@ -68,20 +66,24 @@ Run on live, or set it in Users → Profile:
 wp user update <id> --display_name="Sara Carrillo" --first_name="Sara" --last_name="Carrillo"
 ```
 
-- [ ] Display name set to `Sara Carrillo` (exactly — the photo lookup is on this string, case-insensitive)
-- [ ] Load a live post and confirm the bar reads "Written by Sara Carrillo · Spanish Language Educator",
+- [ ] Display name reads the way Sara wants to be credited (any string — the photo does not depend on it)
+- [ ] Load a live post and confirm the bar reads "Written by &lt;name&gt; · Spanish Language Educator",
       with Sara's photo beside it rather than the site icon
+- [ ] Load `/blog` and confirm the card bylines show the same photo, not the Gravatar silhouette
 
-### 3. Header template part — point it at the `quedamos/mobile-menu` block · **BLOCKING**
+### 3. Header template part — point it at the `quedamos/site-navigation` block · **BLOCKING**
 
-**Do this in the same release as the code, not after it.** The mobile navigation is now the theme's own
-block instead of a filter on `core/navigation`. The block renders only once the **Header** template part
-references it, and that part lives in the **database**, so it does not travel with the repo. Until this step
-runs, **live has no mobile menu at all** — the old overlay's PHP filter was deleted along with the code that
-replaced it.
+**Do this in the same release as the code, not after it.** The header navigation — *both* the desktop row
+and the mobile panel — is now one block the theme owns, `quedamos/site-navigation`. It replaces the
+`core/navigation` pair the header carries today. The block renders only once the **Header** template part
+references it, and that part lives in the **database**, so it does not travel with the repo.
 
-Already done locally, so this is live-only. The safe way is WP-CLI rather than the Site Editor, because the
-part is stored as block markup and the editor will show the new block as unrecognised:
+Until this step runs, live keeps its old `core/navigation` header. That still works — the transitional CSS
+at the foot of `site-navigation.scss` and in `navigation.scss` exists precisely to hold it together in this
+window — but live gets none of the change, including the **About and FAQs links, which 404 on live's
+desktop nav today** and are fixed by this block resolving hrefs from post IDs.
+
+Already done locally, so this is live-only.
 
 ```bash
 # 1. Find live's menu ID — it is NOT 5, that is the local post.
@@ -93,38 +95,43 @@ wp post list --post_type=wp_template_part --fields=ID,post_title
 # 3. Back the current markup up before touching it.
 wp post get <header-id> --field=post_content > header-part-backup.txt
 
-# 4. Swap the block, substituting live's menu ID for <live-menu-id>.
+# 4. Swap the pair for the one block. The ref is READ from the existing desktop
+#    nav rather than typed, so there is no live menu ID to look up by hand.
 wp eval '
 $id  = <header-id>;
 $old = get_post_field( "post_content", $id );
-$new = preg_replace(
-    "#<!-- wp:navigation \{[^}]*\"className\":\"q-navigation-mobile\"[^}]*\} /-->#",
-    "<!-- wp:quedamos/mobile-menu {\"ref\":<live-menu-id>} /-->",
-    $old
-);
-if ( $new === $old ) { WP_CLI::error( "Nothing matched — check the markup by hand." ); }
+if ( false !== strpos( $old, "wp:quedamos/site-navigation" ) ) { WP_CLI::success( "Already swapped." ); return; }
+if ( ! preg_match( "#<!-- wp:navigation \{.*?\"ref\":(\d+).*?/-->#s", $old, $m ) ) { WP_CLI::error( "No core/navigation block found — check the markup by hand." ); }
+$new = preg_replace( "#<!-- wp:navigation \{.*?/-->#s", "<!-- wp:quedamos/site-navigation {\"ref\":{$m[1]}} /-->", $old, 1 );
+$new = preg_replace( "#\s*<!-- wp:quedamos/mobile-menu \{.*?/-->#s", "", $new, 1 );
+if ( $new === $old ) { WP_CLI::error( "Nothing changed — check the markup by hand." ); }
 wp_update_post( array( "ID" => $id, "post_content" => wp_slash( $new ) ) );
-WP_CLI::success( "Header updated." );
+WP_CLI::success( "Header repointed with ref {$m[1]}." );
 '
 ```
 
 Then purge LiteSpeed (`wp litespeed-purge all`) — a cached header will hide the change completely.
 
-- **`ref` is a database ID and live's is not `5`.** If it is wrong or omitted the block falls back to the
-  site's most recent `wp_navigation` post, so a mistake degrades to "possibly the wrong menu" rather than an
-  empty header. Still worth getting right.
-- Leave the **desktop** navigation block (`className: q-navigation-desktop`, `overlayMenu: never`)
-  untouched — it keeps its own `ref`.
-- The block has no editor script, so the Site Editor shows it as an unrecognised block. That is expected;
-  it renders correctly on the front end. Don't "fix" it.
-- `header .q-navigation-mobile { display: none }` is still in the CSS on purpose, so the old overlay can't
-  appear beside the desktop nav in the window between the code deploy and this step. Once every environment
-  is swapped, that rule can go.
+- The script replaces **the first `wp:navigation` comment it finds**. Live's header has one (the desktop
+  nav); if a second ever appears, do it by hand instead.
+- The second `preg_replace` drops a `quedamos/mobile-menu` comment if one is present. Live has never had
+  that block, so it is a no-op there — it is in the script so the same command works on any environment.
+- **`ref` is a database ID and live's is not `5`** — which is why it is read from the existing markup
+  rather than typed. If it were wrong or omitted, the block falls back to the site's most recent
+  `wp_navigation` post, so a mistake degrades to "possibly the wrong menu" rather than an empty header.
+- The block **does** have an editor script now, so it appears in the inserter as **Site navigation** and
+  renders properly in the Site Editor, with a Menu picker in the sidebar. The old "expect an unrecognised
+  block" warning no longer applies.
+- The transitional `.q-navigation-*` and `.wp-block-navigation` rules stay in the CSS until every
+  environment is swapped. Once live is done, delete them from both `site-navigation.scss` and
+  `navigation.scss`, and the `781`/`782` paragraph from `handbook/DESIGN-SYSTEM.md`.
 
-- [ ] Header template part updated with live's own `ref`
+- [ ] Header template part repointed, carrying its own `ref`
 - [ ] LiteSpeed purged
 - [ ] Hamburger shows on live at 390px and the panel opens with all six links
-- [ ] Desktop nav unchanged at 1280px, and no width shows both navs at once
+- [ ] Desktop row shows at 1280px, looks unchanged, and no width shows both at once
+- [ ] **About** and **FAQs** in the desktop row no longer 404
+- [ ] Transitional CSS deleted once every environment is swapped
 
 ### 4. Blog listing — delete the database "Blog Home" template
 
@@ -151,18 +158,83 @@ category archive is broken.
 Then purge LiteSpeed (`wp litespeed-purge all`) — a cached `/blog` will keep serving the old pattern and
 make a correct deploy look broken.
 
-Category archives live at `/blog/category/<slug>/`, not `/category/<slug>/`: the `/blog/%postname%/`
-permalink front prefixes the category base. Nothing in the code hardcodes that — it comes from
-`get_category_link()` — but it is the URL to test.
+**Live and local do not share a permalink structure — test live's URLs, not local's.** Verified against
+live on 2026-08-17:
+
+| | Local | Live |
+|---|---|---|
+| `permalink_structure` | `/blog/%postname%/` | `/%postname%/` |
+| Blog listing (posts page) | `/blog/` | `/blog/` |
+| A single post | `/blog/<slug>/` | `/<slug>/` |
+| A category archive | `/blog/category/<slug>/` | `/category/<slug>/` |
+
+So on live the Events archive is `/category/events/`. Both `/blog/category/events/` and `/blog/events`
+**404 on live** — the second because live reads `/blog/<anything>` as a single post slug, and there is no
+post called `events`.
+
+Nothing in the theme hardcodes either shape: the pills come from `get_category_link()`, the All pill from
+`get_option( 'page_for_posts' )`, and post links from `get_permalink()`. Both structures therefore render
+the same pages — only the URL you type to check the deploy changes. Read a live URL off the page (copy a
+pill's link) rather than assuming the local path.
 
 - [ ] `wp post list --post_type=wp_template --name=home` returns nothing
 - [ ] LiteSpeed purged
 - [ ] `/blog` on live shows "Our Blog", the intro and the pill row
 - [ ] A pill click filters the list and changes the URL; loading that URL directly gives the same page
+- [ ] The URL a pill lands on is `/category/<slug>/` — if it reads `/blog/category/<slug>/` and 404s,
+      live's permalink structure has changed and this table is stale
 - [ ] Appearance → Editor → Templates shows "Blog Home" as coming from the theme, not "Customized"
 
 Categories themselves need nothing: the five live categories are already assigned, and no code reads their
 names, slugs or order.
+
+### 5. theme.json changes — confirm the database is not overriding them
+
+Two changes in this release live in `theme.json`:
+
+- `settings.layout.contentSize` and `wideSize`: `1280px` → **`1100px`**
+- `settings.typography.fontSizes` `heading-two-size`: `clamp(2.0rem, 4vw, 4rem)` → **`clamp(2rem, 3.5vw, 3.5rem)`**
+  (h2 was capped at `4rem`, identical to h1, so the two read the same size on desktop. Mobile is unchanged —
+  the `2rem` floor is untouched — and h2 now sits between h1's `4rem` and h3's `3rem`.)
+
+Both are subject to the same trap, and one check covers them. Per
+[CLAUDE.md](CLAUDE.md) that file is a **Site Editor export**, and WordPress merges it with the
+`wp_global_styles` database record, which **wins**. Locally that record is empty, which is why editing the
+file alone moved local to 1100.
+
+Live's record cannot be read from outside. Live currently serves `1280px`, which is consistent with *either*
+no override *or* an override that happens to say 1280 — so it has to be checked, not assumed. If live has a
+`layout` override, the whole site will stay at 1280 after this deploy and nothing will look different.
+
+Check after deploying, in the browser console on any live page:
+
+```js
+getComputedStyle(document.documentElement).getPropertyValue('--wp--style--global--content-size')
+```
+
+- `1100px` → nothing more to do.
+- `1280px` → the database is overriding the file. Go to **Appearance → Editor → Styles → (⋮) Revert to
+  theme defaults**, or clear the `wp_global_styles` record for the active theme, then re-check.
+
+Reverting global styles clears **every** Site Editor style customisation for the theme, not just the width —
+so look at what is in there before reverting, and note anything that would be lost.
+
+- [ ] `--wp--style--global--content-size` reads `1100px` on live
+- [ ] An h2 on a live post measures ~50px at desktop, not ~58px
+- [ ] Home, Courses, About, Contact and a single post still look right at the narrower width
+
+### 6. Blog listing — a 25px spacer sits above "Our Blog"
+
+Live renders a `<div class="wp-block-spacer" style="height:25px">` between the site header and `<main>`,
+adding 41px (the spacer plus a 16px block gap) above the page title. `templates/home.html` in the repo has
+no spacer there, and local renders `main` flush against the header — so this is a leftover in **live's
+database copy of the Blog Home template**, the same record step 4 is about.
+
+**Appearance → Editor → Templates → Blog Home → (⋮) Clear customisations.** If the template still shows as
+"Customized" after step 4, this is why.
+
+- [ ] No `wp-block-spacer` between `</header>` and `<main class="blog-page">` in live's page source
+- [ ] "Our Blog" sits 64px below the header, matching local
 
 ## Done
 

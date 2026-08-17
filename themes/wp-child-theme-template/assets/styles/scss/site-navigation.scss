@@ -1,17 +1,72 @@
 @import './variables.scss';
 
-// The site's mobile navigation — the markup rendered by the quedamos/mobile-menu
-// block (inc/navigation/mobile-menu/render.php). Kept beside navigation.scss
-// because both are sitewide header chrome.
+// The site's primary navigation — the markup rendered by the
+// quedamos/site-navigation block (inc/navigation/site-navigation/render.php).
+// Kept beside navigation.scss because both are sitewide header chrome.
+//
+// One block, two halves: an inline row of links from 768px up, and a hamburger
+// with an inset panel below it. Both are in the DOM on every request and this
+// file alone decides which is visible — see the swap at the foot of the block.
 //
 // None of core's overlay classes appear here any more. The block owns its markup,
 // so there is nothing to fight, and the pile of forced overrides that pushed grey
 // slabs back over a red overlay has gone with them. What is left is a light inset
 // card on the site's own grey surface — the comps this was built from are a
 // dark-themed brand, and Quedamos stays light.
-.mobile-menu {
+.site-navigation {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+
+  // ── The desktop row ─────────────────────────────────────────────────────────
+  // Carried over from the core/navigation block this replaces, so the header does
+  // not change appearance on the day it stops being core's. Every value below is
+  // the one that was already computing on the page: the gap from
+  // .wp-block-navigation__container, and the type and inline padding from
+  // .wp-block-navigation-item__label — which is why the family is Open Sans and
+  // not the Poppins that `nav a` set on the anchor around it.
+  //
+  // 'Open Sans', the 500 weight and #37423b are pre-existing drift, recorded in
+  // handbook/DESIGN-SYSTEM.md under Known drift. They are carried verbatim rather
+  // than fixed here: the palette's only near-black is `contrast`, which is pure
+  // #000, so bringing this onto the system would visibly darken every header link.
+  // That is a brand decision, not one to take while porting markup.
+  &__desktop {
+    display: none;
+    gap: $space-1;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__desktop-item {
+    margin: 0;
+  }
+
+  &__desktop-link {
+    display: block;
+    padding-left: $space-2;
+    padding-right: $space-2;
+    font-family: 'Open Sans';
+    font-size: $medium-font-size;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    color: #37423b;
+    white-space: nowrap;
+    transition: 0.3s;
+  }
+
+  // The row had no hover or current treatment of its own — core marked the current
+  // item with a class the CSS never used. Rather than invent one, both states take
+  // the answer the panel below already gives: $primary. The two halves of one
+  // block now agree, which is the point of them being one block.
+  &__desktop-link:hover,
+  &__desktop-link:focus-visible,
+  &__desktop-link--current {
+    color: $primary;
+  }
 
   // ── The toggle ──────────────────────────────────────────────────────────────
   // Neither comp shows the closed header, so the toggle's appearance is this
@@ -51,7 +106,8 @@
   // components/article-toc.scss already uses to mark the focused row.
   &__toggle:focus-visible,
   &__close:focus-visible,
-  &__link:focus-visible {
+  &__desktop-link:focus-visible,
+  &__panel-link:focus-visible {
     outline: 2px solid $primary;
     outline-offset: $space-1;
   }
@@ -59,7 +115,7 @@
   // ── The panel ───────────────────────────────────────────────────────────────
   // Hidden by visibility rather than by display, which keeps the panel out of the
   // tab order and the accessibility tree while still allowing the fade below.
-  // assets/scripts/js/mobile-menu.js only toggles the is-open class, so every
+  // assets/scripts/js/site-navigation.js only toggles the is-open class, so every
   // question about how the panel appears is answered in this file.
   &__overlay {
     position: fixed;
@@ -136,20 +192,19 @@
     height: auto;
   }
 
-  // Roomy rows, one per line, separated by space rather than by a border on each
-  // item — the biggest departure from the grey slabs this replaces.
+  // Roomy rows, one per line, separated by hairlines rather than by empty space —
+  // the gap version read as six words floating on a grey field. A ruled list gives
+  // the panel structure, and each rule is the same $hover-grey the top bar draws
+  // with.
   //
-  // No colour or type rules here. theme.json already renders links in contrast
-  // with no underline and an underline on hover, and the rows are body copy at the
-  // body size, so the house treatment is inherited rather than restated.
-  // The rows are separated by hairlines rather than by empty space now — the gap
-  // version read as six words floating on a grey field. A ruled list gives the
-  // panel structure, and each rule is the same $hover-grey the top bar draws with.
+  // No colour or type rules beyond the family and size below. theme.json already
+  // renders links in contrast with no underline and an underline on hover, so the
+  // house treatment is inherited rather than restated.
   //
   // The negative inline margin lets a row's hover fill and its rule run to the
   // card's edges while the text stays on the panel's own padding, which is what
   // makes the fill read as a row rather than as a floating box.
-  &__list {
+  &__panel-list {
     display: flex;
     flex-direction: column;
     margin: 0 (-$space-3);
@@ -157,7 +212,7 @@
     list-style: none;
   }
 
-  &__item {
+  &__panel-item {
     margin: 0;
 
     // Between rows only. The last row is ended by the card's own edge, and a rule
@@ -168,14 +223,13 @@
   }
 
   // Poppins at the h5 size. A nav row is a navigational heading rather than body
-  // copy, Poppins is the theme's heading family, and it is the family the desktop
-  // nav already sets — so the two halves of the header read as one thing. The size
-  // token replaces the inherited body size, which was too quiet for a panel of
-  // this size.
+  // copy, Poppins is the theme's heading family, and the panel has room the
+  // desktop row does not — so the rows are set larger here than the inline links
+  // above, deliberately, rather than by oversight.
   //
   // The left border is the accent bar: transparent at rest so nothing shifts when
   // it fills in on hover, focus or the current page.
-  &__link {
+  &__panel-link {
     display: block;
     padding: $space-3;
     border-left: $space-1 solid transparent;
@@ -186,14 +240,14 @@
   // Hover and focus get the bar, the brand colour and a fill; the current page gets
   // the bar and the colour but no fill, so pointing at a row still reads as
   // different from being on it.
-  &__link:hover,
-  &__link:focus-visible {
+  &__panel-link:hover,
+  &__panel-link:focus-visible {
     border-left-color: $primary;
     background-color: $hover-grey;
     color: $primary;
   }
 
-  &__link--current {
+  &__panel-link--current {
     border-left-color: $primary;
     color: $primary;
   }
@@ -229,12 +283,12 @@
     // delay is stepped by nth-child because CSS has no index to multiply, and the
     // loop runs to 8 rather than to the menu's current 6 so adding a row does not
     // silently drop it out of the animation.
-    &__item {
+    &__panel-item {
       opacity: 0;
       transform: translateY(-$space-2);
     }
 
-    &__overlay.is-open &__item {
+    &__overlay.is-open &__panel-item {
       opacity: 1;
       transform: none;
       transition:
@@ -265,18 +319,37 @@
     }
   }
 
-  // See the swap at the bottom of this file for why 782px.
-  @media (min-width: 782px) {
-    display: none;
+  // ── The desktop/mobile swap ─────────────────────────────────────────────────
+  // The house breakpoint, per writing-scss §3. This block used to switch at 782px
+  // to match core/navigation's own overlay breakpoint, but core no longer renders
+  // any part of this header — the block owns both halves — so the reason for the
+  // odd number has gone with it and the house value applies.
+  //
+  // Mirrored in assets/scripts/js/site-navigation.js, which closes the panel on
+  // the same crossing so a resize past it cannot strand the scroll lock. Change
+  // one and change the other.
+  //
+  // The toggle and the overlay both go, not just the toggle: display:none on the
+  // overlay is what guarantees a panel left open by a resize cannot sit over the
+  // desktop header, whatever state the JS is in.
+  @media (min-width: 768px) {
+    &__desktop {
+      display: flex;
+    }
+
+    &__toggle,
+    &__overlay {
+      display: none;
+    }
   }
 }
 
 // The page behind the open panel holds still. The class is set on the html element
-// by assets/scripts/js/mobile-menu.js, which is also where the constant naming it
-// lives. Only the y axis is locked, because reset.scss deliberately clips the x
+// by assets/scripts/js/site-navigation.js, which is also where the constant naming
+// it lives. Only the y axis is locked, because reset.scss deliberately clips the x
 // axis there and hiding both axes would make the document a scroll container — the
 // thing that silently broke sticky positioning for the article TOC before.
-.has-mobile-menu-open {
+.has-site-navigation-open {
   overflow-y: hidden;
 
   body {
@@ -284,19 +357,21 @@
   }
 }
 
-// ── The mobile/desktop swap ───────────────────────────────────────────────────
-// 782px, not the house 768px, because it is WordPress's own navigation-block
-// overlay breakpoint and the value .q-navigation-desktop has always switched at,
-// so the header keeps matching core rather than the house scale. The .mobile-menu
-// half of the pair is the media query at the end of the block above — below 782px
-// the toggle shows and the desktop nav does not, at 782px and up the reverse, and
-// there is no width at which both are visible.
+// ── Transitional: the core/navigation blocks this one replaces ────────────────
+// These rules do NOT style anything the theme renders any more. They exist only
+// for the window between this code shipping and the Header template part being
+// repointed at quedamos/site-navigation on each environment — that part lives in
+// the database, so it does not travel with the repo, and DEPLOY-LIST.md carries
+// the step.
 //
-// .q-navigation-mobile is the core/navigation overlay this block replaces. Its
-// rule stays until the Header template part has been swapped on every environment.
-// That part lives in the database and the edit is a manual step, recorded in
-// DEPLOY-LIST.md, so without this the old overlay would appear beside the desktop
-// nav in the gap between the deploy and the edit.
+// Until then an un-migrated header still emits core's pair: .q-navigation-desktop
+// (overlayMenu: never) and .q-navigation-mobile (the old overlay). Without these
+// rules both would show at every width. They stay at 782px — core's own overlay
+// breakpoint — because they govern core's blocks, not this one; the two numbers
+// never apply to the same environment at the same time.
+//
+// Delete this whole section, and the .wp-block-navigation rules in
+// navigation.scss, once every environment has been swapped.
 header .q-navigation-desktop {
   display: none;
 }

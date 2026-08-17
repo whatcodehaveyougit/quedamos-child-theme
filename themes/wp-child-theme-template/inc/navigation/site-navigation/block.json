@@ -1,12 +1,12 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "quedamos/mobile-menu",
+	"name": "quedamos/site-navigation",
 	"version": "1.0.0",
-	"title": "Mobile menu",
+	"title": "Site navigation",
 	"category": "design",
 	"icon": "menu",
-	"description": "The site's mobile navigation — a hamburger toggle and an inset panel holding the links from a menu.",
+	"description": "The site's primary navigation — an inline row of links on desktop, and a hamburger toggle with an inset panel below the breakpoint. Both halves render from the same menu.",
 	"textdomain": "quedamos",
 	"attributes": {
 		"ref": {
@@ -17,5 +17,6 @@
 		"html": false,
 		"customClassName": false
 	},
+	"editorScript": "file:./editor.js",
 	"render": "file:./render.php"
 }

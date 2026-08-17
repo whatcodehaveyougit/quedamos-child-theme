@@ -1,11 +1,17 @@
 <?php
 /**
- * The quedamos/mobile-menu block — registration and its data lookups.
+ * The quedamos/site-navigation block — registration and its data lookups.
  *
- * Registration reads mobile-menu/block.json, so the metadata (name, attributes,
- * render file) has one home. The lookups below turn the block's `ref` attribute
- * into a plain list of links for mobile-menu/render.php to echo; keeping them
- * here leaves that file reading as markup, per writing-php §8.
+ * Registration reads site-navigation/block.json, so the metadata (name,
+ * attributes, render file, editor script) has one home. The lookups below turn
+ * the block's `ref` attribute into a plain list of links for
+ * site-navigation/render.php to echo; keeping them here leaves that file reading
+ * as markup, per writing-php §8.
+ *
+ * The block renders BOTH halves of the header navigation from that one list —
+ * the inline row on desktop and the panel below the breakpoint — so the two can
+ * never disagree about what the menu contains, which is what happened while the
+ * desktop half was still core/navigation.
  *
  * @package Quedamos
  */
@@ -13,33 +19,34 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Register the mobile menu block from its block.json.
+ * Register the site navigation block from its block.json.
  *
- * block.json's `render` property points at render.php, so there is no
- * render_callback argument here and no editor script — the block is
- * server-rendered only, which leaves the Parcel bundle untouched.
+ * block.json's `render` property points at render.php and `editorScript` at
+ * editor.js, so there is no render_callback argument here and no manual
+ * enqueue — WordPress resolves both from the metadata.
  *
  * @return void
  */
-function quedamos_register_mobile_menu_block() {
-	register_block_type( __DIR__ . '/mobile-menu' );
+function quedamos_register_site_navigation_block() {
+	register_block_type( __DIR__ . '/site-navigation' );
 }
-add_action( 'init', 'quedamos_register_mobile_menu_block' );
+add_action( 'init', 'quedamos_register_site_navigation_block' );
 
 /**
  * Resolve the wp_navigation post the menu should render.
  *
- * The `ref` attribute mirrors core/navigation's own, so the desktop nav and this
- * block can share one menu. It is a database ID, though, and live's differs from
- * local's — so a ref that is absent or points at a post that has gone falls back
- * to the site's most recent menu rather than rendering nothing. That way a
- * forgotten template-part edit after a deploy costs the right menu, not the
- * whole mobile navigation.
+ * The `ref` attribute mirrors core/navigation's own, so a header part that is
+ * being converted can keep the ref it already had. It is a database ID, though,
+ * and live's differs from local's — so a ref that is absent or points at a post
+ * that has gone falls back to the site's most recent menu rather than rendering
+ * nothing. That way a forgotten template-part edit after a deploy costs the right
+ * menu, not the whole navigation — which now means the desktop row too, so the
+ * fallback matters more than it did when this block was mobile-only.
  *
  * @param array $attributes The block's attributes.
  * @return int The wp_navigation post ID, or 0 when the site has no menu at all.
  */
-function quedamos_mobile_menu_ref( $attributes ) {
+function quedamos_site_navigation_ref( $attributes ) {
 	$ref = isset( $attributes['ref'] ) ? (int) $attributes['ref'] : 0;
 
 	if ( $ref > 0 ) {
@@ -79,7 +86,7 @@ function quedamos_mobile_menu_ref( $attributes ) {
  * @param int $ref The wp_navigation post ID.
  * @return array List of arrays with 'label', 'url' and 'id' keys.
  */
-function quedamos_mobile_menu_items( $ref ) {
+function quedamos_site_navigation_items( $ref ) {
 	if ( ! $ref ) {
 		return array();
 	}
@@ -107,6 +114,10 @@ function quedamos_mobile_menu_items( $ref ) {
 		// those pages have longer SEO slugs. When the row carries a post ID, that
 		// ID is the durable fact and the permalink is derived from it instead.
 		// A custom link has no ID, so it keeps its stored url.
+		//
+		// Because the desktop row now renders from this same list, resolving here
+		// fixes those two links in the desktop header as well — they had stayed
+		// broken while that half was still core/navigation reading the raw url.
 		if ( $id > 0 ) {
 			$permalink = get_permalink( $id );
 
@@ -139,7 +150,7 @@ function quedamos_mobile_menu_items( $ref ) {
  *
  * @return int The post ID of the page being viewed, or 0 when there isn't one.
  */
-function quedamos_mobile_menu_current_id() {
+function quedamos_site_navigation_current_id() {
 	if ( is_home() && ! is_front_page() ) {
 		return (int) get_option( 'page_for_posts' );
 	}
@@ -160,11 +171,11 @@ function quedamos_mobile_menu_current_id() {
  * and any other path is handed to url_to_postid() to resolve against the routing
  * WordPress already does, rather than compared as a string here.
  *
- * @param array $item One entry from quedamos_mobile_menu_items().
- * @param int   $current The current post ID, from quedamos_mobile_menu_current_id().
+ * @param array $item One entry from quedamos_site_navigation_items().
+ * @param int   $current The current post ID, from quedamos_site_navigation_current_id().
  * @return bool True when this row is the current page.
  */
-function quedamos_mobile_menu_is_current( $item, $current ) {
+function quedamos_site_navigation_is_current( $item, $current ) {
 	if ( $item['id'] > 0 ) {
 		return $item['id'] === $current;
 	}

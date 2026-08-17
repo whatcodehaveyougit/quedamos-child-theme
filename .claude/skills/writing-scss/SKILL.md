@@ -54,7 +54,7 @@ Outside `reset.scss` and `typography.scss`, **never leave a rule keyed on an ele
 is actually for.
 
 ```scss
-// ❌ BAD — in mobile-navigation.scss, but hits every list on the site
+// ❌ BAD — in the header's stylesheet, but hits every list on the site
 @media screen and (min-width: 781px) {
   ul { align-items: center; }
 }
@@ -63,7 +63,7 @@ is actually for.
 ul.wp-block-navigation__container { align-items: center; }
 ```
 
-The bad version is real: it shipped in `mobile-navigation.scss` and centred every flex-or-grid `ul` above
+The bad version is real: it shipped in `mobile-navigation.scss` (now `site-navigation.scss`) and centred every flex-or-grid `ul` above
 781px. WordPress renders a post-template grid as a `<ul>`, so the related-posts cards on a single post came
 out staggered and unequal — a bug with no visible connection to the navigation file it came from.
 

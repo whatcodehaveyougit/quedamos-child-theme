@@ -103,7 +103,7 @@ If code is specific to module X, it lives inside module X. Removing the module f
 | `inc/blog/` | Single-article display meta — read time, byline, related-posts query scoping |
 | `inc/booking/` | Booking summary shortcode and its view template |
 | `inc/courses/` | Course archive query shortcode |
-| `inc/navigation/` | Mobile menu — the `quedamos/mobile-menu` block (registration, its `wp_navigation` lookups and `mobile-menu/render.php`) |
+| `inc/navigation/` | The header navigation — the `quedamos/site-navigation` block (registration, its `wp_navigation` lookups, `site-navigation/render.php` for both the desktop row and the mobile panel, and `site-navigation/editor.js`) |
 | `inc/redirects/` | The site's 301 redirect map — **every** redirect lives here (§9) |
 | `inc/schema/` | Schema.org output (the ACF-driven JSON-LD shortcode) |
 
@@ -236,9 +236,10 @@ $logo = 'https://quedamoslanguages.com/wp-content/uploads/2024/09/logo.webp';
 $logo = get_theme_mod( 'custom_logo' ) ? wp_get_attachment_url( get_theme_mod( 'custom_logo' ) ) : '';
 ```
 
-The cautionary tale is `inc/navigation/mobile-menu.php`, which builds its markup as a string with the
-production domain baked in — which is exactly why the local and live copies of that file diverged. Don't
-imitate it.
+The cautionary tale is the since-deleted `inc/navigation/mobile-menu.php`, which built its markup as a
+string with the production domain baked in — which is exactly why the local and live copies of that file
+diverged. Its replacement, `inc/navigation/site-navigation/render.php`, hardcodes no URL at all: every
+href is resolved from a post ID. Don't reintroduce the old shape.
 
 ## 8. Never inline data-parsing or formatting logic in a template — extract a helper
 

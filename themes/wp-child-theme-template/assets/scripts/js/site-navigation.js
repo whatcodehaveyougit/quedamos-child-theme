@@ -1,19 +1,22 @@
 /**
- * Open/close behaviour for the quedamos/mobile-menu block.
+ * Panel open/close behaviour for the quedamos/site-navigation block.
  *
  * The block owns its own markup, so everything core's navigation block used to
  * provide through the Interactivity API is rebuilt here: aria-expanded on the
  * toggle, focus moved into the panel and handed back on close, Tab trapped
  * inside while open, Esc to close, and the page behind held still.
  *
+ * Only the mobile half needs script. The desktop row is plain links and has no
+ * behaviour to wire — everything below concerns the panel.
+ *
  * Visibility itself is CSS — this module only toggles the state class and the
  * ARIA attributes, so the panel's transition (and its suppression under
- * prefers-reduced-motion) stays in one place, in mobile-navigation.scss.
+ * prefers-reduced-motion) stays in one place, in site-navigation.scss.
  */
 
 // Set on <html> rather than <body> so the scroll lock catches whichever element
-// the browser scrolls. Mirrored in mobile-navigation.scss.
-const DOCUMENT_OPEN_CLASS = 'has-mobile-menu-open';
+// the browser scrolls. Mirrored in site-navigation.scss.
+const DOCUMENT_OPEN_CLASS = 'has-site-navigation-open';
 const OPEN_CLASS = 'is-open';
 
 // Everything the browser will let Tab reach inside the panel. Negative
@@ -43,14 +46,14 @@ function focusableWithin(panel) {
 }
 
 /**
- * Wire one mobile menu block up.
+ * Wire one site navigation block's panel up.
  *
  * @param {HTMLElement} root The block wrapper.
  */
-function setupMenu(root) {
-  const toggle = root.querySelector('[data-mobile-menu-toggle]');
-  const overlay = root.querySelector('[data-mobile-menu-overlay]');
-  const panel = root.querySelector('[data-mobile-menu-panel]');
+function setupNavigation(root) {
+  const toggle = root.querySelector('[data-site-navigation-toggle]');
+  const overlay = root.querySelector('[data-site-navigation-overlay]');
+  const panel = root.querySelector('[data-site-navigation-panel]');
 
   if (!toggle || !overlay || !panel) {
     return;
@@ -121,7 +124,7 @@ function setupMenu(root) {
     open();
   });
 
-  root.querySelectorAll('[data-mobile-menu-close], [data-mobile-menu-scrim]').forEach(function(control) {
+  root.querySelectorAll('[data-site-navigation-close], [data-site-navigation-scrim]').forEach(function(control) {
     control.addEventListener('click', function() {
       close(true);
     });
@@ -133,6 +136,18 @@ function setupMenu(root) {
     link.addEventListener('click', function() {
       close(false);
     });
+  });
+
+  // A viewport dragged up past the breakpoint hides the panel by CSS but leaves
+  // the state behind it — the scroll lock still on, aria-expanded still true, and
+  // focus potentially parked on a link that is now display:none. Closing on that
+  // crossing keeps the two halves of the block from disagreeing. Focus is not
+  // returned to the toggle, because the toggle is itself hidden at this width.
+  const desktop = window.matchMedia('(min-width: 768px)');
+  desktop.addEventListener('change', function(event) {
+    if (event.matches) {
+      close(false);
+    }
   });
 
   document.addEventListener('keydown', function(event) {
@@ -151,13 +166,13 @@ function setupMenu(root) {
   });
 }
 
-export function initMobileMenu() {
-  const menus = document.querySelectorAll('.mobile-menu');
-  if (!menus.length) {
+export function initSiteNavigation() {
+  const navigations = document.querySelectorAll('.site-navigation');
+  if (!navigations.length) {
     return;
   }
 
-  menus.forEach(setupMenu);
+  navigations.forEach(setupNavigation);
 }
 
-document.addEventListener('DOMContentLoaded', initMobileMenu);
+document.addEventListener('DOMContentLoaded', initSiteNavigation);

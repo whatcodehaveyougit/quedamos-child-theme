@@ -219,7 +219,7 @@ one step token exists:
 
 | Thing | Value | Where it's established |
 |---|---|---|
-| Transform / fade duration | `0.2s ease` | `components/post-card.scss`, `components/article-toc.scss`, `mobile-navigation.scss` |
+| Transform / fade duration | `0.2s ease` | `components/post-card.scss`, `components/article-toc.scss`, `site-navigation.scss` |
 | Colour / hover duration | `0.3s` | `navigation.scss` |
 | Stagger step | `$stagger-step` = `0.04s` | `variables.scss` |
 
@@ -248,9 +248,15 @@ turns an enhancement into a broken component.
 | `min-width: 576px` | 1 |
 
 **Use `768px` (mobile → tablet) and `992px` (tablet → desktop), mobile-first `min-width`.** Don't
-introduce a sixth value. `781`/`782` exist only because `782px` is WordPress's own navigation-block
-overlay breakpoint — if you're working on the header, that's the number core switches at, so match core
-rather than the house value and say why in a comment.
+introduce a sixth value.
+
+`781`/`782` exist only because `782px` is WordPress's own navigation-block overlay breakpoint. That
+mattered while the header rendered `core/navigation`; it no longer does — `quedamos/site-navigation`
+owns both halves and switches at the house `768px`. The remaining `782px` rules are the transitional
+guards at the foot of
+[site-navigation.scss](../themes/wp-child-theme-template/assets/styles/scss/site-navigation.scss), kept
+only until every environment's Header template part has been repointed. **Delete them and this
+paragraph together** — after that there is no reason for `781`/`782` to appear anywhere.
 
 ## Known drift — present in the code, not part of the system
 
@@ -263,9 +269,16 @@ rewriting the block that contains them.
   colour; prefer the preset.
 - **`$domain-url: 'https://quedamoslanguages.com'`** in `variables.scss` — a hardcoded production URL in
   the style layer. See [writing-php](../.claude/skills/writing-php/SKILL.md) on the no-hardcoded-URL rule.
-- **Header nav colour `#37423b`** in
-  [navigation.scss](../themes/wp-child-theme-template/assets/styles/scss/navigation.scss) — an off-palette
-  near-black, with `font-family: 'Poppins'` and `font-size: 15px` also hardcoded there.
+- **Header nav colour `#37423b`** — an off-palette near-black. Now in
+  [site-navigation.scss](../themes/wp-child-theme-template/assets/styles/scss/site-navigation.scss) on
+  `.site-navigation__desktop-link`, alongside a hardcoded `'Open Sans'` and weight `500`, carried
+  verbatim when the desktop row moved off `core/navigation` so the header's appearance did not change
+  in the same commit as its markup. (The copy still in
+  [navigation.scss](../themes/wp-child-theme-template/assets/styles/scss/navigation.scss) is
+  transitional — it goes when the `.wp-block-navigation` rules do.) **Bringing this onto the system is
+  a brand decision, not a tidy-up:** the palette's only near-black is `contrast`, which is pure `#000`,
+  so adopting it would visibly darken every header link. Either accept that, or add a real near-black
+  to the palette.
 - **`pages/home.scss`** carries `#ecf9f0`, `#555`, `#eef0ef`, `#ffbb2c`, `#5578ff`, `#e80368`, `#e361ff`,
   `#47aeff`, `#ffa76e` — none in the system. This is the debt the never-invent rule exists to stop.
 - **`-container` as a generic class suffix** — widespread legacy naming. See writing-scss §1.

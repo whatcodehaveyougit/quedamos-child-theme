@@ -112,7 +112,40 @@ npm run build    # production
 `dist/` is gitignored and generated. Never edit it, never commit it. If a change isn't showing on the
 page, confirm the watcher is running before debugging the code.
 
-## 5. Adding a new convention
+## 5. Block editor scripts are the one exception to the bundle
+
+§1 governs the **front end**. A block's *editor* script is different in kind and does **not** go in
+`scripts.js`:
+
+- Putting it in the bundle would ship editor-only code to every visitor and run it on every page.
+- It needs `wp.blocks` / `wp.element` / `wp.blockEditor`, which only exist inside wp-admin.
+
+The pattern, set by `inc/navigation/site-navigation/`:
+
+| File | What |
+|---|---|
+| `inc/navigation/<block>/editor.js` | Lives **beside the block**, not under `assets/scripts/`. Plain JS against the `wp.*` globals — no `import`, no JSX, so it needs no build step. |
+| `inc/navigation/<block>/editor.asset.php` | Hand-written `array( 'dependencies' => …, 'version' => … )`. WordPress looks for it next to the script. |
+| `block.json` | `"editorScript": "file:./editor.js"` — that one line is the whole enqueue. No `wp_enqueue_script` call, no `enqueue_block_editor_assets` hook. |
+
+### Rules
+
+1. **Never repeat block.json metadata in `editor.js`.** WordPress bootstraps title, icon, category,
+   description and attributes into the editor from the server-side registration, so
+   `registerBlockType( name, { edit, save } )` inherits them. Passing a `title` here creates a second
+   answer that drifts.
+2. **Keep `editor.asset.php`'s dependency array in step with the globals the script reads.** Miss one and
+   the editor throws on an undefined global before the block registers — the block then silently vanishes
+   from the inserter.
+3. **Version from `filemtime`, not a literal** — reuse `quedamos_asset_version()`, so editing the script
+   busts the cache without anyone bumping a string.
+4. **Prefer `wp.serverSideRender` for a dynamic block's preview** over re-implementing `render.php` in JS.
+   One source of markup; the editor cannot drift from the front end.
+
+**A dynamic block with no editor script is invisible in the inserter and draws as "unsupported block" in
+the canvas.** That's not a bug to work around — it's the missing `editorScript`.
+
+## 6. Adding a new convention
 
 If you discover a JS pattern that should be enforced project-wide, **edit this file** and commit it
 alongside the change that motivated it. Skills are committed to git and apply to every collaborator —

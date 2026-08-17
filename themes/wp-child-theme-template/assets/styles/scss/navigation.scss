@@ -15,8 +15,14 @@ header.wp-block-template-part {
     min-width: 180px;
   }
 
-  nav a,
-  nav a:focus {
+  // Was a bare `nav a`, which is now a rule that reaches into somebody else's
+  // component: the theme's own quedamos/site-navigation block renders a <nav>,
+  // and `header.wp-block-template-part nav a` (0,1,3) outweighs the block's own
+  // BEM classes (0,1,0) — so this would have overridden both the desktop row's
+  // type and the panel rows' size from two files away. Scoped to core's block,
+  // which is the only thing it was ever written for.
+  .wp-block-navigation a,
+  .wp-block-navigation a:focus {
     font-family: 'Poppins', sans-serif;
     font-size: 15px;
     font-weight: 500;
@@ -25,14 +31,16 @@ header.wp-block-template-part {
     transition: 0.3s;
   }
 
-  // ── Moved here from mobile-navigation.scss ────────────────────────────────
-  // These all style the DESKTOP navigation, which renders core/navigation with
-  // overlayMenu: never — so it still emits the responsive-container wrapper even
-  // though it never opens as an overlay. They sat in mobile-navigation.scss
-  // because that file used to own the whole header; it now owns only the
-  // theme's own mobile-menu block, so they belong with the rest of the header
-  // chrome. Carried over verbatim: desktop styling is out of scope, and the
-  // hardcoded font values here are pre-existing drift, not new.
+  // ── Transitional: core/navigation ─────────────────────────────────────────
+  // Everything from here down styles the core/navigation block, which the
+  // header no longer renders — quedamos/site-navigation replaced both it and
+  // the mobile overlay. It stays only for the window before each environment's
+  // Header template part is repointed, since that edit is database state and
+  // does not travel with this commit. See the matching note at the foot of
+  // site-navigation.scss, and delete both together.
+  //
+  // Carried over verbatim; the hardcoded font values here are pre-existing
+  // drift, not new.
   .header-row-container {
     display: flex;
     flex-wrap: nowrap;

@@ -1,0 +1,20 @@
+<!-- The 404 page.
+
+     The body is patterns/404.php rather than markup here, because the photo
+     behind it resolves through get_stylesheet_directory_uri() and a block
+     template cannot run PHP. Same shape as the parent theme's own 404, which
+     references twentytwentyfour/hidden-404.
+
+     Styles: assets/styles/scss/pages/404.scss. -->
+
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","align":"full","className":"error-404-page","layout":{"type":"default"}} -->
+<main class="wp-block-group alignfull error-404-page">
+
+	<!-- wp:pattern {"slug":"quedamos/404"} /-->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

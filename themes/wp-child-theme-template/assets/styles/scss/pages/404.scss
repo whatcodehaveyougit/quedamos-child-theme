@@ -1,0 +1,54 @@
+@import '../variables.scss';
+
+// The 404 page — templates/404.html, body in patterns/404.php.
+//
+// Tier 1 is `.error-404-page` rather than `.404-page`: the wrapper class is
+// derived from the template name as the naming rule says, but a CSS class cannot
+// begin with a digit, so `error-` is the minimum prefix that keeps it valid.
+//
+// Almost everything here is layout. The type sizes, the button fill and its
+// hover swap, and the dim over the photo all come from theme.json and core/cover
+// — this file positions them, it does not repaint them.
+.error-404-page {
+
+  .error-404-hero {
+    text-align: center;
+
+    // The cover block centres its own inner container; this caps the measure so
+    // the lede does not run the full 1280px column over the photo.
+    .wp-block-cover__inner-container {
+      max-width: 42rem;
+    }
+  }
+
+  .error-404-eyebrow {
+    color: $white;
+    font-size: $medium-font-size;
+    letter-spacing: 0.2em;
+    margin: $space-stack-2;
+    text-transform: uppercase;
+  }
+
+  .error-404-title {
+    color: $white;
+    margin: $space-stack-3;
+  }
+
+  .error-404-lede {
+    color: $white;
+    margin: $space-stack-4;
+
+    // The bold English half of the line, so the two languages read as a pair
+    // rather than as one sentence that changes language halfway through.
+    strong {
+      display: block;
+      margin: $space-stack-1;
+    }
+  }
+
+  .error-404-actions {
+    // A flex layout from the block markup already centres these; the gap is the
+    // only thing the markup cannot say.
+    gap: $space-3;
+  }
+}

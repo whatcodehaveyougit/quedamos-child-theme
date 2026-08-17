@@ -1,0 +1,95 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","align":"full","className":"single-post-page","layout":{"type":"default"}} -->
+<main class="wp-block-group alignfull single-post-page">
+
+	<!-- wp:group {"tagName":"header","align":"full","className":"article-header-section","layout":{"type":"constrained"}} -->
+	<header class="wp-block-group alignfull article-header-section">
+
+		<!-- wp:shortcode -->
+		[quedamos_article_hero_bg]
+		<!-- /wp:shortcode -->
+
+		<!-- wp:post-title {"level":1,"className":"article-title"} /-->
+
+		<!-- wp:shortcode -->
+		[quedamos_article_byline]
+		<!-- /wp:shortcode -->
+
+	</header>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"className":"article-body-section","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group article-body-section">
+
+		<!-- wp:group {"className":"article-card","layout":{"type":"constrained"}} -->
+		<div class="wp-block-group article-card">
+
+			<!-- wp:group {"className":"article-body","layout":{"type":"default"}} -->
+			<div class="wp-block-group article-body">
+
+				<!-- wp:shortcode -->
+				[quedamos_article_toc]
+				<!-- /wp:shortcode -->
+
+				<!-- wp:post-content {"className":"article-prose","layout":{"type":"constrained"}} /-->
+
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:post-terms {"term":"post_tag","prefix":"","className":"article-tags"} /-->
+
+		</div>
+		<!-- /wp:group -->
+
+	</div>
+	<!-- /wp:group -->
+
+	<!-- The site-wide MyMission CTA, resolved by title rather than by database
+	     ID so the reference survives deployment to live. -->
+	<!-- wp:shortcode -->
+	[quedamos_synced_block title="MyMission"]
+	<!-- /wp:shortcode -->
+
+	<!-- wp:group {"tagName":"section","className":"article-related-section","layout":{"type":"constrained"}} -->
+	<section class="wp-block-group article-related-section">
+
+		<!-- wp:heading {"level":2,"className":"article-related__title"} -->
+		<h2 class="wp-block-heading article-related__title">More from the blog</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:query {"queryId":0,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"className":"article-related-query"} -->
+		<div class="wp-block-query article-related-query">
+
+			<!-- wp:post-template {"className":"article-related-grid","layout":{"type":"grid","columnCount":3}} -->
+
+				<!-- wp:group {"className":"post-card","layout":{"type":"default"}} -->
+				<div class="wp-block-group post-card">
+
+					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","className":"post-card__image"} /-->
+
+					<!-- wp:post-title {"isLink":true,"level":3,"className":"post-card__title"} /-->
+
+					<!-- wp:post-excerpt {"showMoreOnNewLine":false,"excerptLength":18,"className":"post-card__excerpt"} /-->
+
+				</div>
+				<!-- /wp:group -->
+
+			<!-- /wp:post-template -->
+
+			<!-- wp:query-no-results -->
+				<!-- wp:paragraph -->
+				<p>No other articles yet — check back soon.</p>
+				<!-- /wp:paragraph -->
+			<!-- /wp:query-no-results -->
+
+		</div>
+		<!-- /wp:query -->
+
+	</section>
+	<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

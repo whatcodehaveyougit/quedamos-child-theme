@@ -1,0 +1,215 @@
+@import '../variables.scss';
+
+// Tier 1 — the single-article page (templates/single.html).
+// Header band (featured image + scrim) → white article card overlapping it →
+// CTA band → related posts grid.
+.single-post-page {
+  // The header falls back to the brand colour, so a post with no featured image
+  // gets a solid band rather than an empty one. The image layer sits on top.
+  .article-header-section {
+    position: relative;
+    isolation: isolate;
+    padding: $space-5 $space-3 ($space-5 + $space-4);
+    background-color: $secondary;
+    text-align: center;
+  }
+
+  .article-header__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-position: center;
+    background-size: cover;
+
+    // The band is a constrained group, so WordPress caps its children at the
+    // content width and centres them. That applies to this layer too even
+    // though it is absolutely positioned, which left the image 1280px wide in a
+    // 1920px band with the fallback colour showing down both sides. The image
+    // is the band's background, not its content, so it opts out.
+    max-width: none;
+    margin-inline: 0;
+
+    // Scrim: the header text is white over an arbitrary photo, so the overlay
+    // is what guarantees the contrast rather than the image itself.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  .article-title {
+    max-width: 20ch;
+    margin: 0 auto;
+    color: white;
+  }
+
+  .article-byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2 $space-3;
+    margin-top: $space-3;
+    color: white;
+    font-size: $small-font-size;
+
+    &__category {
+      padding: $space-1 $space-3;
+      border-radius: $BR;
+      background-color: $accent-yellow;
+      color: $secondary;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    &__category:hover,
+    &__category:focus-visible {
+      text-decoration: underline;
+    }
+
+    &__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $space-3;
+    }
+
+    &__item {
+      display: inline-flex;
+      align-items: center;
+      gap: $space-1;
+    }
+
+    &__item .inline-svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  // The card lifts over the header band, which is what ties the two together.
+  .article-body-section {
+    margin-top: -$space-4;
+  }
+
+  .article-card {
+    @include qCardSurface();
+
+    padding: $space-4 $space-3;
+    background-color: white;
+  }
+
+  // TOC above the prose on mobile, beside it from 992px (see the media query
+  // at the foot of this file).
+  .article-body {
+    display: grid;
+    gap: $space-4;
+    // minmax(0, 1fr) rather than a bare 1fr: a wide code block or long unbroken
+    // word in the prose would otherwise stretch the column past the viewport.
+    grid-template-columns: minmax(0, 1fr);
+
+    // WordPress's flow layout adds a top margin to every child; with a grid
+    // that stacks on top of the gap and pushes the TOC out of alignment.
+    > * {
+      margin-block-start: 0;
+    }
+  }
+
+  .article-prose {
+    > * + * {
+      margin-top: $space-3;
+    }
+
+    h2,
+    h3 {
+      margin-top: $space-4;
+    }
+
+    // Anchor targets clear the top of the viewport instead of butting against
+    // it. The header is static, so this only needs breathing room.
+    h2,
+    h3,
+    h4 {
+      scroll-margin-top: $space-4;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: $BR;
+    }
+  }
+
+  .article-tags {
+    margin-top: $space-4;
+    padding-top: $space-3;
+    border-top: 1px solid $hover-grey;
+    font-size: $small-font-size;
+
+    a {
+      display: inline-block;
+      margin: 0 $space-1 $space-1 0;
+      padding: $space-1 $space-2;
+      border-radius: $BR;
+      background-color: $background-grey;
+      color: $secondary;
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      background-color: $hover-grey;
+    }
+  }
+
+  // The CTA is the site-wide MyMission synced block, styled by
+  // .my-mission-container in components.scss — only its spacing belongs here.
+  .my-mission-container {
+    margin-top: $space-5;
+  }
+
+  .article-related-section {
+    @include containerPadding();
+  }
+
+  .article-related__title {
+    margin-bottom: $space-4;
+    text-align: center;
+  }
+
+  .article-related-grid {
+    display: grid;
+    gap: $space-3;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .article-header-section {
+      padding-inline: $space-4;
+    }
+
+    .article-card {
+      padding: $space-5 $space-4;
+    }
+
+    .article-related-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 992px) {
+    .article-body-section {
+      margin-top: -$space-5;
+    }
+
+    // The TOC becomes a fixed-width sticky column to the left of the prose —
+    // but ONLY when there is a TOC to put in it. A post with no headings
+    // renders no TOC at all, and a hardcoded two-column grid then dropped the
+    // prose into the 220px column and squeezed it to a ribbon.
+    .article-body:has(.article-toc) {
+      gap: $space-5;
+      grid-template-columns: 220px minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+}

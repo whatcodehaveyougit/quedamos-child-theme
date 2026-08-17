@@ -1,6 +1,21 @@
 <?php
+/**
+ * Course archive listing.
+ *
+ * The [course_query] shortcode, which renders course posts filtered by tag.
+ *
+ * @package Quedamos
+ */
 
-function course_query_shortcode($atts) {
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * [course_query] — render a tag-filtered grid of course posts.
+ *
+ * @param array $atts Shortcode attributes: post_type, posts_per_page, tag.
+ * @return string The rendered course list HTML.
+ */
+function quedamos_course_query_shortcode($atts) {
 	// Shortcode attributes
 	$atts = shortcode_atts(array(
 			'post_type' => 'course',
@@ -66,4 +81,4 @@ function course_query_shortcode($atts) {
 	return ob_get_clean();
 }
 
-add_shortcode('course_query', 'course_query_shortcode');
+add_shortcode('course_query', 'quedamos_course_query_shortcode');

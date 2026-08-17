@@ -1,0 +1,114 @@
+@import '../variables.scss';
+
+// Tier 3 — the article table of contents.
+// One <details> element serves both layouts: below 992px it is a tappable
+// accordion stacked above the prose; at 992px and up it becomes a sticky side
+// column that is always open and not interactive. Scrolling to a heading is
+// pure CSS — the page partial sets scroll-margin-top on the headings.
+.article-toc {
+  padding: $space-3;
+  border: 1px solid $hover-grey;
+  border-radius: $BR;
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2;
+    margin: 0;
+    cursor: pointer;
+    font-size: $small-font-size;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: $secondary;
+    list-style: none;
+
+    // Safari draws its own disclosure triangle unless this is stripped.
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    .inline-svg {
+      flex-shrink: 0;
+      width: 1em;
+      height: 1em;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &[open] &__heading {
+    margin-bottom: $space-3;
+
+    .inline-svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Scoped to [open] on purpose: an unconditional display would override the
+  // browser's own rule for hiding a closed <details>, so the accordion could
+  // never collapse.
+  &[open] &__nav {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__link {
+    padding: $space-1 0 $space-1 $space-3;
+    border-left: 2px solid transparent;
+    font-size: $small-font-size;
+    line-height: 1.4;
+    color: $secondary;
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+
+    // Indent by heading level so the outline reads as a hierarchy.
+    &--h3 {
+      padding-left: $space-4;
+    }
+
+    &--h4 {
+      padding-left: $space-5;
+    }
+
+    &:hover,
+    &:focus-visible,
+    &.is-active {
+      border-left-color: $primary;
+      color: $primary;
+    }
+
+    &.is-active {
+      font-weight: 600;
+    }
+  }
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: $space-4;
+    align-self: start;
+    padding: 0;
+    border: none;
+
+    // A long contents list can be taller than the viewport, which would strand
+    // its last entries off-screen with nowhere to scroll. Cap it to the visible
+    // height and let the list itself scroll. Scrolling *this* element is safe:
+    // sticky is broken by scrolling ancestors, not by the sticky box itself.
+    max-height: calc(100vh - #{$space-5});
+    overflow-y: auto;
+
+    // Always open on desktop, so the summary is a plain label rather than a
+    // control: the marker goes, and clicking can no longer collapse it.
+    &__heading {
+      cursor: default;
+      pointer-events: none;
+
+      .inline-svg {
+        display: none;
+      }
+    }
+  }
+}

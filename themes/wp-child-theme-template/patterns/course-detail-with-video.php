@@ -12,11 +12,14 @@
  * fixed facts, while this is long-form copy that changes course by course.
  * Welding them together would mean editing the whole thing to change either.
  *
- * The right-hand column is an EMPTY core/embed block. Inserted, it shows the
- * editor's "Paste a link…" field, so adding the video is pasting a URL — no
- * markup to hand-edit, and no provider baked in. An embed with no URL renders
- * nothing on the front end, so a half-filled block is invisible rather than
- * broken.
+ * The right-hand column is a core/embed block shipping a default video, so the
+ * pattern arrives looking like the finished thing rather than like a hole. To
+ * change it, select the embed and edit the URL — still no markup to hand-edit.
+ *
+ * The URL is a YouTube one deliberately. Instagram and Facebook dropped out of
+ * WordPress's built-in oEmbed list when Meta started requiring an app access
+ * token, so a reel URL pasted in its place renders as a bare link rather than a
+ * player. Anything on YouTube or Vimeo just works.
  *
  * Every class below is a styling hook for
  * assets/styles/scss/components/course-detail.scss. The words are placeholders;
@@ -91,7 +94,13 @@ defined( 'ABSPATH' ) || exit;
 
 		<!-- wp:column {"verticalAlignment":"top","width":"42%","className":"course-detail__media"} -->
 		<div class="wp-block-column is-vertically-aligned-top course-detail__media" style="flex-basis:42%">
-			<!-- wp:embed {"className":"course-detail__video"} /-->
+			<!-- wp:embed {"url":"https://www.youtube.com/watch?v=9o73srp7ffw","type":"video","providerNameSlug":"youtube","responsive":true,"className":"course-detail__video"} -->
+			<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube course-detail__video">
+				<div class="wp-block-embed__wrapper">
+					https://www.youtube.com/watch?v=9o73srp7ffw
+				</div>
+			</figure>
+			<!-- /wp:embed -->
 		</div>
 		<!-- /wp:column -->
 	</div>

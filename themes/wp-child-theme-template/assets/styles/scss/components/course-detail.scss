@@ -40,17 +40,47 @@
     margin-block-end: $space-4;
   }
 
-  // The embed's frame. `overflow` is what clips a video's square corners to this
-  // radius — an iframe ignores a border-radius set on itself. Vertical reels run
-  // taller than the copy beside them, so the frame caps its own height and
-  // centres what it holds rather than stretching the row.
+  // The embed's frame — a phone-shaped portrait window, because the video this
+  // ships with is a Short. `overflow` is what clips the player's square corners
+  // to the radius; an iframe ignores a border-radius set on itself.
+  //
+  // 320px is the one number here with no token behind it. It is a cap on how
+  // wide a portrait video may grow before it dominates the copy beside it, not a
+  // spacing or type value, and the theme has no width scale to take it from —
+  // $content-width is the page column, three times too wide for this. Recorded
+  // as deliberate rather than left to look like drift.
+  //
+  // Two other values were asked for and are NOT used, because the design system
+  // outranks a one-off: the radius is $BR (10px) rather than 18px, and the
+  // shadow is qCardSurface()'s, the same one every other card on the site wears,
+  // rather than a softer set of numbers invented for this block.
   &__video {
+    @include qCardSurface();
+
+    max-width: 320px;
+    margin-inline: auto;
     overflow: hidden;
-    border-radius: $BR;
+  }
+
+  // The portrait window itself. `aspect-ratio` replaces the padding-bottom hack
+  // that used to be the only way to hold a ratio — but core still ships that
+  // hack via a ::before on its own aspect classes, and the two stack into a box
+  // twice as tall as it should be the moment someone swaps the URL and Gutenberg
+  // rewrites the figure's classes. Dropping the pseudo element leaves one
+  // mechanism in charge.
+  &__video .wp-block-embed__wrapper {
+    position: relative;
+    aspect-ratio: 9 / 16;
+
+    &::before {
+      content: none;
+    }
 
     iframe {
-      display: block;
+      position: absolute;
+      inset: 0;
       width: 100%;
+      height: 100%;
       border: 0;
     }
   }

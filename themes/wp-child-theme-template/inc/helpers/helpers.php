@@ -10,6 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/author-identity.php';
 require_once __DIR__ . '/synced-block.php';
 
 /**

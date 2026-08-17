@@ -7,41 +7,15 @@
  * the post's metadata (category, date, read-time) sitting on the hero scrim,
  * this one is the person, sitting on the white card.
  *
+ * Who the person *is* — name, role, photo, profile page, social — lives in
+ * inc/helpers/author-identity.php, because inc/schema/ has to render the same
+ * facts as machine-readable JSON-LD and the two must never disagree. This file
+ * owns only the markup.
+ *
  * @package Quedamos
  */
 
 defined( 'ABSPATH' ) || exit;
-
-/**
- * The role line shown beside the author's name.
- *
- * Hardcoded by decision (2026-08-17). The blog has a single author and the
- * WordPress user profile carries no job-title field, so there is nowhere for
- * this to be edited from. The moment a second author publishes, this has to
- * become per-user data — every author would otherwise be labelled a Spanish
- * Language Educator.
- */
-const QUEDAMOS_AUTHOR_ROLE = 'Spanish Language Educator';
-
-/**
- * The author photo that ships with the theme.
- *
- * Replaces Gravatar, which needed a photo attached to the author's email address
- * at gravatar.com — a setup step outside both the repo and the database, and one
- * nobody would think to repeat. This file is committed, so the photo is on live
- * the moment the code is.
- *
- * A single constant rather than a lookup because Sara is the blog's only author
- * (confirmed 2026-08-17): every byline on the site is hers, so there is nothing
- * to key on. It previously was a map keyed by lowercased display_name, which
- * made the photo depend on a database string matching the code character for
- * character — live read "Sara Carrillo Carrillo" against a key of "sara
- * carrillo", so every byline silently fell back to the site icon. The moment a
- * second author publishes, this has to become per-user data again.
- *
- * Path is relative to the theme root, alongside svgs/.
- */
-const QUEDAMOS_AUTHOR_PHOTO = 'images/sara-carrillo.webp';
 
 /**
  * The avatar image for a blog byline.
@@ -62,11 +36,12 @@ const QUEDAMOS_AUTHOR_PHOTO = 'images/sara-carrillo.webp';
 function quedamos_author_avatar( $size, $class ) {
 	$size = (int) $size;
 
-	// The constant naming a file is not proof the file is there — a missing
-	// photo falls through to the site icon rather than rendering a broken image.
-	if ( file_exists( get_stylesheet_directory() . '/' . QUEDAMOS_AUTHOR_PHOTO ) ) {
-		$src = get_stylesheet_directory_uri() . '/' . QUEDAMOS_AUTHOR_PHOTO;
-	} else {
+	// quedamos_author_photo_url() returns '' when the committed file is missing,
+	// so a shipped photo that never made it into the build falls through to the
+	// site icon rather than rendering a broken image.
+	$src = quedamos_author_photo_url();
+
+	if ( ! $src ) {
 		$src = get_site_icon_url( $size );
 	}
 
@@ -80,27 +55,6 @@ function quedamos_author_avatar( $size, $class ) {
 		esc_url( $src ),
 		$size,
 		$size
-	);
-}
-
-/**
- * The school's social profiles, as icon links.
- *
- * Instagram is the only one the site has — the footer links the same profile.
- * Kept as an array so a second network is one entry plus an SVG in svgs/, not a
- * markup rewrite. Promote this to inc/helpers/ if a module other than the blog
- * ever needs it.
- *
- * @return array<string, array<string, string>> Keyed by slug; url, label and icon filename.
- */
-function quedamos_social_profiles() {
-	return array(
-		'instagram' => array(
-			'url'   => 'https://www.instagram.com/quedamos_languages/',
-			/* translators: the accessible name of the Instagram icon link. */
-			'label' => __( 'Quedamos Languages on Instagram', 'quedamos' ),
-			'icon'  => 'instagram.svg',
-		),
 	);
 }
 
@@ -210,10 +164,27 @@ function quedamos_article_author_shortcode() {
 
 	$avatar = quedamos_author_avatar( 96, 'article-author__avatar' );
 
+	$name = '<strong class="article-author__name">' . esc_html( $author_name ) . '</strong>';
+
+	// The byline links to the profile page when it exists. rel="author" is the
+	// markup that says this link points at who wrote the page, which is what
+	// makes the name attributable rather than decorative — a reader gets her
+	// credentials in one click, and the link is the human-readable twin of the
+	// Person entity inc/schema/person.php emits alongside it.
+	$profile_url = quedamos_author_page_url();
+
+	if ( $profile_url ) {
+		$name = sprintf(
+			'<a class="article-author__link" href="%s" rel="author">%s</a>',
+			esc_url( $profile_url ),
+			$name
+		);
+	}
+
 	$written_by = sprintf(
 		/* translators: %s: the post author's name, already marked up. */
 		esc_html__( 'Written by %s', 'quedamos' ),
-		'<strong class="article-author__name">' . esc_html( $author_name ) . '</strong>'
+		$name
 	);
 
 	$html = sprintf(

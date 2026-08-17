@@ -149,6 +149,20 @@
       align-items: flex-start;
     }
 
+    // The name links to Sara's profile page. Inherits its colour rather than
+    // taking the default link blue: the byline should read as a byline, with
+    // the underline on interaction as the only affordance — same pattern as
+    // .article-byline__category above.
+    &__link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    &__link:hover,
+    &__link:focus-visible {
+      text-decoration: underline;
+    }
+
     &__role {
       color: $text-grey;
     }

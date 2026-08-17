@@ -44,32 +44,56 @@ Additional CSS class(es) on each **number** paragraph, not the label:
 
 Note: these figures are carried over from 2024 — check `7 YEARS EXPERIENCE` is still right before publishing.
 
-### 2. Article author bar — the author's display name
+### 2. About page — the name, and saying it out loud
 
-The single-post template now opens with an author bar reading "Written by *&lt;display name&gt;*". That name
-comes from the WordPress user record, which lives in the database and does **not** travel with the repo —
-on live the bar will say whatever `display_name` says today, most likely just "Sara".
+Prompted by a citability audit: *"With no visible bylines, an unresolvable author entity, and a name spelled
+two ways, there is no credentialed human for an assistant to name."* Most of that is now fixed **in code** —
+see `inc/helpers/author-identity.php` and `inc/schema/person.php`, which put one canonical Person entity
+behind every byline and every post's `author`. Two halves cannot be, because they live in the database.
 
-**The photo no longer depends on this name.** It used to: a map keyed by lowercased display name meant live's
-"Sara Carrillo Carrillo" missed the key `sara carrillo` and every byline fell back to the site icon. Sara is
-the blog's only author, so `QUEDAMOS_AUTHOR_PHOTO` in `inc/blog/article-author.php` is now a plain constant
-pointing at `images/sara-carrillo.webp` and both the author bar and the card bylines render it
-unconditionally. Nothing on live has to match anything for the photo to appear.
+**a) The SEO title. — DONE on live 2026-08-17.** It read "Sara Car**i**llo…" with one `r`; live now reads
+"Sara Carrillo: Edinburgh Spanish Tutor at Quedamos Languages" and the page returns zero occurrences of the
+one-`r` spelling. Recorded because that one field feeds `<title>`, `og:title`, `twitter:title` *and* the
+`AboutPage` name in the JSON-LD — a typo there was a typo in four places at once.
 
-So this step is now **cosmetic only** — it decides what the byline text reads, not whether the face shows.
+**⚠ The same edit renamed the page**, `about-spanish-tutor-edinburgh` → `about-spanish-tutor-**teaching**-edinburgh`,
+which is worth knowing about because the slug is load-bearing in two ways neither visible from wp-admin:
 
-The role line ("Spanish Language Educator") is hardcoded in the same file and needs nothing on live.
+- The URL indexed since 2024 began returning a hard **404** — no redirect. Now fixed in code:
+  `quedamos_redirect_map()` carries the 301 and it ships with the theme, so this needs nothing on live.
+- `QUEDAMOS_AUTHOR_PAGE_SLUG` resolves the profile page for both the byline link and the Person entity's
+  `@id`. A slug it cannot find makes `quedamos_author_page_url()` return `''` — the byline link silently
+  disappears and the Person loses its home. The constant now matches live, and local's slug was renamed to
+  agree (2026-08-17).
 
-Run on live, or set it in Users → Profile:
+**Renaming that page again is a three-part change: the constant, the redirect map, and both environments.**
 
-```
-wp user update <id> --display_name="Sara Carrillo" --first_name="Sara" --last_name="Carrillo"
-```
+**b) Her surname appears nowhere in the visible text.** Still outstanding. The body prose only ever says
+"Sara" — the full name exists solely in `<head>`. An assistant that will not read metadata as a claim about
+authorship has nothing to cite, and the schema now asserts she is the subject of a page that never names her.
+Add the full name to the opening line, e.g. *"Hello, my name is Sara Carrillo…"*, matching the meta
+description that already says exactly that. Content edit, no code.
 
-- [ ] Display name reads the way Sara wants to be credited (any string — the photo does not depend on it)
-- [ ] Load a live post and confirm the bar reads "Written by &lt;name&gt; · Spanish Language Educator",
-      with Sara's photo beside it rather than the site icon
-- [ ] Load `/blog` and confirm the card bylines show the same photo, not the Gravatar silhouette
+Then purge LiteSpeed — a cached `<head>` will keep serving the old markup.
+
+- [x] `rank_math_title` reads "Sara Carrillo…" with two `r`s and no leading space
+- [x] `view-source:` on the live About page shows **no** occurrence of `Carillo` (one `r`) anywhere
+- [ ] The visible body text names her in full at least once
+- [ ] `/about-spanish-tutor-edinburgh/` 301s to the new slug rather than 404ing (ships with the theme —
+      verify after the deploy, no live action needed)
+- [ ] The page's JSON-LD has a `Person` node `@id`'d `…/about-spanish-tutor-teaching-edinburgh/#sara`, and
+      the `AboutPage` node carries `mainEntity` pointing at it
+- [ ] A live post's `BlogPosting.author` resolves to that same `#sara` @id — not `/author/admin/`
+- [ ] The site node is typed `Organization` only, with `founder` → Sara (it was `["Organization","Person"]`
+      named "Quedamos Languages", i.e. the school asserted as a human)
+- [ ] Load a live post: the bar reads "Written by **Sara Carrillo** · Spanish Language Educator", the name
+      links to the About page, and her photo shows rather than the site icon
+- [ ] Load `/blog` and confirm the card bylines read "Sara Carrillo" with the same photo
+
+**The WordPress `display_name` no longer matters and should be left alone.** It reads "Sara Carrillo
+Carrillo" on live; nothing renders it any more. Both the byline and the schema now read
+`QUEDAMOS_AUTHOR_NAME` from code, precisely so the name cannot drift away from the spelling the rest of the
+site uses. To change how she is credited, edit that constant — one line, and it moves everywhere at once.
 
 ### 3. Header template part — point it at the `quedamos/site-navigation` block · **BLOCKING**
 

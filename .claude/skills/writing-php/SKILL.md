@@ -97,7 +97,7 @@ If code is specific to module X, it lives inside module X. Removing the module f
 
 | Module | Owns |
 |---|---|
-| `inc/helpers/` | Cross-cutting `quedamos_*` utilities — `quedamos_inline_svg()`, `quedamos_is_live_site()` |
+| `inc/helpers/` | Cross-cutting `quedamos_*` utilities — `quedamos_inline_svg()`, `quedamos_is_live_site()`, and the author identity (`author-identity.php`: canonical name, role, photo, profile page, social profiles) that `blog` renders and `schema` marks up |
 | `inc/assets/` | Global bundle enqueue (Parcel `dist/` CSS + JS) and theme-wide localised data |
 | `inc/analytics/` | Google Analytics + site verification, gated to production |
 | `inc/blog/` | Single-article display meta — read time, byline, related-posts query scoping |
@@ -105,7 +105,7 @@ If code is specific to module X, it lives inside module X. Removing the module f
 | `inc/courses/` | Course archive query shortcode |
 | `inc/navigation/` | The header navigation — the `quedamos/site-navigation` block (registration, its `wp_navigation` lookups, `site-navigation/render.php` for both the desktop row and the mobile panel, and `site-navigation/editor.js`) |
 | `inc/redirects/` | The site's 301 redirect map — **every** redirect lives here (§9) |
-| `inc/schema/` | Schema.org output (the ACF-driven JSON-LD shortcode) |
+| `inc/schema/` | Schema.org output — the ACF-driven JSON-LD shortcode, and `person.php`, which filters Rank Math's graph (§10) |
 
 ### Rules
 
@@ -295,7 +295,38 @@ be confident enough to delete, so the map only ever grows.
 Add the map entry **before** deleting the old page — the redirect fires whether or not the page still
 exists, so there's no window where the URL 404s.
 
-## 10. Adding a new convention
+## 10. Schema.org — filter Rank Math's graph, never print a second block
+
+Rank Math owns the JSON-LD on this site and already emits a complete graph: `Organization`, `WebSite`,
+`WebPage`/`AboutPage`, `BreadcrumbList`, and a full `BlogPosting` per post (headline, dates,
+`articleSection`, keywords, image, publisher, `inLanguage`, `mainEntityOfPage`). **Don't regenerate what
+it already produces.** Two Article nodes, or two Person nodes, describing the same thing on one page is
+worse than one thin node — nothing tells a consumer which to believe, and they will disagree the moment
+one of them changes.
+
+To add or correct schema, filter it:
+
+```php
+add_filter( 'rank_math/json_ld', 'quedamos_filter_person_schema', 100 );
+```
+
+- `$data` is an **array keyed by node name** — `publisher`, `WebSite`, `WebPage`, `ProfilePage`,
+  `richSnippet`, `BreadcrumbList` — not a list. Reuse an existing key to supersede a node; add a new key
+  to add one.
+- **Run at priority 100 or above.** Rank Math's own schema module connects its entities at 99, so
+  anything earlier gets overwritten by the plugin.
+- Rank Math wraps the output in `wp_json_encode()` and `wp_kses_post_deep()` itself, so a filter returns
+  plain arrays — don't encode or escape on the way out.
+
+**One entity, one `@id`, referenced everywhere.** The `@id` is what makes separate mentions resolve to
+the same thing. Point it at a page a human can read and cite — Sara's `@id` is a fragment on the About
+page, not the `/author/admin/` archive, which is a bare post list that credentials nobody.
+
+**Never assert in schema what the visible page doesn't say.** Markup that outruns the page is a
+liability, not a signal. `inc/schema/person.php` draws every claim from prose already on the About page,
+which is also why DEPLOY-LIST.md carries a content step to put her full name in that prose.
+
+## 11. Adding a new convention
 
 If you discover a PHP pattern that should be enforced project-wide, **edit this file** and commit it
 alongside the change that motivated it. Skills are committed to git and apply to every collaborator —

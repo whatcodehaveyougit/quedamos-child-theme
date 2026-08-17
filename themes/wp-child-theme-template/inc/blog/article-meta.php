@@ -174,20 +174,29 @@ function quedamos_card_date_label( $post_id = 0 ) {
 }
 
 /**
- * The author's display name for a post.
+ * The author's name for a post.
  *
- * get_the_author() reads the $authordata global, which a block template never
- * populates — inside a query loop it returns an empty string. Resolving from the
- * post's own author ID is the only reliable route in FSE.
+ * Returns the canonical QUEDAMOS_AUTHOR_NAME rather than the user record's
+ * `display_name`. The name is the key a search engine or an AI assistant matches
+ * the visible byline against the schema against the page title, so it cannot be
+ * a database string that drifts independently of the code — live's display_name
+ * reads "Sara Carrillo Carrillo" while everything else says "Sara Carrillo".
+ * inc/helpers/author-identity.php now decides it once, for both.
+ *
+ * The post's author ID is still resolved, because it is what answers "does this
+ * post have an author at all" — a post with none returns '' and the byline is
+ * omitted rather than credited to nobody. get_the_author() cannot be used for
+ * that: it reads the $authordata global, which a block template never populates,
+ * so inside a query loop it returns an empty string.
  *
  * @param int $post_id Post ID. Defaults to the current post.
- * @return string The display name, or '' when it cannot be resolved.
+ * @return string The author name, or '' when the post has no author.
  */
 function quedamos_author_name( $post_id = 0 ) {
 	$post_id   = $post_id ? (int) $post_id : get_the_ID();
 	$author_id = (int) get_post_field( 'post_author', $post_id );
 
-	return $author_id ? (string) get_the_author_meta( 'display_name', $author_id ) : '';
+	return $author_id ? QUEDAMOS_AUTHOR_NAME : '';
 }
 
 /**

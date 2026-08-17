@@ -2,13 +2,18 @@
 /**
  * Schema.org output.
  *
- * The [acf_schema] shortcode, which emits the JSON-LD block authored in the
- * post's ACF `schema` field.
+ * Two sources, deliberately separate: the [acf_schema] shortcode emits whatever
+ * JSON-LD has been hand-authored into a post's ACF `schema` field, while
+ * person.php generates the author entity in code and repairs Rank Math's graph
+ * around it. Anything that should hold for every post belongs in the generated
+ * half — a field somebody has to remember to fill in is not a sitewide guarantee.
  *
  * @package Quedamos
  */
 
 defined( 'ABSPATH' ) || exit;
+
+require_once __DIR__ . '/person.php';
 
 /**
  * [acf_schema] — emit the current post's hand-authored JSON-LD.

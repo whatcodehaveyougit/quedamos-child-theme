@@ -1,6 +1,19 @@
 @import '../variables.scss';
 
 .about-page {
+  // The page is a stack of full-bleed bands, most of them carrying their own
+  // background — grey, the pale blue, a cover image, the red one. WordPress's
+  // flow layout puts the global block gap between every pair of siblings, so
+  // each of those joins rendered as a 16px white stripe across the page.
+  //
+  // The bands are meant to meet edge to edge; the breathing room comes from the
+  // padding inside each one, not from a gap between them. Core's rule is
+  // `:where(.is-layout-flow) > * + *`, which has zero specificity, so a single
+  // class selector is enough to switch it off — no !important needed.
+  > * + * {
+    margin-block-start: 0;
+  }
+
   h2 {
     font-size: $h3-font-size;
   }

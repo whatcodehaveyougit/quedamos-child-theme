@@ -25,6 +25,22 @@ Read the skill **before** writing code, not after:
 | Any `.scss` under `themes/wp-child-theme-template/assets/styles/` | [writing-scss](.claude/skills/writing-scss/SKILL.md) |
 | Any `.js` under `themes/wp-child-theme-template/assets/scripts/` | [writing-js](.claude/skills/writing-js/SKILL.md) |
 
+## The handbook — reference values, not rules
+
+[handbook/](handbook/) holds the reference material the skills point *at*. The split is deliberate: a
+`writing-*` skill tells you **how** to work, the handbook tells you **what the values are** and which file
+defines each one.
+
+| File | What's in it |
+|---|---|
+| [handbook/DESIGN-SYSTEM.md](handbook/DESIGN-SYSTEM.md) | Colour palette, the three font families and their loaded weights, font-size and spacing tokens, radii, shadows, mixins, breakpoints — each mapped to its source of truth (`theme.json` or `variables.scss`), plus a Known drift list of off-system values already in the code |
+
+Read `DESIGN-SYSTEM.md` before choosing any style value; it's the fastest way to find the token that
+already exists. It quotes its sources rather than restating them, so **if it disagrees with `theme.json` or
+`variables.scss`, the source wins and the handbook is stale** — fix it in the same commit.
+
+When a new reference doc is added here, add a row to this table too, or nobody will find it.
+
 ## Redirects live in one file
 
 Every 301 on this site is a single line in `quedamos_redirect_map()` in

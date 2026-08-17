@@ -5,6 +5,9 @@ settings, media and `dist/` do not travel with the repo.
 
 Tick items off once verified on live. Move done items to the bottom.
 
+This file is the **what**. For the **how** without SSH or WP-CLI on live — the wp-admin equivalent of every
+command below, in the order it must run — see [DEPLOY-MANUAL.md](DEPLOY-MANUAL.md).
+
 ## Every deploy
 
 - [ ] Build assets: `cd themes/wp-child-theme-template && npm run build`, then get `dist/` onto live.
@@ -48,9 +51,14 @@ comes from the WordPress user record, which lives in the database and does **not
 on live the bar will say whatever `display_name` says today, most likely just "Sara".
 
 The name is also the **key to the author's photo**: `quedamos_author_photos()` in
-`inc/blog/article-author.php` maps `sara carrillo` to `images/sara-carrillo.jpg`, which ships with the
+`inc/blog/article-author.php` maps `sara carrillo` to `images/sara-carrillo.webp`, which ships with the
 theme. Until the display name matches, the bar falls back to the site icon — so this step decides whether
 live shows Sara's face or the school's mark.
+
+That same map now also feeds `get_avatar()` through a `pre_get_avatar_data` filter, so the display name
+additionally decides what the **blog listing and related-post card bylines** show. Without it they fall back
+to gravatar.com, which has no account for this address and returns the silhouette placeholder — so a wrong
+display name is now visible on `/blog` as well as on a single post.
 
 The role line ("Spanish Language Educator") is hardcoded in the same file and needs nothing on live.
 
@@ -118,7 +126,7 @@ Then purge LiteSpeed (`wp litespeed-purge all`) — a cached header will hide th
 - [ ] Hamburger shows on live at 390px and the panel opens with all six links
 - [ ] Desktop nav unchanged at 1280px, and no width shows both navs at once
 
-### 3. Blog listing — delete the database "Blog Home" template
+### 4. Blog listing — delete the database "Blog Home" template
 
 `/blog` now renders from `templates/home.html` in the repo. Live still has a **database** template that
 **wins over it**: a `wp_template` post with `post_name = home`, titled "Blog Home", holding the stock
@@ -140,7 +148,15 @@ wp post delete <id> --force
 The same applies to a `post_name = category` record if one exists — check for it before deciding the
 category archive is broken.
 
+Then purge LiteSpeed (`wp litespeed-purge all`) — a cached `/blog` will keep serving the old pattern and
+make a correct deploy look broken.
+
+Category archives live at `/blog/category/<slug>/`, not `/category/<slug>/`: the `/blog/%postname%/`
+permalink front prefixes the category base. Nothing in the code hardcodes that — it comes from
+`get_category_link()` — but it is the URL to test.
+
 - [ ] `wp post list --post_type=wp_template --name=home` returns nothing
+- [ ] LiteSpeed purged
 - [ ] `/blog` on live shows "Our Blog", the intro and the pill row
 - [ ] A pill click filters the list and changes the URL; loading that URL directly gives the same page
 - [ ] Appearance → Editor → Templates shows "Blog Home" as coming from the theme, not "Customized"

@@ -3,23 +3,21 @@
  * Booking summary card view.
  *
  * Rendered by quedamos_booking_summary_shortcode(), which provides $course,
- * $course_price, $start_date, $location, $participants and $subtotal. Derived
- * values come from the module's helpers so this file stays readable as markup.
+ * $course_price, $location, $participants and $subtotal. Derived values come
+ * from the module's helpers so this file stays readable as markup.
  *
  * @package Quedamos
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$formatted_start_date = quedamos_format_course_date( $start_date );
-$location_label       = quedamos_booking_location_label( $location );
+$location_label = quedamos_booking_location_label( $location );
 ?>
 
 <div class="booking-summary-card">
   <div class="booking-details">
     <h2>Booking Details</h2>
     <div class="course-title"><span>Course:</span> <?php echo esc_html( $course ); ?></div>
-    <div class="start-date"><span>Starts:</span> <?php echo esc_html( $formatted_start_date ); ?></div>
     <div class="sessions"><span>Block of 5 Classes</span></div>
     <div class="location">
       <span>Location:</span>
@@ -91,7 +89,6 @@ button.wpforms-submit {
   margin-bottom: 6px;
 }
 
-.start-date,
 .location,
 .sessions {
   font-size: 1.1rem;

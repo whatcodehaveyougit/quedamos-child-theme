@@ -65,8 +65,15 @@
     color: $white;
   }
 
+  // The colour is repeated from __bar rather than inherited from it. The parent
+  // theme colours every heading `contrast` via `:root :where(h1,…,h6)`, and a
+  // direct rule on the element beats a colour handed down by inheritance
+  // however close the ancestor — so on the red bar the course name has to claim
+  // white for itself. The paragraph beside it has no such rule to beat and does
+  // inherit.
   &__level-name {
     margin: 0;
+    color: $white;
     font-size: $h5-font-size;
   }
 

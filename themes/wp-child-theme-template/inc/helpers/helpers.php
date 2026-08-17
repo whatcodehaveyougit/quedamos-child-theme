@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/synced-block.php';
+
 /**
  * Whether the current request is running on the live site.
  *
@@ -55,7 +57,11 @@ function quedamos_inline_svg( $relative_path ) {
 
 	$svg = preg_replace( '/<svg\b/', '<svg class="inline-svg"', $svg, 1 );
 
-	return wp_kses( $svg, quedamos_svg_allowed_html() );
+	// Collapse the file's own newlines: when an icon is inlined into shortcode
+	// output, wpautop() turns each one into a stray <br> inside the markup.
+	$svg = preg_replace( '/\s*\R\s*/', '', $svg );
+
+	return wp_kses( trim( $svg ), quedamos_svg_allowed_html() );
 }
 
 /**

@@ -35,33 +35,11 @@
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:group {"tagName":"section","align":"full","className":"article-cta-section","layout":{"type":"constrained"}} -->
-	<section class="wp-block-group alignfull article-cta-section">
-
-		<!-- wp:heading {"level":2,"className":"article-cta__title"} -->
-		<h2 class="wp-block-heading article-cta__title">Ready to speak Spanish?</h2>
-		<!-- /wp:heading -->
-
-		<!-- wp:paragraph {"className":"article-cta__sub"} -->
-		<p class="article-cta__sub">Small classes in the centre of Edinburgh, taught by native speakers. Beginners are always welcome.</p>
-		<!-- /wp:paragraph -->
-
-		<!-- wp:buttons {"className":"article-cta__actions","layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->
-		<div class="wp-block-buttons article-cta__actions">
-
-			<!-- wp:button {"className":"is-style-fill"} -->
-			<div class="wp-block-button is-style-fill"><a class="wp-block-button__link wp-element-button" href="/courses/">Browse courses</a></div>
-			<!-- /wp:button -->
-
-			<!-- wp:button {"className":"is-style-outline"} -->
-			<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="/contact/">Get in touch</a></div>
-			<!-- /wp:button -->
-
-		</div>
-		<!-- /wp:buttons -->
-
-	</section>
-	<!-- /wp:group -->
+	<!-- The site-wide MyMission CTA, resolved by title rather than by database
+	     ID so the reference survives deployment to live. -->
+	<!-- wp:shortcode -->
+	[quedamos_synced_block title="MyMission"]
+	<!-- /wp:shortcode -->
 
 	<!-- wp:group {"tagName":"section","className":"article-related-section","layout":{"type":"constrained"}} -->
 	<section class="wp-block-group article-related-section">

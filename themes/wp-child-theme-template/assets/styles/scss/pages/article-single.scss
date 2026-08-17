@@ -130,21 +130,10 @@
     }
   }
 
-  .article-cta-section {
-    @include containerPadding();
-
+  // The CTA is the site-wide MyMission synced block, styled by
+  // .my-mission-container in components.scss — only its spacing belongs here.
+  .my-mission-container {
     margin-top: $space-5;
-    background-color: $background-grey;
-    text-align: center;
-  }
-
-  .article-cta__sub {
-    max-width: 55ch;
-    margin: $space-2 auto 0;
-  }
-
-  .article-cta__actions {
-    margin-top: $space-4;
   }
 
   .article-related-section {

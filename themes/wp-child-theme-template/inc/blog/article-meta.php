@@ -46,7 +46,10 @@ function quedamos_get_primary_category( $post_id = 0 ) {
 		}
 	}
 
-	return $terms[0];
+	// Deliberately no fallback to $terms[0]: if the only category is the
+	// catch-all, there is nothing worth showing. Callers treat null as "hide
+	// the pill" rather than printing "Uncategorized" at the top of an article.
+	return null;
 }
 
 /**
@@ -121,20 +124,33 @@ function quedamos_article_byline_shortcode() {
 		);
 	}
 
-	$author = sprintf(
-		'<span class="article-byline__author">%s</span>',
-		esc_html( get_the_author() )
-	);
+	// get_the_author() reads the $authordata global, which a block template
+	// never populates — it returned an empty string here. Resolve the display
+	// name from the post's own author ID instead.
+	$author_id   = (int) get_post_field( 'post_author', get_the_ID() );
+	$author_name = $author_id ? get_the_author_meta( 'display_name', $author_id ) : '';
+
+	$author = '';
+	if ( $author_name ) {
+		$author = sprintf(
+			'<span class="article-byline__author">%s</span>',
+			esc_html( $author_name )
+		);
+	}
 
 	$meta = quedamos_article_meta_item( 'calendar.svg', esc_html( get_the_date( 'j F Y' ) ) )
 		. quedamos_article_meta_item( 'clock.svg', esc_html( quedamos_read_time_label() ) );
 
-	return sprintf(
+	$html = sprintf(
 		'<div class="article-byline">%s%s<span class="article-byline__meta">%s</span></div>',
 		$pill,
 		$author,
 		$meta
 	);
+
+	// Shortcode output goes through wpautop(), which turns any newline in here
+	// into a stray <br>. Return it as one line.
+	return preg_replace( '/\s*\R\s*/', '', $html );
 }
 add_shortcode( 'quedamos_article_byline', 'quedamos_article_byline_shortcode' );
 

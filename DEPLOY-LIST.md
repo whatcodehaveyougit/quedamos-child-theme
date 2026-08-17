@@ -278,6 +278,38 @@ renders a card with no empty "Location:" label.
 - [ ] `dist/` rebuilt and shipped — the participant-count recalculation moved out of an inline `<script>`
       in the card into the Parcel bundle, so a stale `dist/` leaves the totals frozen at one participant
 
+### 8. "Classes at a glance" — insert the pattern on each course page and fill it in
+
+The theme now ships a **Classes at a glance** block pattern (`patterns/classes-at-a-glance.php`) and the
+`.class-table` styles that dress it. A pattern is only a starting point in the inserter: the code ships, the
+block does **not** appear on any page until somebody inserts it. Nothing on live changes until this runs.
+
+It is a plain (unsynced) pattern, so it is inserted once per course page and then edited freely — later
+edits to the theme file do not reach pages already using it.
+
+On live, for each course page:
+
+1. Edit the page → **+** → **Patterns** → search "Classes at a glance" (it is filed under Featured,
+   Columns and Call to Action) → insert it where the class comparison belongs.
+2. Replace the placeholder content: the two level names and CEFR codes, and for each of the four columns
+   the day and time, the venue, the price line and the availability note.
+3. Fix each **Book Now** button's link. The pattern ships placeholders pointing at
+   `/booking-form/?qd_course=…&qd_price=120&qd_location=inPerson&qd_currency=pounds`. Update `qd_course`
+   to the real course name, `qd_price` to the real figure, `qd_location` to `inPerson` or `online`, and
+   `qd_currency` to `euros` on a euro-priced course (see Pending 7).
+
+**The price is written twice** — in the list text and in the `qd_price` parameter — so changing one and not
+the other quotes a visitor one figure on the course page and charges another on the booking page. Check both.
+
+- [ ] Pattern inserted on every live course page that needs it
+- [ ] All placeholder days, times, venues, prices and availability notes replaced
+- [ ] Each Book Now link's `qd_price` matches the price printed above it
+- [ ] Clicking a Book Now button lands on `/booking-form/` with the right course, venue and total
+- [ ] Checked at 1440px, 768px and 390px — two level groups side by side on desktop, stacked on mobile,
+      no horizontal scroll
+- [ ] `dist/` rebuilt and shipped — the `.class-table` styles are new, so a stale bundle renders the
+      pattern unstyled
+
 ## Done
 
 *Nothing yet.*

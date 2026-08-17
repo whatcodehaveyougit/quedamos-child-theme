@@ -1,0 +1,113 @@
+<!-- A category archive — the same listing as templates/home.html, filtered by the
+     main query.
+
+     Block templates have no include mechanism and parts/ would mean declaring
+     templateParts in a theme.json that is a Site Editor export (see CLAUDE.md),
+     so the filter row, the query and the card below are duplicated from
+     templates/home.html. CHANGE BOTH TOGETHER.
+
+     The two differences from home.html: the H1 is the category name rather than
+     "Our Blog", and there is no intro paragraph — the blog's introduction is not
+     an introduction to one category. -->
+
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","align":"full","className":"blog-page","layout":{"type":"default"}} -->
+<main class="wp-block-group alignfull blog-page">
+
+	<!-- wp:group {"tagName":"header","className":"blog-header-section","layout":{"type":"constrained"}} -->
+	<header class="wp-block-group blog-header-section">
+
+		<!-- wp:query-title {"type":"archive","level":1,"showPrefix":false,"className":"blog-title"} /-->
+
+	</header>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"className":"blog-filter-section","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group blog-filter-section">
+
+		<!-- Real links to real category archives. blog-filter.js swaps this
+		     section and the listing below it in place; with JavaScript off the
+		     click is an ordinary navigation to the same URL. -->
+		<!-- wp:shortcode -->
+		[quedamos_category_filter]
+		<!-- /wp:shortcode -->
+
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"tagName":"section","className":"blog-listing-section","layout":{"type":"constrained"}} -->
+	<section class="wp-block-group blog-listing-section">
+
+		<!-- inherit:true so the main query drives the listing and core's
+		     pagination keeps working on both templates. -->
+		<!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"blog-query"} -->
+		<div class="wp-block-query blog-query">
+
+			<!-- wp:post-template {"className":"blog-list","layout":{"type":"grid","columnCount":1}} -->
+
+				<!-- wp:group {"className":"post-card post-card--horizontal","layout":{"type":"default"}} -->
+				<div class="wp-block-group post-card post-card--horizontal">
+
+					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","className":"post-card__image"} /-->
+
+					<!-- wp:group {"className":"post-card__body","layout":{"type":"default"}} -->
+					<div class="wp-block-group post-card__body">
+
+						<!-- One chip, not the post's whole term list:
+						     quedamos_post_card_category() in inc/blog/post-card.php
+						     replaces this block with the primary category, or with
+						     nothing when the post has none. -->
+						<!-- wp:post-terms {"term":"category","className":"post-card__category"} /-->
+
+						<!-- The avatar, author, date and read-time row is prepended
+						     to the title block by quedamos_prepend_post_card_byline()
+						     in inc/blog/article-meta.php — the post-card__title class
+						     is what triggers it. -->
+						<!-- wp:post-title {"isLink":true,"level":3,"className":"post-card__title"} /-->
+
+						<!-- wp:post-excerpt {"showMoreOnNewLine":false,"excerptLength":24,"className":"post-card__excerpt"} /-->
+
+						<!-- A real core/button, so the fill, radius, padding and
+						     hover swap all come from theme.json and are never
+						     restated. Its href is empty here because a template
+						     cannot know the post; quedamos_post_card_read_more()
+						     fills it in and inlines the arrow. -->
+						<!-- wp:buttons {"className":"post-card__read-more"} -->
+						<div class="wp-block-buttons post-card__read-more">
+							<!-- wp:button -->
+							<div class="wp-block-button"><a class="wp-block-button__link wp-element-button">Read more</a></div>
+							<!-- /wp:button -->
+						</div>
+						<!-- /wp:buttons -->
+
+					</div>
+					<!-- /wp:group -->
+
+				</div>
+				<!-- /wp:group -->
+
+			<!-- /wp:post-template -->
+
+			<!-- wp:query-no-results -->
+				<!-- wp:paragraph -->
+				<p>No articles here yet — try another category.</p>
+				<!-- /wp:paragraph -->
+			<!-- /wp:query-no-results -->
+
+			<!-- wp:query-pagination {"className":"blog-pagination","layout":{"type":"flex","justifyContent":"center"}} -->
+				<!-- wp:query-pagination-previous /-->
+				<!-- wp:query-pagination-numbers /-->
+				<!-- wp:query-pagination-next /-->
+			<!-- /wp:query-pagination -->
+
+		</div>
+		<!-- /wp:query -->
+
+	</section>
+	<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

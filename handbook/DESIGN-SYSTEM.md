@@ -167,6 +167,11 @@ currently identical. If you ever change one, change both, or delete the `style.s
 | Button radius | `50px` (pill) | `theme.json` `styles.blocks.core/button.border.radius` |
 | Card shadow | `0 4px 8px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19)` | `qCardSurface()` mixin |
 | Content width | `1280px` (`contentSize` **and** `wideSize`) | `theme.json`, aliased as `$content-width` |
+| Modal scrim | `$scrim` = `rgba(0, 0, 0, 0.5)` | `variables.scss` |
+
+`$scrim` is the dim behind a modal layer — deliberately a neutral black rather than a palette colour, so it
+works over any of the site's surfaces without fighting the brand red. Added 2026-08-17 for the mobile menu
+panel; reuse it for any future overlay rather than picking a second value.
 
 Mixins, in preference order — reach for these before writing the properties by hand:
 
@@ -201,6 +206,27 @@ pagination, the contact details — keeps the black `theme.json` default. Hover 
 So there are **three** link treatments on the site now, and a new one should be a fourth only if none fit:
 black default (`theme.json`), blue bold prose link (`global.scss`), and `.post-card__title` / `.article-toc__link`,
 which were already `$secondary` in their own components.
+
+## Motion
+
+There is no easing token — the theme uses bare `ease` throughout. Two durations are established by use, and
+one step token exists:
+
+| Thing | Value | Where it's established |
+|---|---|---|
+| Transform / fade duration | `0.2s ease` | `components/post-card.scss`, `components/article-toc.scss`, `mobile-navigation.scss` |
+| Colour / hover duration | `0.3s` | `navigation.scss` |
+| Stagger step | `$stagger-step` = `0.04s` | `variables.scss` |
+
+`$stagger-step` is one step of a staggered entrance — multiply by an item's index to walk a list in behind
+its container. Stepping is done with `&:nth-child(#{$i})` in a `@for` loop, because CSS gives no index to
+multiply by; loop past the current item count so adding one doesn't silently drop it out of the animation.
+
+**Every animation goes inside `@media (prefers-reduced-motion: no-preference)`**, mirroring the smooth-scroll
+gate at the top of [global.scss](../themes/wp-child-theme-template/assets/styles/scss/global.scss). And every
+*hidden starting state* — `opacity: 0`, an offset `transform` — must live inside that query too, never
+outside it. A row parked at `opacity: 0` outside the gate stays invisible for a reduced-motion reader, which
+turns an enhancement into a broken component.
 
 ## Breakpoints
 

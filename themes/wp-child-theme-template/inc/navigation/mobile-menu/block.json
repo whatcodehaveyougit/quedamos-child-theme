@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "quedamos/mobile-menu",
+	"version": "1.0.0",
+	"title": "Mobile menu",
+	"category": "design",
+	"icon": "menu",
+	"description": "The site's mobile navigation — a hamburger toggle and an inset panel holding the links from a menu.",
+	"textdomain": "quedamos",
+	"attributes": {
+		"ref": {
+			"type": "number"
+		}
+	},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"render": "file:./render.php"
+}

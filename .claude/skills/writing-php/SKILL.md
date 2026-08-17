@@ -103,7 +103,7 @@ If code is specific to module X, it lives inside module X. Removing the module f
 | `inc/blog/` | Single-article display meta — read time, byline, related-posts query scoping |
 | `inc/booking/` | Booking summary shortcode and its view template |
 | `inc/courses/` | Course archive query shortcode |
-| `inc/navigation/` | Mobile menu — the `core/navigation` render filter |
+| `inc/navigation/` | Mobile menu — the `quedamos/mobile-menu` block (registration, its `wp_navigation` lookups and `mobile-menu/render.php`) |
 | `inc/redirects/` | The site's 301 redirect map — **every** redirect lives here (§9) |
 | `inc/schema/` | Schema.org output (the ACF-driven JSON-LD shortcode) |
 

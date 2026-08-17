@@ -1,73 +1,40 @@
 <?php
+/**
+ * Theme bootstrap.
+ *
+ * This file is a registry and nothing else: it loads each module under inc/ and
+ * gets out of the way. Behaviour belongs in a module, so that removing a line
+ * below removes that feature entirely — no orphan hooks left registered
+ * elsewhere. See .claude/skills/writing-php/SKILL.md for the module conventions.
+ *
+ * @package Quedamos
+ */
 
-require_once get_stylesheet_directory() . '/templates/mobile-menu.php';
-require_once get_stylesheet_directory() . '/templates/courses.php';
-require_once get_stylesheet_directory() . '/templates/schema.php';
+defined( 'ABSPATH' ) || exit;
 
-add_action( 'wp_enqueue_scripts', 'twentytwentyfour_child_scripts' );
-function twentytwentyfour_child_scripts() {
-    // Get the file modification time for cache busting
-    $child_style_version = filemtime( get_stylesheet_directory() . '/style.css' );
-    $parcel_css_version = filemtime( get_stylesheet_directory() . '/dist/styles/style.css' );
-    $parcel_js_version = filemtime( get_stylesheet_directory() . '/dist/scripts/scripts.js' );
+/**
+ * Modules to load, in order.
+ *
+ * Each entry is a folder under inc/ containing an index file of the same name.
+ * helpers comes first because the other modules call into it.
+ */
+$quedamos_modules = array(
+	'helpers',
+	'assets',
+	'analytics',
+	'navigation',
+	'blog',
+	'booking',
+	'courses',
+	'schema',
+);
 
-    // Enqueue styles
-    wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
-    wp_enqueue_style( 'child-style', get_stylesheet_directory_uri() . '/style.css', array( 'parent-style' ), $child_style_version );
-    wp_enqueue_style( 'parcel', get_stylesheet_directory_uri() . '/dist/styles/style.css', array(), $parcel_css_version );
+foreach ( $quedamos_modules as $quedamos_module ) {
+	$quedamos_module_file = get_stylesheet_directory() . "/inc/{$quedamos_module}/{$quedamos_module}.php";
 
-    // Enqueue scripts
-    wp_enqueue_script( 'parcel-js', get_stylesheet_directory_uri() . '/dist/scripts/scripts.js', array(), $parcel_js_version, true );
+	if ( file_exists( $quedamos_module_file ) ) {
+		require_once $quedamos_module_file;
+	}
 }
 
-// Add Google site verification meta
-function add_google_site_verification_meta() {
-    echo '<meta name="google-site-verification" content="M0ai-YlNd-1QADH-_SSVnMMBmiSgPCzEz8ZjAUqgZho" />' . "\n";
-}
-add_action( 'wp_head', 'add_google_site_verification_meta' );
-
-// True only on the live domain, so analytics never fire from local or staging copies
-function quedamos_is_live_site() {
-    $host = wp_parse_url( home_url(), PHP_URL_HOST );
-
-    return in_array( $host, array( 'quedamoslanguages.com', 'www.quedamoslanguages.com' ), true );
-}
-
-// Add Google Analytics
-function add_google_gtag_to_head() {
-    if ( ! quedamos_is_live_site() ) {
-        return;
-    }
-    ?>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-84EL3ML0D2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-84EL3ML0D2');
-    </script>
-    <?php
-}
-add_action( 'wp_head', 'add_google_gtag_to_head' );
-
-// Shortcode for booking summary card
-
-function booking_summary_shortcode($atts) {
-    // Get parameters from URL
-    $course = isset($_GET['qd_course']) ? htmlspecialchars($_GET['qd_course']) : 'Course Name';
-    $course_price = isset($_GET['qd_price']) ? floatval($_GET['qd_price']) : 0;
-    $start_date = isset($_GET['qd_start_date']) ? htmlspecialchars($_GET['qd_start_date']) : '01-01-2025';
-    $participants = 1;
-    $location = isset($_GET['qd_location']) ? htmlspecialchars($_GET['qd_location']) : '';
-
-    // Calculate subtotal
-    $subtotal = $course_price * $participants;
-
-    // Make variables available to template
-    ob_start();
-    include get_stylesheet_directory() . '/templates/booking-form.php';
-    return ob_get_clean();
-}
-add_shortcode('booking_summary', 'booking_summary_shortcode');
+unset( $quedamos_module, $quedamos_module_file );

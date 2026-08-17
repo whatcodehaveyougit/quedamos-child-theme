@@ -1,36 +1,29 @@
 <?php
-// Template for booking summary card
-// Variables are provided by the shortcode function
+/**
+ * Booking summary card view.
+ *
+ * Rendered by quedamos_booking_summary_shortcode(), which provides $course,
+ * $course_price, $start_date, $location, $participants and $subtotal. Derived
+ * values come from the module's helpers so this file stays readable as markup.
+ *
+ * @package Quedamos
+ */
 
-// Format the start date
-$formatted_start_date = $start_date;
-if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $start_date)) {
-    $timestamp = strtotime($start_date);
-    $day = date('j', $timestamp);
-    $day_suffix = date('S', $timestamp);
-    $month = date('F', $timestamp);
-    $year = date('Y', $timestamp);
-    $formatted_start_date = $day . $day_suffix . ' ' . $month . ' ' . $year;
-}
+defined( 'ABSPATH' ) || exit;
+
+$formatted_start_date = quedamos_format_course_date( $start_date );
+$location_label       = quedamos_booking_location_label( $location );
 ?>
 
 <div class="booking-summary-card">
   <div class="booking-details">
     <h2>Booking Details</h2>
-    <div class="course-title"><span>Course:</span> <?php echo $course; ?></div>
-    <div class="start-date"><span>Starts:</span> <?php echo $formatted_start_date; ?></div>
+    <div class="course-title"><span>Course:</span> <?php echo esc_html( $course ); ?></div>
+    <div class="start-date"><span>Starts:</span> <?php echo esc_html( $formatted_start_date ); ?></div>
     <div class="sessions"><span>Block of 5 Classes</span></div>
     <div class="location">
       <span>Location:</span>
-      <?php
-        if (strtolower($location) === 'online') {
-          echo 'Online';
-        } elseif (strtolower($location) === 'inperson') {
-          echo 'MacDonald Road Library';
-        } elseif (!empty($location)) {
-          echo htmlspecialchars($location);
-        }
-      ?>
+      <?php echo esc_html( $location_label ); ?>
     </div>
 
   </div>
@@ -39,15 +32,15 @@ if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $start_date)) {
     <h3>Payment Details</h3>
     <div class="subtotal-row">
       <span>Subtotal</span>
-      <span>£<?php echo number_format($subtotal, 0); ?></span>
+      <span>£<?php echo esc_html( number_format( $subtotal, 0 ) ); ?></span>
     </div>
-    <div class="participants"><?php echo $participants; ?> participants ×
-      £<?php echo number_format($course_price, 0); ?></div>
+    <div class="participants"><?php echo esc_html( $participants ); ?> participants ×
+      £<?php echo esc_html( number_format( $course_price, 0 ) ); ?></div>
   </div>
   <hr>
   <div class="total-row">
     <span>Total</span>
-    <span>£<?php echo number_format($subtotal, 0); ?></span>
+    <span>£<?php echo esc_html( number_format( $subtotal, 0 ) ); ?></span>
   </div>
 </div>
 

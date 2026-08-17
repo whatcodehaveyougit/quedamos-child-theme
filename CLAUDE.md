@@ -58,6 +58,20 @@ and can change, so check `wp option get home` rather than trusting this number) 
 `quedamos_is_live_site()` — never on a `WP_ENVIRONMENT_TYPE` constant, which is unset here and defaults
 to `production` even locally.
 
+## Anything live needs by hand goes in DEPLOY-LIST.md
+
+A merge to `main` ships theme code and **nothing else**. Page content, global styles, ACF field groups,
+plugin settings and media all live in the database or in gitignored folders, so they do not travel with the
+repo — and the built `dist/` bundle doesn't either.
+
+So the moment a change depends on something outside the repo — a block that must be edited on the live
+homepage, a plugin setting, an ACF field — **write it into [DEPLOY-LIST.md](DEPLOY-LIST.md) as part of the
+same piece of work**, before the code is committed. Not at release time, not from memory. One file, checked
+before every deploy, the way redirects have one file.
+
+Shipping code whose matching content step is missing is often *worse* than shipping nothing: the code goes
+looking for content live doesn't have.
+
 ## Git
 
 `main` is protected. Never commit or push to it without Sigurd's express permission **for that specific

@@ -1,0 +1,57 @@
+@import '../variables.scss';
+
+// Tier 3 — the course write-up beside its video. Inserted on a course page from
+// patterns/course-detail-with-video.php, which composes it out of core blocks so
+// every word stays editable in Gutenberg; this file supplies the surface, the
+// proportions and the media frame.
+//
+// Same spacing split as class-table.scss: the gap *between* the two columns is
+// set on the columns block in the pattern as a theme.json spacing preset,
+// because WordPress's layout support emits its own `gap` for that container at a
+// specificity a component rule here would tie with — leaving the winner to
+// enqueue order. Everything below is padding, colour, radius or media sizing,
+// none of which WordPress sets for these blocks.
+.course-detail {
+  padding: $space-4;
+  border-radius: $BR;
+
+  // The band reads as one panel behind the copy rather than as a raised card:
+  // the page's own grey, no shadow. $background-grey is the palette's `base`,
+  // the same surface the site uses elsewhere to set a section apart without
+  // lifting it.
+  background-color: $background-grey;
+
+  &__title {
+    margin-block-start: 0;
+  }
+
+  // The two section headings ("What you'll be doing", "What's included") sit
+  // closer to the list they introduce than to the block above them, so the pair
+  // reads as one unit. The h3 preset is fluid to 3rem, which comes out all but
+  // level with the title above it, so this steps down to the h4 token — 1.6rem,
+  // clearly a heading against the 1.1rem body beside it without competing with
+  // the h2. Only the size moves; the tag still decides family and weight.
+  &__subtitle {
+    margin-block-end: $space-3;
+    font-size: $h4-font-size;
+  }
+
+  &__list {
+    margin-block-end: $space-4;
+  }
+
+  // The embed's frame. `overflow` is what clips a video's square corners to this
+  // radius — an iframe ignores a border-radius set on itself. Vertical reels run
+  // taller than the copy beside them, so the frame caps its own height and
+  // centres what it holds rather than stretching the row.
+  &__video {
+    overflow: hidden;
+    border-radius: $BR;
+
+    iframe {
+      display: block;
+      width: 100%;
+      border: 0;
+    }
+  }
+}

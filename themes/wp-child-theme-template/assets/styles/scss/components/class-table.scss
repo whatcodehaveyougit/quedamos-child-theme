@@ -14,20 +14,23 @@
 // order. Everything below is padding, colour, radius, list reset or type — none
 // of which WordPress sets for these blocks, so all of it holds.
 //
-// A page may position this card; it must never repaint its internals.
+// The table itself paints nothing — no surface, no padding. Each level group
+// below is its own card, and a card around cards was the double padding this
+// component kept re-inventing: an outer inset, then the level's, then the
+// column's, three deep before a word is read.
+//
+// A page may position this table; it must never repaint its internals.
 .class-table {
-  @include qCardSurface();
-
-  padding: $space-4;
-  background-color: $white;
-
-  // One level group: the $primary bar and the two format columns under it, read
-  // as a single tile. `overflow` is what clips the square-cornered bar to this
-  // radius, the same way post-card clips its featured image.
+  // One level group — the $primary bar and the two format columns under it — is
+  // the card. qCardSurface() is the shared shadow and radius, the same surface
+  // post-card wears, rather than a second set of shadow values living here.
+  // `overflow` is what clips the square-cornered bar to that radius, the same
+  // way post-card clips its featured image.
   &__level {
+    @include qCardSurface();
+
     height: 100%;
     overflow: hidden;
-    border-radius: $BR;
     background-color: $white;
   }
 
@@ -63,11 +66,10 @@
     padding: $space-3;
   }
 
-  // In Person / Online. Deliberately NOT a card: the whole table already sits on
-  // one, and a card inside a card inside a card is three paddings deep before a
-  // word is read. The columns are plain areas on the level's own surface — the
-  // red bar above them is what separates one level from the next, so they need
-  // no surface of their own. Full height so the two sit level whichever has more
+  // In Person / Online. Deliberately NOT a card: the level group around them
+  // already is one. The columns are plain areas on its surface — the red bar
+  // above them is what separates one level from the next, so they need no
+  // surface of their own. Full height so the two sit level whichever has more
   // copy in it; the vertical stack and the gaps inside come from the group
   // block's flex layout.
   &__col {

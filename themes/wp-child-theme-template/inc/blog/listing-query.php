@@ -27,8 +27,8 @@ const QUEDAMOS_BLOG_POSTS_PER_PAGE = 20;
  * `pre_get_posts` — set the listing's page size.
  *
  * Guarded to the front end and the main query so neither the dashboard's post
- * list nor any secondary query (the related-posts loop, the mobile menu lookup)
- * can be caught by it.
+ * list nor any secondary query (the "Latest Articles" loop, the mobile menu
+ * lookup) can be caught by it.
  *
  * @param WP_Query $query The query about to run.
  * @return void

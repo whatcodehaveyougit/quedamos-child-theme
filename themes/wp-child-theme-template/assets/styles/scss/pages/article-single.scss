@@ -5,10 +5,12 @@
 // overlapping it → CTA band → related posts grid.
 .single-post-page {
   // Both this page's white surfaces — the article card and the related-post
-  // cards — sat on the base-2 white body, so their only edge was a shadow. The
-  // grey ground is what makes them read as cards. Same grey as the nav and the
-  // homepage numbers band; the page is alignfull, so it runs edge to edge.
-  background-color: $background-grey;
+  // cards — sat on the base-2 white body, so their only edge was a shadow. A
+  // ground darker than the cards is what makes them read as cards; the blue
+  // backdrop now does that job, with the grey kept underneath as its fallback
+  // so the contrast survives the image failing to load. The page is alignfull,
+  // so it runs edge to edge.
+  @include qBubbleBackdrop('blue', $background-grey);
 
   // The header falls back to the brand colour, so a post with no featured image
   // gets a solid band rather than an empty one. The image layer sits on top.
@@ -356,20 +358,9 @@
   // .article-body-section above, not here: the block's own inline
   // `margin-top:0` beats any class rule this file could write.
 
-  .article-related-section {
-    @include containerPadding();
-  }
-
-  .article-related__title {
-    margin-bottom: $space-4;
-    text-align: center;
-  }
-
-  .article-related-grid {
-    display: grid;
-    gap: $space-3;
-    grid-template-columns: 1fr;
-  }
+  // The "Latest Articles" band that closes the page is a component, not part of
+  // this page: it is inserted from patterns/latest-articles.php and styled by
+  // components/latest-articles.scss. Nothing about it belongs here.
 
   @media (min-width: 768px) {
     .article-header-section {
@@ -389,10 +380,6 @@
 
     .article-author__role::before {
       display: inline;
-    }
-
-    .article-related-grid {
-      grid-template-columns: repeat(3, 1fr);
     }
   }
 

@@ -3,8 +3,7 @@
  * The listing card's per-post bits that no core block can express on its own.
  *
  * Two render_block filters, both keyed on a className that only the blog
- * listing's card carries, so the related-posts grid on a single post is
- * untouched:
+ * listing's card carries, so the "Latest Articles" band's grid is untouched:
  *
  *   - the primary-category chip, which is one term rather than the post's whole
  *     term list,

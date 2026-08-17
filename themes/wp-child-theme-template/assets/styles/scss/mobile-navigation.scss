@@ -1,173 +1,253 @@
 @import './variables.scss';
 
-header {
-  .mobile-menu-top-bar {
-    width: 95%;
-    display: flex;
-    justify-content: space-between;
-    height: 65px;
-    padding: $space-3;
+// The site's mobile navigation — the markup rendered by the quedamos/mobile-menu
+// block (inc/navigation/mobile-menu/render.php). Kept beside navigation.scss
+// because both are sitewide header chrome.
+//
+// None of core's .wp-block-navigation__* overlay classes appear here any more:
+// the block owns its markup, so there is nothing to fight, and the !important
+// pile that forced grey slabs back over a red overlay is gone with it. What is
+// left is a light inset card on the site's own grey surface — the comps this was
+// built from are a dark-themed brand, and Quedamos stays light.
+.mobile-menu {
+  display: flex;
+  align-items: center;
 
-    // The bar renders the site logo at the 60px the old hardcoded <img> used.
-    // get_custom_logo() emits the full-size file instead, and the header's
-    // `min-width: 180px` then blew it up until it overlapped the first menu
-    // item — so that floor is lifted here and the intended width restored.
+  // ── The toggle ──────────────────────────────────────────────────────────────
+  // Neither comp shows the closed header, so the toggle's appearance is this
+  // file's own proposal: svgs/menu.svg at the intrinsic 24px it and
+  // svgs/close.svg are both drawn at, on no background, taking its colour from
+  // the header text around it. Drawn to match close.svg exactly — same viewBox,
+  // same stroke width, same round caps, stroke="currentColor" — so the two read
+  // as one pair.
+  //
+  // The close button gets the same treatment. The system has no outline, ghost
+  // or icon-button variant (its one button is a filled $primary pill), so the
+  // comps' outlined square button has no token to build from; a bare icon that
+  // takes $primary on hover is the nearest thing the system already says, and it
+  // mirrors the hover/focus pair in components/article-toc.scss.
+  &__toggle,
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-2;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  &__toggle:hover,
+  &__toggle:focus-visible,
+  &__close:hover,
+  &__close:focus-visible,
+  &__link:hover,
+  &__link:focus-visible {
+    color: $primary;
+  }
+
+  // reset.scss zeroes the outline on every :focus, so a keyboard user would get
+  // no ring at all here. Restored on :focus-visible only — a mouse click should
+  // not draw one — and built from the 2px/$primary pair components/article-toc.scss
+  // already uses to mark the focused row.
+  &__toggle:focus-visible,
+  &__close:focus-visible,
+  &__link:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: $space-1;
+  }
+
+  // ── The panel ───────────────────────────────────────────────────────────────
+  // Hidden by visibility rather than display: it keeps the panel out of the tab
+  // order and the accessibility tree while still allowing the fade below.
+  // assets/scripts/js/mobile-menu.js only toggles .is-open, so every question
+  // about how the panel appears is answered in this file.
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    // 999 is the theme's one existing stacking value (components.scss) — reused
+    // rather than starting a second scale.
+    z-index: 999;
+    visibility: hidden;
+    opacity: 0;
+
+    &.is-open {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  // The click-to-close surface. The comps dim the page behind the card, and this
+  // ships without that dim: a dark translucent layer has no token, and the
+  // nearest candidate ($hover-grey) is a teal at 0.12 and is not one. Rather
+  // than paste a literal, the panel's own qCardSurface() shadow does the
+  // separating and the gap is raised instead. Adding a scrim token later turns
+  // it on from this one rule.
+  &__scrim {
+    position: absolute;
+    inset: 0;
+  }
+
+  // An inset card, not a full-bleed overlay: margins on all four sides, $BR
+  // corners, the page still visible behind it. Height follows the content and is
+  // capped to the viewport, so a longer menu scrolls inside the card instead of
+  // running off the bottom of it.
+  &__panel {
+    @include qCardSurface();
+    position: absolute;
+    inset: $space-3 $space-3 auto;
+    max-height: calc(100% - #{$space-4});
+    overflow-y: auto;
+    padding: $space-3;
+    background-color: $background-grey;
+  }
+
+  // Logo left, close button right, a full-width rule beneath.
+  //
+  // $hover-grey as a border colour is not what the token was named for, and
+  // there is no hairline or border token in the system — but
+  // components/article-toc.scss already draws its border from it, so this
+  // follows the file rather than inventing a second answer.
+  &__top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    padding-bottom: $space-3;
+    border-bottom: 1px solid $hover-grey;
+  }
+
+  // navigation.scss floors .wp-block-site-logo img at min-width: 180px for the
+  // header, which blew the panel's logo up until it overlapped the first row.
+  // The floor is lifted here and the width set back to the size the old injected
+  // top bar used; $space-5 is the token nearest that 60px.
+  &__logo {
     .wp-block-site-logo img {
       min-width: 0;
-      width: 60px;
+      width: $space-5;
       height: auto;
     }
   }
 
-  .wp-block-navigation__responsive-container.is-menu-open
-    .wp-block-navigation__responsive-container-content {
-    padding-top: 0px;
-  }
-
-  .has-modal-open .wp-block-navigation__responsive-dialog {
-    margin-top: 0px !important;
-  }
-
-  .wp-block-navigation__responsive-container-close {
-    display: none;
-  }
-
-  .close-btn {
-    background-color: white;
-    border: none;
-  }
-
-  .q-navigation-desktop {
-    display: none;
-  }
-
-  @media (min-width: 782px) {
-    .q-navigation-desktop {
-      display: flex;
-    }
-    .q-navigation-mobile {
-      display: none;
-    }
-  }
-
-  .header-row-container {
+  // Roomy rows, one per line, separated by space rather than by a border on each
+  // item — the biggest departure from the grey slabs this replaces.
+  //
+  // No colour or type rules: theme.json already sets links to contrast with no
+  // underline and an underline on hover, and the rows are body copy at the body
+  // size, so the house treatment is inherited rather than restated.
+  &__list {
     display: flex;
-    flex-wrap: nowrap;
-    padding-top: $space-3;
-    padding-bottom: $space-3;
+    flex-direction: column;
+    gap: $space-3;
+    margin: 0;
+    padding: $space-4 0 $space-3;
+    list-style: none;
   }
 
-  .wp-block-navigation__container {
-    gap: $space-1;
+  &__item {
+    margin: 0;
   }
 
-  .wp-block-navigation__responsive-container .wp-block-navigation__responsive-container-content {
-    flex-wrap: nowrap;
+  &__link {
+    display: block;
+    padding: $space-2 0;
   }
 
-  .wp-block-navigation .wp-block-navigation-item__label {
-    padding-left: $space-2;
-    padding-right: $space-2;
-  }
-
-  .wp-block-navigation .wp-block-navigation-item__label {
-    font-family: 'Open Sans';
-    font-size: $medium-font-size;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-  }
-}
-
-/* Hamburger Mobile Navigation */
-.wp-block-navigation {
-  .wp-block-navigation__responsive-container.is-menu-open {
-    padding: 0px;
-    background-color: $primary;
-
-    &.has-modal-open {
-      width: 100vw;
-      // padding: 20px 10px 20px 10px;
-    }
-
-    .wp-block-navigation__responsive-container-content {
-      align-items: center;
-
-      .wp-block-navigation__container {
-        align-items: center;
-      }
-
-      ul {
-        width: 100%;
-        li.wp-block-navigation-item {
-          align-items: center;
-          color: black !important;
-          background-color: $background-grey !important;
-          background: $background-grey !important;
-          width: 100%;
-          padding-bottom: 0.4rem;
-          .wp-block-navigation-item__label {
-            color: black !important;
-          }
-        }
-      }
-    }
-
-    .wp-block-button__link {
-      // width: 200px;
-      // height: 60px;
-      padding: $space-2 $space-4;
-      font-size: $h4-font-size;
-    }
-
-    ul.wp-block-navigation__container {
-      > li > a.wp-block-navigation-item__content {
-        font-size: $h4-font-size !important;
-      }
-
-      > li.wp-block-navigation-item > a > span.wp-block-navigation-item__label {
-        font-size: $h4-font-size;
-      }
-    }
-  }
-
-  .wp-block-navigation__responsive-container-close {
+  // $primary is the accent on a light panel, not the background: the row being
+  // hovered, the row focused, and the page you are on. render.php sets
+  // aria-current="page" alongside this class, so the marking is announced as
+  // well as shown.
+  &__link--current {
     color: $primary;
-    &:focus {
-      outline: 0 !important;
-      outline: none !important;
+  }
+
+  // ── Motion ──────────────────────────────────────────────────────────────────
+  // Gated the way global.scss gates smooth scrolling: motion is an enhancement,
+  // so with it suppressed the panel simply appears and every state the JS sets
+  // still works. 0.2s ease is the theme's existing transform duration
+  // (components/post-card.scss, components/article-toc.scss).
+  //
+  // Not shipped: the comps' staggered rows. Stepping a transition-delay per row
+  // needs a step duration, and the theme has only 0.2s and 0.3s — there is no
+  // token to step by, and inventing one is the thing the never-invent rule
+  // exists to stop. Raised rather than resolved.
+  @media (prefers-reduced-motion: no-preference) {
+    &__overlay {
+      transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+    }
+
+    // The panel eases down into place as the overlay fades in.
+    &__panel {
+      transform: translateY(-$space-2);
+      transition: transform 0.2s ease;
+    }
+
+    &__overlay.is-open &__panel {
+      transform: none;
+    }
+
+    // The hamburger's open state. The panel covers the header, so the icon turns
+    // and fades out from under it rather than morphing into an X the reader
+    // would never see. (A morph would also mean styling the SVG's own <line>
+    // children, which quedamos_inline_svg()'s wp_kses allowlist gives no way to
+    // address individually.)
+    &__toggle .inline-svg {
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    &__toggle[aria-expanded='true'] .inline-svg {
+      opacity: 0;
+      transform: rotate(90deg);
     }
   }
-}
 
-ul.wp-block-navigation__submenu-container {
-  li.wp-block-navigation-item {
-    .wp-block-navigation-item__label {
-      text-transform: uppercase;
-      font-family: 'Inter';
-    }
+  // See the swap at the bottom of this file for why 782px.
+  @media (min-width: 782px) {
+    display: none;
   }
 }
 
-.wp-block-woocommerce-mini-cart {
-  visibility: visible !important;
-}
+// The page behind the open panel holds still. The class is set on <html> by
+// assets/scripts/js/mobile-menu.js, which is also where the constant naming it
+// lives. Only the y axis: reset.scss deliberately runs `overflow-x: clip` there,
+// and `hidden` on both axes would make the document a scroll container — the
+// thing that silently broke position: sticky for the article TOC before.
+.has-mobile-menu-open {
+  overflow-y: hidden;
 
-@media screen and (min-width: 781px) {
-  // Scoped to the navigation's own list. This was a bare `ul`, which reached
-  // every list on the site above 781px — including WordPress's post-template
-  // grid, which renders as a <ul>. There `align-items: center` centred each
-  // related-post card in its row instead of letting them share a top edge, so
-  // the three cards on a single post came out staggered and unequal.
-  ul.wp-block-navigation__container {
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
+  body {
+    overflow-y: hidden;
   }
 }
 
-@media screen and (min-width: 992px) {
-  // .navigation-row-container nav {
-  //   max-width: 65%;
-  // }
+// ── The mobile/desktop swap ───────────────────────────────────────────────────
+// 782px, not the house 768px: it is WordPress's own navigation-block overlay
+// breakpoint and the value .q-navigation-desktop has always switched at, so the
+// header keeps matching core rather than the house scale. The .mobile-menu half
+// of the pair is the media query at the end of the block above — below 782px the
+// toggle shows and the desktop nav does not, at 782px and up the reverse, and
+// there is no width at which both are visible.
+//
+// .q-navigation-mobile is the core/navigation overlay this block replaces. Its
+// rule stays until the Header template part has been swapped on every
+// environment — that part lives in the database and the edit is a manual step
+// (see DEPLOY-LIST.md), so without this the old overlay would appear beside the
+// desktop nav in the gap between the deploy and the edit.
+header .q-navigation-desktop {
+  display: none;
+}
+
+@media (min-width: 782px) {
+  header .q-navigation-desktop {
+    display: flex;
+  }
+
+  header .q-navigation-mobile {
+    display: none;
+  }
 }

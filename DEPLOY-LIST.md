@@ -41,6 +41,38 @@ Additional CSS class(es) on each **number** paragraph, not the label:
 
 Note: these figures are carried over from 2024 — check `7 YEARS EXPERIENCE` is still right before publishing.
 
+### 2. Header template part — point it at the `quedamos/mobile-menu` block
+
+The mobile navigation is now the theme's own block instead of a filter on `core/navigation`. The block only
+renders once the **Header** template part references it, and that part lives in the **database**, so it does
+not travel with the repo. **Until this step runs, live has no mobile menu at all** — the old overlay's PHP
+filter is gone with the code that replaced it.
+
+In the Site Editor → Patterns → Template Parts → **Header**, edit as code and replace:
+
+```
+<!-- wp:navigation {"ref":5,"overlayMenu":"always","className":"q-navigation-mobile"} /-->
+```
+
+with:
+
+```
+<!-- wp:quedamos/mobile-menu {"ref":<live menu id>} /-->
+```
+
+- **`ref` is a database ID and live's is not `5`.** `5` is the local `wp_navigation` post. Get live's with
+  `wp post list --post_type=wp_navigation --fields=ID,post_title` and use that number.
+- Leave the **desktop** navigation block (`className: q-navigation-desktop`, `overlayMenu: never`)
+  untouched — it keeps its own `ref`.
+- If the `ref` is wrong or omitted the block falls back to the site's most recent `wp_navigation` post, so a
+  mistake here degrades to "possibly the wrong menu" rather than an empty header. Still worth getting right.
+- The block has no editor script, so the Site Editor shows it as an unrecognised block. That is expected —
+  it renders correctly on the front end.
+
+- [ ] Header template part updated with live's own `ref`
+- [ ] Hamburger shows on live at 390px and the panel opens with all six links
+- [ ] Desktop nav unchanged at 1280px, and no width shows both navs at once
+
 ## Done
 
 *Nothing yet.*

@@ -65,8 +65,8 @@
       }
     },
 		"layout": {
-			"contentSize": "1280px",
-			"wideSize": "1280px"
+			"contentSize": "1100px",
+			"wideSize": "1100px"
 		},
 		"spacing": {
 			"spacingScale": {
@@ -141,7 +141,7 @@
 				{
 					"name": "H2 Size",
 					"slug": "heading-two-size",
-					"size": "clamp(2.0rem, 4vw, 4rem)",
+					"size": "clamp(2rem, 3.5vw, 3.5rem)",
 					"fluid": true
 				},
 				{

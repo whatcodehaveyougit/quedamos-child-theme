@@ -274,6 +274,17 @@
     .q-card {
       height: auto;
       justify-content: flex-start;
+
+      // The icon, the heading, the paragraph and the button are each already
+      // centred as boxes by the constrained layout, but the heading and the
+      // paragraph inherit `text-align: start`, so their text sat left inside a
+      // centred box while the icon and button above and below it looked
+      // centred. Centring the text is what makes the card read as one column.
+      //
+      // Scoped to the article on purpose: pages/course.scss sets this same
+      // block back to `text-align: left` at 992px for its three-column layout,
+      // so this must not move to the component.
+      text-align: center;
     }
   }
 

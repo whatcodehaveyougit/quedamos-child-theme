@@ -199,6 +199,27 @@
       font-size: $h4-font-size;
     }
 
+    // The listing card's height is whichever column is taller, and beside a
+    // 45%-wide image the text column was winning by some margin — a single card
+    // ran to over 400px, so barely one fitted on screen. The image cannot be
+    // capped to fix that: it stretches to the card, so a max-height just leaves
+    // a white band under it. The height has to come out of the text instead.
+    //
+    // One step down the spacing scale for the body inset and for the gaps
+    // between the chip, byline, title, excerpt and button. The vertical card in
+    // the related-posts grid keeps the roomier original, which is why this sits
+    // on the modifier.
+    .post-card__body {
+      padding-block: $space-3;
+    }
+
+    .post-card__byline,
+    .post-card__title,
+    .post-card__excerpt,
+    .post-card__read-more {
+      margin-top: $space-2;
+    }
+
     @media (min-width: 768px) {
       flex-direction: row;
       align-items: stretch;

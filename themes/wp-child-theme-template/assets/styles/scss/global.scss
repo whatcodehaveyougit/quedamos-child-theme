@@ -49,3 +49,39 @@
     margin-bottom: $space-4;
   }
 }
+
+// ── Links in body copy look like links ──────────────────────────────────────
+//
+// theme.json paints every link black with no underline, so a link inside a
+// paragraph is indistinguishable from the sentence around it — on the About
+// page, "my blog" could only be found by hovering it. Prose links now carry the
+// brand blue and bold weight, which is visible before the pointer arrives. The
+// underline-on-hover from theme.json still lands on top of this.
+//
+// This cannot be theme.json's styles.elements.link, because that reaches every
+// link on the page: the nav, the buttons, the card titles and the footer would
+// all turn blue too. The rule has to be able to say "prose only", so it is CSS.
+//
+// Prose is identified by the element wrapping the link rather than by a class.
+// An <a> inside a paragraph, list item, caption or table cell is a link you
+// read past; a card, a button and a nav item are links you aim at. That keeps
+// the exceptions out by construction rather than by a growing :not() list —
+// card titles are headings, and buttons are direct children of .wp-block-button.
+// .wp-element-button is belt and braces for a button that ends up inside prose.
+//
+// li.wp-block-post is the one place that heuristic gets it wrong: the Query
+// Loop wraps each post CARD in a list item, so the blog index and the related-
+// posts grid would have had every card title and thumbnail turn blue and bold.
+// A query-loop item is a card, not a sentence, so it is not prose.
+//
+// The header and footer are excluded: their links (nav items, the phone number,
+// Privacy Policy) are found by position, not by looking like prose. Note the
+// page body is NOT reliably <main> — the blog index renders without one — so
+// the scope is written as "every top-level band that isn't the header or the
+// footer", which holds on every template.
+.wp-site-blocks > :not(header, footer) {
+  :where(p, li:not(.wp-block-post), dd, figcaption, td, th) a[href]:not(.wp-element-button) {
+    color: $secondary;
+    font-weight: 700;
+  }
+}

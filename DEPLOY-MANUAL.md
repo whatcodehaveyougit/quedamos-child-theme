@@ -214,12 +214,18 @@ this file for what is outstanding. Two that recur:
 Where a step asks for a CSS class, it goes in the sidebar under **Advanced → Additional CSS class(es)** on the
 specific block named — for the homepage numbers band, `count-up` on each **number** paragraph, not the label.
 
-**A user's display name** (Users → All Users → the user). The gotcha is that it takes two saves: WordPress only
-offers display-name options built from fields it already has, so set **First name** and **Last name**, click
-**Update Profile**, then reload and pick the full name from **Display name publicly as** and update again.
-The display name is byline text only: the author photo comes from the `QUEDAMOS_AUTHOR_PHOTO` constant in
-[inc/blog/article-author.php](themes/wp-child-theme-template/inc/blog/article-author.php) and does not key off
-it. It used to, and a near-miss silently fell back to the site icon — don't reintroduce that coupling.
+**A page's SEO title** (edit the page → **Rank Math** in the sidebar → **Edit Snippet** → Title). Worth knowing
+what one field moves: the snippet title feeds `<title>`, `og:title`, `twitter:title` **and** the page's name in
+the JSON-LD graph, so a typo there is a typo in four places and is why DEPLOY-LIST step 2 exists. The
+description field beneath it is separate and does not follow — check both read the same way before saving.
+
+**Not the author's display name.** Users → Profile no longer changes anything a visitor sees: the byline and
+the schema both read `QUEDAMOS_AUTHOR_NAME` from
+[inc/helpers/author-identity.php](themes/wp-child-theme-template/inc/helpers/author-identity.php), and the
+photo reads `QUEDAMOS_AUTHOR_PHOTO` from the same file. That is deliberate — the name is the key that has to
+match across the byline, the schema and the page title, and a database string drifts away from the code that
+must agree with it. Live's record still says "Sara Carrillo Carrillo" and is now inert; leave it. To change how
+she is credited, edit the constant.
 
 ## 7. Verify on the front end
 
@@ -234,7 +240,10 @@ site than your visitors get.
 - [ ] A category archive loads — on live that is `https://quedamoslanguages.com/category/<slug>/`, e.g.
       [`/category/events/`](https://quedamoslanguages.com/category/events/). See the URL warning below
       before deciding it is broken
-- [ ] One single post renders, with the author bar and photo
+- [ ] One single post renders, with the author bar and photo, the name reading **Sara Carrillo** and linking
+      to the About page
+- [ ] `view-source:` on the About page shows no `Carillo` with one `r`, and a `Person` node whose `@id` ends
+      `#sara`
 - [ ] At 390px wide: the hamburger shows and the panel opens with every link
 - [ ] At 1280px: the desktop nav is unchanged, and no width shows both navs at once
 - [ ] **About** and **FAQs** in the desktop nav no longer 404 — the point of step 4

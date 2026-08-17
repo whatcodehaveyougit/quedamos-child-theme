@@ -29,3 +29,8 @@ __MACOSX/
 # skeleton (the .gitkeep files) stays in the repo so the stages exist on a fresh
 # clone; their contents never get committed.
 /tasks/
+
+# Scratch git worktrees created by background agents. Transient checkouts of this
+# same repo — committing them would nest a copy of the repo inside itself. The
+# skills and settings alongside them in .claude/ stay tracked.
+/.claude/worktrees/

@@ -331,6 +331,41 @@ renders a card with no empty "Location:" label.
 - [ ] `dist/` rebuilt and shipped — the participant-count recalculation moved out of an inline `<script>`
       in the card into the Parcel bundle, so a stale `dist/` leaves the totals frozen at one participant
 
+### 8. About page — swap the tutor band for the `quedamos/tutor-intro` pattern
+
+The "Meet your tutor" band now ships with the theme as `patterns/tutor-intro.php` ("Meet your tutor" in the
+inserter). The band **on the page** is still the old core blocks saved in the database, and a pattern insert
+is a content edit, so it does not travel with the repo — until this runs, the code is deployed and nothing
+on the About page changes.
+
+Nothing breaks if it is never done: the old band keeps rendering exactly as it does today, because the new
+CSS is keyed on `.tutor-intro` classes the database markup does not carry. This is a tidy-up, not a blocker.
+
+**Pages → About → open it →** delete the existing tutor band (the two-column group holding the eyebrow,
+"¡Hola! I'm Sara", the three emoji lines, the button, and the portrait with the white card), then insert
+**Meet your tutor** from the block inserter in its place and put the real copy back in. The pattern is
+unsynced, so every word is editable once inserted.
+
+Two things change on purpose when you do:
+
+- **The card over the photo becomes one paragraph.** Today it is "7+ years" in large red type over a
+  smaller grey line; the pattern replaces both with a single quote. Write one sentence rather than pasting
+  the two tiers back in — reinstating them undoes the point of the change.
+- **The portrait is a theme-file placeholder** (`images/sara-carrillo.webp`). Replace it from the media
+  library with the photo the page uses today, or leave it — either renders on both environments.
+
+Also set the button's link: the pattern ships pointing at `/contact/`, which is a placeholder.
+
+Do this on **both** environments, or the two About pages diverge.
+
+- [ ] Old band removed, **Meet your tutor** inserted, and the copy restored
+- [ ] The card reads as one paragraph of quote text, not a figure plus a caption
+- [ ] `view-source:` on the About page shows `class="wp-block-group alignfull tutor-intro"`
+- [ ] At 1440px the card overlaps the portrait's lower-left; at 375px it tucks under the photo and the copy
+      is centred
+- [ ] Bands still meet edge to edge — no white stripe above or below the new one
+- [ ] LiteSpeed purged
+
 ## Done
 
 *Nothing yet.*

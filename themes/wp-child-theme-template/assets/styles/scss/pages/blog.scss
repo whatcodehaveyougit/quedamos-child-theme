@@ -50,10 +50,22 @@
   // A query loop renders as a <ul>, and WordPress's own grid layout would set
   // the gap from the global block-gap. Stated here so the listing matches the
   // related-posts grid on a single post, which uses the same step.
+  //
+  // `minmax(0, 1fr)` rather than the shorter `1fr`, which means
+  // `minmax(auto, 1fr)`: the `auto` floor is the item's MIN-CONTENT width, and
+  // the horizontal card's is large — its image column is `flex: 0 0 45%`, and a
+  // percentage basis is indefinite while the track is being measured, so the
+  // image falls back to its intrinsic width and a zero shrink factor stops it
+  // coming back down. The track was sized to that instead of to the container:
+  // 988px inside a 720px column at 768px wide, so every card ran off the screen
+  // and `body { overflow-x: clip }` quietly cut the title, excerpt and right
+  // edge off. It corrected itself around 950px, which is why it read as a
+  // narrow-desktop glitch rather than a grid bug. A zero floor lets the track
+  // be the container's width and the card lays out inside it at every size.
   .blog-list {
     display: grid;
     gap: $space-3;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .blog-pagination {

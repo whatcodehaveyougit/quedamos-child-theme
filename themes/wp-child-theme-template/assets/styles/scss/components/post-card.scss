@@ -191,6 +191,14 @@
     // white strip the full width of the card.
     padding-bottom: 0;
 
+    // On the listing the title is the thing being scanned, so it takes the next
+    // step up the scale rather than sharing the related-posts grid's size. Only
+    // the size moves: the tag still decides the family and weight. Scoped to the
+    // modifier because the vertical card on a single post must not change.
+    .post-card__title {
+      font-size: $h4-font-size;
+    }
+
     @media (min-width: 768px) {
       flex-direction: row;
       align-items: stretch;

@@ -41,9 +41,7 @@
   &__toggle:hover,
   &__toggle:focus-visible,
   &__close:hover,
-  &__close:focus-visible,
-  &__link:hover,
-  &__link:focus-visible {
+  &__close:focus-visible {
     color: $primary;
   }
 
@@ -92,6 +90,11 @@
   // $BR corners, the page still visible behind it. Height follows the content and
   // is capped to the viewport, so a longer menu scrolls inside the card instead of
   // running off the bottom of it.
+  // The brand stripe across the top of the card. The panel is otherwise the site's
+  // own grey, and a light card on a dark scrim carries no brand at all — this is
+  // the one place $primary can appear at size without competing with the logo,
+  // which is itself a red mark and would disappear on a red band. $space-1 thick,
+  // clipped by qCardSurface()'s radius.
   &__panel {
     @include qCardSurface();
     position: absolute;
@@ -99,6 +102,7 @@
     max-height: calc(100% - #{$space-4});
     overflow-y: auto;
     padding: $space-3;
+    border-top: $space-1 solid $primary;
     background-color: $background-grey;
   }
 
@@ -138,28 +142,59 @@
   // No colour or type rules here. theme.json already renders links in contrast
   // with no underline and an underline on hover, and the rows are body copy at the
   // body size, so the house treatment is inherited rather than restated.
+  // The rows are separated by hairlines rather than by empty space now — the gap
+  // version read as six words floating on a grey field. A ruled list gives the
+  // panel structure, and each rule is the same $hover-grey the top bar draws with.
+  //
+  // The negative inline margin lets a row's hover fill and its rule run to the
+  // card's edges while the text stays on the panel's own padding, which is what
+  // makes the fill read as a row rather than as a floating box.
   &__list {
     display: flex;
     flex-direction: column;
-    gap: $space-3;
-    margin: 0;
-    padding: $space-4 0 $space-3;
+    margin: 0 (-$space-3);
+    padding: $space-3 0 0;
     list-style: none;
   }
 
   &__item {
     margin: 0;
+
+    // Between rows only. The last row is ended by the card's own edge, and a rule
+    // there would read as an unfinished divider.
+    & + & {
+      border-top: 1px solid $hover-grey;
+    }
   }
 
+  // Poppins at the h5 size. A nav row is a navigational heading rather than body
+  // copy, Poppins is the theme's heading family, and it is the family the desktop
+  // nav already sets — so the two halves of the header read as one thing. The size
+  // token replaces the inherited body size, which was too quiet for a panel of
+  // this size.
+  //
+  // The left border is the accent bar: transparent at rest so nothing shifts when
+  // it fills in on hover, focus or the current page.
   &__link {
     display: block;
-    padding: $space-2 0;
+    padding: $space-3;
+    border-left: $space-1 solid transparent;
+    font-family: 'Poppins', sans-serif;
+    font-size: $h5-font-size;
   }
 
-  // $primary is the accent on a light panel, never the background — the row being
-  // hovered, the row focused, and the page you are on. render.php marks the same
-  // row with aria-current, so the current page is announced as well as shown.
+  // Hover and focus get the bar, the brand colour and a fill; the current page gets
+  // the bar and the colour but no fill, so pointing at a row still reads as
+  // different from being on it.
+  &__link:hover,
+  &__link:focus-visible {
+    border-left-color: $primary;
+    background-color: $hover-grey;
+    color: $primary;
+  }
+
   &__link--current {
+    border-left-color: $primary;
     color: $primary;
   }
 

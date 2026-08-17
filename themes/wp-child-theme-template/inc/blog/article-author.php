@@ -43,7 +43,7 @@ const QUEDAMOS_AUTHOR_ROLE = 'Spanish Language Educator';
  */
 function quedamos_author_photos() {
 	return array(
-		'sara carrillo' => 'images/sara-carrillo.jpg',
+		'sara carrillo' => 'images/sara-carrillo.webp',
 	);
 }
 
@@ -84,6 +84,85 @@ function quedamos_author_avatar( $author_name ) {
 		esc_url( $src )
 	);
 }
+
+/**
+ * Resolve the user behind any of the shapes core passes an avatar filter.
+ *
+ * `get_avatar()` accepts a user ID, a WP_User, a WP_Post, a WP_Comment or an
+ * email string, so a filter that only handles one of them silently does nothing
+ * in the other cases.
+ *
+ * @param mixed $id_or_email The identifier core was given.
+ * @return WP_User|false The user, or false when there is no account behind it.
+ */
+function quedamos_avatar_user( $id_or_email ) {
+	if ( $id_or_email instanceof WP_User ) {
+		return $id_or_email;
+	}
+
+	if ( $id_or_email instanceof WP_Post ) {
+		return get_user_by( 'id', (int) $id_or_email->post_author );
+	}
+
+	if ( $id_or_email instanceof WP_Comment ) {
+		return $id_or_email->user_id ? get_user_by( 'id', (int) $id_or_email->user_id ) : false;
+	}
+
+	if ( is_numeric( $id_or_email ) ) {
+		return get_user_by( 'id', (int) $id_or_email );
+	}
+
+	if ( is_string( $id_or_email ) && is_email( $id_or_email ) ) {
+		return get_user_by( 'email', $id_or_email );
+	}
+
+	return false;
+}
+
+/**
+ * Serve the theme's own author photo instead of a Gravatar.
+ *
+ * The author bar already uses the shipped photo via quedamos_author_avatar(),
+ * but the post-card byline calls get_avatar(), which goes to gravatar.com — so
+ * the same author appeared twice on one page with two different faces, and on
+ * live with no Gravatar registered the card showed the silhouette placeholder.
+ * This makes the shipped file the single answer for both.
+ *
+ * Hooked on pre_get_avatar_data rather than the get_avatar markup: core returns
+ * early once this filter sets a url, so no request is made to gravatar.com and
+ * no Gravatar srcset is built to sit alongside a local file.
+ *
+ * Authors not in quedamos_author_photos(), and a photo the map names but the
+ * theme does not actually ship, both fall through to core untouched.
+ *
+ * @param array $args        The avatar data core is assembling.
+ * @param mixed $id_or_email User ID, WP_User, WP_Post, WP_Comment or email.
+ * @return array The data, with url pointed at the shipped photo when there is one.
+ */
+function quedamos_local_avatar_data( $args, $id_or_email ) {
+	$user = quedamos_avatar_user( $id_or_email );
+
+	if ( ! $user ) {
+		return $args;
+	}
+
+	$photos = quedamos_author_photos();
+	$key    = strtolower( trim( $user->display_name ) );
+
+	if ( ! isset( $photos[ $key ] ) ) {
+		return $args;
+	}
+
+	if ( ! file_exists( get_stylesheet_directory() . '/' . $photos[ $key ] ) ) {
+		return $args;
+	}
+
+	$args['url']          = get_stylesheet_directory_uri() . '/' . $photos[ $key ];
+	$args['found_avatar'] = true;
+
+	return $args;
+}
+add_filter( 'pre_get_avatar_data', 'quedamos_local_avatar_data', 10, 2 );
 
 /**
  * The school's social profiles, as icon links.

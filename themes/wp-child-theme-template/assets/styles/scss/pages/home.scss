@@ -21,6 +21,51 @@ body div.home-page-container {
     margin-top: 0px;
   }
 
+  // The Google reviews widget, lifted to straddle the hero's bottom edge.
+  //
+  // .ti-widget is Trustindex's own root class on the element the shortcode's
+  // loader script renders — a direct child of this container, which is what lets
+  // the widget be moved without a wrapper class on the block. The [trustindex]
+  // shortcode emits no wrapper of its own, so this class is the only handle
+  // there is; if the plugin ever renames it the widget simply returns to sitting
+  // below the hero rather than breaking.
+  //
+  // The container's `> *` rule above gives every child margin-top $space-4,
+  // rising to $space-5 from 781px, and with nothing else between the two blocks
+  // that margin IS the gap — measured at 64px and 32px. So the same tokens,
+  // negated, become the overlap: the widget rises by exactly the space that
+  // separated it. No new value is invented and the two stay in step if the
+  // container's rhythm is ever changed.
+  //
+  // That only holds because the hero's matching margin-BOTTOM is zeroed below.
+  // The two are adjacent siblings, so their vertical margins collapse to
+  // `max(positives) + min(negatives)`: against the hero's +$space-5 a -$space-5
+  // here summed to 0 and the widget merely sat flush instead of rising. With the
+  // hero's side at zero the negative margin is the only one left to collapse and
+  // acts at full value. Reinstate that margin and this overlap silently
+  // disappears — they are one mechanism, not two rules that happen to agree.
+  //
+  // The breakpoint is 781px to match that rule, not the 768px used elsewhere in
+  // the theme — the pair must switch together or one step would land between
+  // them.
+  //
+  // The hero's own bottom padding (3vw) plus its closing 48px spacer leave far
+  // more empty space than the overlap consumes, so the widget rises into blank
+  // band rather than over the hero's copy.
+  //
+  // position/z-index is belt and braces: later siblings already paint over
+  // earlier ones, but the cover's background layers are positioned, and a
+  // stacking context appearing there later would otherwise swallow the widget.
+  > .ti-widget {
+    position: relative;
+    z-index: 1;
+    margin-top: -$space-4;
+
+    @media screen and (min-width: 781px) {
+      margin-top: -$space-5;
+    }
+  }
+
   // The hero band, made shallower.
   //
   // !important, which this theme otherwise avoids, because the value being
@@ -45,6 +90,12 @@ body div.home-page-container {
   > .wp-block-cover:first-child {
     padding-top: 3vw !important;
     padding-bottom: 3vw !important;
+
+    // Zeroed so the reviews widget above can overlap the hero — see the note
+    // there. The space under the hero is now the widget's to own via its
+    // negative margin; leaving a positive margin here would collapse against
+    // that negative one and cancel it out.
+    margin-bottom: 0;
   }
 }
 

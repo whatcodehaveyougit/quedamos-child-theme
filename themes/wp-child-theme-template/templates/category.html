@@ -18,7 +18,22 @@
 	<!-- wp:group {"tagName":"header","className":"blog-header-section","layout":{"type":"constrained"}} -->
 	<header class="wp-block-group blog-header-section">
 
-		<!-- wp:query-title {"type":"archive","level":1,"showPrefix":false,"className":"blog-title"} /-->
+		<!-- The title sits inside a flow group, not directly in the constrained
+		     section. A constrained layout gives every direct child
+		     `margin-left: auto` and `margin-right: auto` and flags both as
+		     important, which centres anything narrower than the content column —
+		     so the intro on home.html could not be both capped to a readable
+		     measure and flush under the title. A flow layout imposes neither, so
+		     the group takes the 1280px column and the intro is free to cap
+		     itself in pages/blog.scss. There is no intro on this template, but
+		     the wrapper stays so the two headers are the same shape. -->
+		<!-- wp:group {"className":"blog-header-copy","layout":{"type":"default"}} -->
+		<div class="wp-block-group blog-header-copy">
+
+			<!-- wp:query-title {"type":"archive","level":1,"showPrefix":false,"className":"blog-title"} /-->
+
+		</div>
+		<!-- /wp:group -->
 
 	</header>
 	<!-- /wp:group -->
@@ -40,8 +55,12 @@
 	<section class="wp-block-group blog-listing-section">
 
 		<!-- inherit:true so the main query drives the listing and core's
-		     pagination keeps working on both templates. -->
-		<!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"blog-query"} -->
+		     pagination keeps working on both templates. It also means perPage
+		     below never runs — the page size is set on the main query by
+		     quedamos_set_blog_posts_per_page() in inc/blog/listing-query.php.
+		     It is kept in step with that constant so the markup can't tell the
+		     next reader a different number. -->
+		<!-- wp:query {"queryId":0,"query":{"perPage":20,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"blog-query"} -->
 		<div class="wp-block-query blog-query">
 
 			<!-- wp:post-template {"className":"blog-list","layout":{"type":"grid","columnCount":1}} -->

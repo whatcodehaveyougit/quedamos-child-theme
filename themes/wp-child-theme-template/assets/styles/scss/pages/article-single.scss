@@ -285,6 +285,33 @@
       // block back to `text-align: left` at 992px for its three-column layout,
       // so this must not move to the component.
       text-align: center;
+
+      // The block is a synced block shared with the course pages, where it is a
+      // section in its own right. Dropped into body copy it kept that scale and
+      // shouted over the article: an h3 renders at 43.2px against 17.6px prose,
+      // close to the article's own h2, and the card ran to 362px. Everything
+      // below pulls it back to the size of an aside without touching the block's
+      // content, which the course pages still render at full size.
+      h3 {
+        font-size: $h4-font-size;
+        margin-top: $space-3;
+      }
+
+      p {
+        margin-top: $space-2;
+      }
+
+      // The icon ships at its natural 86px. $space-5 is the largest step on the
+      // spacing scale and the nearest thing the system has to an icon size —
+      // used here rather than inventing a px value for it.
+      figure img {
+        width: $space-5;
+        height: auto;
+      }
+
+      .wp-block-buttons {
+        margin-top: $space-3;
+      }
     }
   }
 

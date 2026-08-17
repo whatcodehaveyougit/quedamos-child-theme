@@ -113,6 +113,33 @@
 
 .special-offer-container {
   margin: $space-3 0px 0px 0px;
+
+  // The band's copy is centred inside its own group, but the group was sitting
+  // hard against the left padding edge, so the whole thing read as off-centre —
+  // by 98px at 1440px, and more the wider the screen.
+  //
+  // The cover block carries `contentPosition: "top left"` in its markup, which
+  // renders as `is-position-top-left` and makes the cover a flex container
+  // aligned to the start. Its inner container is capped at the content width and
+  // takes the leftover space on one side only.
+  //
+  // Fixed here rather than by editing the block: it is a synced block living in
+  // the database, so a content fix would not travel with the repo and would have
+  // to be repeated on live.
+  //
+  // The selector is long because core's is. It ships
+  //   .wp-block-cover.has-custom-content-position.has-custom-content-position
+  //     .is-position-top-left .wp-block-cover__inner-container { margin: 0 }
+  // repeating a class to lift its own weight to (0,5,0). A plain
+  // `.special-offer-container .wp-block-cover__inner-container` is (0,2,0) and
+  // silently loses. Matching core's classes and adding ours makes this (0,6,0),
+  // so it wins on specificity rather than on source order — and without
+  // `!important`, which writing-scss forbids.
+  &.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-top-left {
+    .wp-block-cover__inner-container {
+      margin-inline: auto;
+    }
+  }
 }
 
 .my-mission-container {

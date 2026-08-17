@@ -1,0 +1,38 @@
+@import '../variables.scss';
+
+// Tier 3 — the row of category pills rendered by [quedamos_category_filter].
+// It appears on templates/home.html and templates/category.html, which is what
+// makes it a component rather than a section of the blog page.
+.category-filter {
+  // Mobile is the base case: the pills wrap onto as many lines as they need.
+  // No scroller and no shrinking type — a label the reader cannot finish is
+  // worse than a second line.
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+
+  &__pill {
+    // Matches the article header's category pill, which is the same object in a
+    // different place.
+    padding: $space-1 $space-3;
+    border-radius: $BR;
+    background-color: $primary;
+    color: $white;
+    font-size: $small-font-size;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  // The system's answer for an active or hovered button is the $primary →
+  // $secondary swap, so that is what the pill does. The comp's orange is not in
+  // the palette and is raised rather than pasted in.
+  //
+  // The current pill wears the swap permanently, not only on hover: a phone has
+  // no hover state at all, so "which one am I on" has to be answerable without
+  // a pointer.
+  &__pill:hover,
+  &__pill:focus-visible,
+  &__pill--current {
+    background-color: $secondary;
+  }
+}

@@ -1,7 +1,7 @@
 @import '../variables.scss';
 
-// Tier 3 — the article card used by the related-posts grid on a single post,
-// and available to any future listing that needs the same summary card.
+// Tier 3 — the article card used by the related-posts grid on a single post and
+// by the blog listing, which wears the --horizontal modifier.
 // A page may position this card; it must never repaint its internals.
 .post-card {
   @include qCardSurface();
@@ -10,7 +10,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background-color: white;
+  background-color: $white;
   transition: transform 0.2s ease;
 
   // The bottom inset belongs to the card, not to a margin on whichever child
@@ -48,6 +48,32 @@
       // thing doing the rounding, with $BR and overflow: hidden.
       border-radius: 0;
     }
+  }
+
+  // Only the --horizontal card has a body wrapper: it is what the image sits
+  // beside once there is room for two columns. The vertical card has no such
+  // element and is untouched by this rule.
+  //
+  // The vertical inset is padding here rather than a margin on the first and
+  // last children, because WordPress ships
+  // `:root :where(.is-layout-flow) > :first-child { margin-block-start: 0 }` at
+  // specificity (0,2,0) — a component margin loses to it, the same trap the
+  // card's own padding-bottom above works around.
+  &__body {
+    padding-block: $space-4;
+  }
+
+  // The primary category, rendered by quedamos_post_card_category(). Sits on the
+  // palette's pale blue with the black link colour theme.json already gives it,
+  // so neither colour is restated here.
+  &__category {
+    display: inline-block;
+    margin: 0 $space-4;
+    padding: $space-1 $space-3;
+    border-radius: $BR;
+    background-color: $accent-blue;
+    font-size: $small-font-size;
+    text-transform: uppercase;
   }
 
   // Avatar, author, date and read-time, rendered by
@@ -126,9 +152,62 @@
     margin-top: $space-3;
   }
 
+  // The chip already provides the gap below the image, so the byline only needs
+  // separating from the chip. Written as a sibling rule so a card without a
+  // category keeps the full inset above its byline.
+  &__category + &__byline {
+    margin-top: $space-3;
+  }
+
   // Bottom is 0 here on purpose — the card's padding-bottom owns that edge.
   &__excerpt {
     margin: $space-3 $space-4 0;
     font-size: $small-font-size;
+  }
+
+  // The READ MORE button. Everything that makes it look like a button — fill,
+  // radius, padding, the hover swap to $secondary — comes from theme.json's
+  // core/button styles and is deliberately absent here. Uppercase is set on the
+  // wrapper and inherited by the link, which keeps this out of core's own
+  // classes.
+  &__read-more {
+    margin: $space-3 $space-4 0;
+    text-transform: uppercase;
+
+    .inline-svg {
+      width: 1em;
+      height: 1em;
+      margin-left: $space-1;
+      vertical-align: middle;
+    }
+  }
+
+  // Image left, content right — the blog listing's card. Mobile is the base
+  // case above: the card is the plain vertical stack until there is room for
+  // two columns, so there is nothing to undo here.
+  &--horizontal {
+    // The body owns the vertical inset on this variant, so the card's own
+    // bottom padding would double it — and beside the image it would leave a
+    // white strip the full width of the card.
+    padding-bottom: 0;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: stretch;
+
+      .post-card__image {
+        // Roughly the split in the comp. The image fills its column whatever
+        // the source aspect ratio, which is why the ratio the block sets
+        // inline only governs the stacked view.
+        flex: 0 0 45%;
+      }
+
+      .post-card__body {
+        // Without this a long unbroken title stretches the column past its
+        // share and squeezes the image.
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+    }
   }
 }

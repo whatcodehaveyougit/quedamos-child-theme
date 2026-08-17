@@ -62,6 +62,36 @@ wp user update <id> --display_name="Sara Carrillo" --first_name="Sara" --last_na
       address at gravatar.com. Until then the silhouette shows on live *and* locally.
 - [ ] Load a live post and confirm the bar reads "Written by Sara Carrillo · Spanish Language Educator"
 
+### 3. Blog listing — delete the database "Blog Home" template
+
+`/blog` now renders from `templates/home.html` in the repo. Live still has a **database** template that
+**wins over it**: a `wp_template` post with `post_name = home`, titled "Blog Home", holding the stock
+`core/query-medium-posts` pattern. Same trap as `theme.json` vs `wp_global_styles` in
+[CLAUDE.md](CLAUDE.md).
+
+**Until that record is gone, live ships the new code and keeps rendering the old core pattern** — no title,
+no intro, no filter pills, no cards.
+
+Identify it by `post_name`, not by ID: the local record was ID 20 and live's will be a different number.
+
+Run on live:
+
+```
+wp post list --post_type=wp_template --name=home --fields=ID,post_title,post_name
+wp post delete <id> --force
+```
+
+The same applies to a `post_name = category` record if one exists — check for it before deciding the
+category archive is broken.
+
+- [ ] `wp post list --post_type=wp_template --name=home` returns nothing
+- [ ] `/blog` on live shows "Our Blog", the intro and the pill row
+- [ ] A pill click filters the list and changes the URL; loading that URL directly gives the same page
+- [ ] Appearance → Editor → Templates shows "Blog Home" as coming from the theme, not "Customized"
+
+Categories themselves need nothing: the five live categories are already assigned, and no code reads their
+names, slugs or order.
+
 ## Done
 
 *Nothing yet.*

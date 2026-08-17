@@ -4,6 +4,12 @@ $secondary: var(--wp--preset--color--custom-secondary);
 // The palette's grey, for secondary text that must read as subordinate to the
 // copy beside it. An alias of the existing `contrast-3` entry, not a new colour.
 $text-grey: var(--wp--preset--color--contrast-3);
+// The palette's white (`base-2`) and pale blue (`accent-2`), added 2026-08-17
+// for the blog listing's pills and category chip. Aliases of existing palette
+// entries, not new colours — the alternative was pasting the two literals into
+// a component, which is what the never-invent rule exists to stop.
+$white: var(--wp--preset--color--base-2);
+$accent-blue: var(--wp--preset--color--accent-2);
 $hover-grey: rgba(35, 90, 108, 0.12);
 $accent-yellow: #fffb01;
 $BR: 10px;

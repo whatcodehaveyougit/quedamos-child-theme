@@ -25,7 +25,17 @@
 		<!-- wp:group {"className":"article-card","layout":{"type":"constrained"}} -->
 		<div class="wp-block-group article-card">
 
-			<!-- wp:post-content {"className":"article-prose","layout":{"type":"constrained"}} /-->
+			<!-- wp:group {"className":"article-body","layout":{"type":"default"}} -->
+			<div class="wp-block-group article-body">
+
+				<!-- wp:shortcode -->
+				[quedamos_article_toc]
+				<!-- /wp:shortcode -->
+
+				<!-- wp:post-content {"className":"article-prose","layout":{"type":"constrained"}} /-->
+
+			</div>
+			<!-- /wp:group -->
 
 			<!-- wp:post-terms {"term":"post_tag","prefix":"","className":"article-tags"} /-->
 

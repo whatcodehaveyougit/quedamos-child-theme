@@ -91,6 +91,22 @@
     background-color: white;
   }
 
+  // TOC above the prose on mobile, beside it from 992px (see the media query
+  // at the foot of this file).
+  .article-body {
+    display: grid;
+    gap: $space-4;
+    // minmax(0, 1fr) rather than a bare 1fr: a wide code block or long unbroken
+    // word in the prose would otherwise stretch the column past the viewport.
+    grid-template-columns: minmax(0, 1fr);
+
+    // WordPress's flow layout adds a top margin to every child; with a grid
+    // that stacks on top of the gap and pushes the TOC out of alignment.
+    > * {
+      margin-block-start: 0;
+    }
+  }
+
   .article-prose {
     > * + * {
       margin-top: $space-3;
@@ -99,6 +115,14 @@
     h2,
     h3 {
       margin-top: $space-4;
+    }
+
+    // Anchor targets clear the top of the viewport instead of butting against
+    // it. The header is static, so this only needs breathing room.
+    h2,
+    h3,
+    h4 {
+      scroll-margin-top: $space-4;
     }
 
     img {
@@ -168,6 +192,13 @@
   @media (min-width: 992px) {
     .article-body-section {
       margin-top: -$space-5;
+    }
+
+    // The TOC becomes a fixed-width sticky column to the left of the prose.
+    .article-body {
+      gap: $space-5;
+      grid-template-columns: 220px minmax(0, 1fr);
+      align-items: start;
     }
   }
 }

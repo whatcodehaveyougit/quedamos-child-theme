@@ -1,5 +1,13 @@
 @import './variables.scss';
 
+// Anchor links (the article table of contents) glide rather than jump. Honours
+// a reduced-motion preference, where smooth scrolling can trigger nausea.
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 .entry-content {
   > .wp-block-group:nth-child(2) {
     margin-top: $space-4;
